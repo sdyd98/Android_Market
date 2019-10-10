@@ -21,7 +21,7 @@
         android:id="@+id/text1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="중부시장장"
+        android:hint="중부시장장장장"
         android:layout_gravity="center"
         android:gravity="center"
         android:textStyle="italic|bold"
