@@ -7,7 +7,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,7 +19,7 @@ public class Login_Activity extends AppCompatActivity {
 
     TextInputEditText id, password;
     Button btn_login, btn_sign_up;
-    TextView Login_Find_Id, Login_Find_Pw;
+
 
     int check_id_num;
     boolean check_id_value;
@@ -52,7 +51,7 @@ public class Login_Activity extends AppCompatActivity {
 
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.login);
 
 
         id = findViewById(R.id.id);

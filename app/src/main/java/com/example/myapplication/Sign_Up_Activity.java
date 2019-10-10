@@ -4,45 +4,32 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 
 public class Sign_Up_Activity extends AppCompatActivity {
 
     Button btn_Sign_up_real;
-    ImageView Sign_Up_Back;
     static ArrayList<ArrayList<String>> person = new ArrayList<ArrayList<String>>();
     static ArrayList<String> person_detail = new ArrayList<>();
     TextInputEditText Sign_Up_Id, Sign_Up_Pw, Sign_Up_Pw2, Sign_Up_Name, Sign_Up_Phone_Number, Sign_Birthday_Number;
-    TextInputLayout Sign_up;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.sing_up);
+        setContentView(R.layout.sign_up);
 
         Sign_Up_Id = findViewById(R.id.Sign_Up_Id);
         Sign_Up_Pw = findViewById(R.id.Sign_Up_Pw);
         Sign_Up_Name = findViewById(R.id.Sign_Up_Name);
-        Sign_Up_Phone_Number = findViewById(R.id.Sign_Up_Phone_Number);
-        Sign_Birthday_Number = findViewById(R.id.Sign_Birthday_Number);
         Sign_Up_Pw2 = findViewById(R.id.Sign_Up_Pw2);
         btn_Sign_up_real = findViewById(R.id.btn_Sign_up_real);
-        Sign_Up_Back = findViewById(R.id.Sign_Up_Back);
-
-        Sign_Up_Back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
 
 
         // 회원가입하기 버튼

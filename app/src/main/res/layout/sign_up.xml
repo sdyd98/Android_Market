@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp"
+    android:weightSum="10"
+    >
+
+    // 회원가입
+        <TextView
+            android:layout_weight="0.5"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:text="회원가입"
+            android:textSize="30dp"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"
+            />
+
+    //밑줄
+    <View
+        android:layout_weight="0.05"
+        android:layout_marginTop="5dp"
+        android:background="#000000"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        />
+
+    // 회원 사진
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_weight="2"
+        android:id="@+id/Sign_up_User_Icon"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        android:layout_width="150dp"
+        android:layout_height="0dp"
+        android:src="@drawable/user_icon_3"
+        />
+
+
+
+    // padding 값
+    <LinearLayout
+        android:layout_weight="7"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:padding="25dp"
+        >
+    // 이름 입력
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width = "match_parent"
+        android:layout_height = "wrap_content"
+        android:layout_marginTop = "15dp"
+        >
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/Sign_Up_Name"
+            android:layout_width = "match_parent"
+            android:layout_height = "wrap_content"
+            android:hint = "닉네임 설정"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    // 아이디
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
+
+        >
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width = "200dp"
+            android:layout_height = "wrap_content"
+            >
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/Sign_Up_Id"
+                android:layout_width = "200dp"
+                android:layout_height = "wrap_content"
+                android:hint = "아이디"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/sign_up_btn"
+            android:gravity="center"
+            android:text="중복확인"
+            android:textColor="#171515"
+            android:textStyle="bold" />
+
+
+    </LinearLayout>
+
+
+    // 비밀번호
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width = "match_parent"
+        android:layout_height = "wrap_content"
+        android:layout_marginTop = "15dp"
+        >
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/Sign_Up_Pw"
+            android:layout_width = "match_parent"
+            android:layout_height = "wrap_content"
+            android:hint = "비밀번호"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+    // 비밀번호 확인
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width = "match_parent"
+        android:layout_height = "wrap_content"
+        android:layout_marginTop = "15dp"
+        >
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/Sign_Up_Pw2"
+            android:layout_width = "match_parent"
+            android:layout_height = "wrap_content"
+            android:hint = "비밀번호 확인"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    //회원가입 버튼
+    <Button
+        android:id="@+id/btn_Sign_up_real"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="회원가입"
+        android:background="@drawable/btn_black"
+        android:textStyle="bold"
+        android:textColor="#ffffff"
+        android:layout_marginTop="70dp"
+        />
+    </LinearLayout>
+</LinearLayout>
