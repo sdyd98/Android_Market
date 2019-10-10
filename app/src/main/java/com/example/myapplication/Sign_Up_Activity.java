@@ -28,18 +28,19 @@ import java.util.ArrayList;
 public class Sign_Up_Activity extends AppCompatActivity {
 
 
-    static ArrayList<ArrayList<String>> person = new ArrayList<ArrayList<String>>();
-    static ArrayList<String> person_detail = new ArrayList<>();
+//    static ArrayList<ArrayList<String>> person = new ArrayList<ArrayList<String>>();
+//    static ArrayList<String> person_detail = new ArrayList<>();
 
     // 유저 정보 어레이 객체 생성
     ArrayList<User_DB> User_Db_ArrayList = new ArrayList<>();
 
 
 
+    boolean ID_Check = false;
 
     TextInputEditText Sign_Up_Id, Sign_Up_Pw, Sign_Up_Pw_Check, Sign_Up_Name;
     ImageView Password_Check_Img;
-    Button Sign_Up_Btn;
+    Button Sign_Up_Btn, User_Id_Check;
 
 
 
@@ -51,7 +52,7 @@ public class Sign_Up_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_up);
 
-        User_getShared("User","Data");
+        User_getShared("User","Data", User_Db_ArrayList);
 
 
         // 뷰 매칭
@@ -61,6 +62,7 @@ public class Sign_Up_Activity extends AppCompatActivity {
         Sign_Up_Pw_Check = findViewById(R.id.Sign_Up_Pw_Check);
         Sign_Up_Btn = findViewById(R.id.Sign_Up_Btn);
         Password_Check_Img = findViewById(R.id.Password_Check_Img);
+        User_Id_Check = findViewById(R.id.User_Id_Check);
 
 
         //비밀번호 실시간 체크 1
@@ -113,6 +115,26 @@ public class Sign_Up_Activity extends AppCompatActivity {
 
 
     }
+    public void Check_Id(View view){
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        if(User_Db_ArrayList.size() != 0) {
+            for (int i = 0; i < User_Db_ArrayList.size(); i++) {
+                if (!User_Db_ArrayList.get(i).getUser_id().equals(Sign_Up_Id.getText().toString())) {
+                    ID_Check = true;
+                    Toast.makeText(getApplicationContext(), "사용가능한 아이디 입니다!", Toast.LENGTH_SHORT).show();
+                } else {
+                    ID_Check = false;
+                    Toast.makeText(getApplicationContext(), "이미 있는 아이디 입니다.", Toast.LENGTH_SHORT).show();
+                    Sign_Up_Id.requestFocus();
+                    imm.showSoftInput(Sign_Up_Id, 0);
+                }
+            }
+        }
+        else{
+            ID_Check = true;
+            Toast.makeText(getApplicationContext(), "사용가능한 아이디 입니다!", Toast.LENGTH_SHORT).show();
+        }
+    }
 
     // 회원가입하기 버튼
     public void Sign_Up_Btn(View view){
@@ -146,13 +168,19 @@ public class Sign_Up_Activity extends AppCompatActivity {
             imm.showSoftInput(Sign_Up_Pw, 0);
         }
 
+        // 비밀번호 2차확인
         if(!name_check.equals("")&&!id_check.equals("")&&!pw_check1.equals("")&&pw_check2.equals("")||!pw_check1.equals(pw_check2)){
             Toast.makeText(getApplicationContext(), "비밀번호를 확인해주세요", Toast.LENGTH_SHORT).show();
             Sign_Up_Pw_Check.requestFocus();
             imm.showSoftInput(Sign_Up_Pw_Check, 0);
         }
 
-        if(!name_check.equals("")&&!id_check.equals("")&&!pw_check1.equals("")&&!pw_check2.equals("")&&(pw_check1.equals(pw_check2))){
+        if(!name_check.equals("")&&!id_check.equals("")&&!pw_check1.equals("")&&!pw_check2.equals("")&&pw_check1.equals(pw_check2)&& ID_Check == false){
+            Toast.makeText(getApplicationContext(), "아이디 중복검사를 완료하세요.", Toast.LENGTH_SHORT).show();
+        }
+
+        // 회원가입 성공 부분 쉐어드로 데이터 전달
+        if(!name_check.equals("")&&!id_check.equals("")&&!pw_check1.equals("")&&!pw_check2.equals("")&&(pw_check1.equals(pw_check2))&& ID_Check == true){
             User_DB user_db = new User_DB(Uri.parse("android.resource://" + R.class.getPackage().getName() + "/" + R.drawable.user_icon_3).toString() ,Sign_Up_Id.getText().toString(), Sign_Up_Pw.getText().toString());
             User_Db_ArrayList.add(user_db);
             User_setShared("User","Data", User_Db_ArrayList);
@@ -163,10 +191,10 @@ public class Sign_Up_Activity extends AppCompatActivity {
     }
 
     // 유저 정보 쉐어드 get
-    public void User_getShared(String Name, String Key){
+    public void User_getShared(String Name, String Key, ArrayList<User_DB> User_Db_ArrayList){
         // 쉐어드 이름과 모드 설정
         SharedPreferences sharedPreferences = getSharedPreferences(Name,0);
-        // key를 통해 벨류값  = get ArrayList 전체 목록
+        // key를 통해 벨류값  (get ArrayList 전체 목록) 저장
         String user_db_array = sharedPreferences.getString(Key, "");
 
         // JsonArray를 파싱하여 User_DB형 어레이리스트에 담는과정

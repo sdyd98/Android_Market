@@ -84,6 +84,7 @@
                 android:textStyle="bold"
                 android:textColor="#ffffff"
                 android:background="@drawable/login_btn"
+                android:onClick="Login_Btn"
                 />
 
         <Button
