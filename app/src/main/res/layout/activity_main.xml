@@ -5,52 +5,67 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:padding="10dp"
     android:weightSum="10"
     >
 
     <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_weight="2"
+        android:layout_width="150dp"
+        android:layout_height="0dp"
         android:layout_gravity="center"
-        android:src="@drawable/market"
-        android:layout_marginTop="100dp"
-
+        android:src="@drawable/market2"
+        android:layout_marginTop="80dp"
         />
 
     <TextView
-        android:id="@+id/text1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="중부시장장장장"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:textStyle="italic|bold"
-        android:textSize="40dp"
-        android:visibility="visible"
-        app:fontFamily="serif"
 
+        android:layout_weight="1"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="중부시장"
+        android:layout_gravity="center"
+        android:textColor="#232121"
+        android:textStyle="bold"
+        android:textSize="40dp"
+        />
+
+    <TextView
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Team Nova"
         />
 
 
+    <LinearLayout
+        android:layout_weight="7"
+        android:padding="45dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        >
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="20dp"
         >
         <com.google.android.material.textfield.TextInputEditText
+            android:gravity="center"
             android:id="@+id/id"
             android:layout_width = "match_parent"
             android:layout_height = "50dp"
             android:hint = "Email"
+            android:inputType="textEmailAddress|textAutoComplete"
             />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="20dp"
         >
         <com.google.android.material.textfield.TextInputEditText
+            android:gravity="center"
             android:id="@+id/password"
             android:layout_width = "match_parent"
             android:layout_height = "50dp"
@@ -59,86 +74,28 @@
             />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="center"
-        android:weightSum="9"
-        android:layout_marginTop="40dp"
-        >
-
-
             <Button
+                android:layout_marginTop="100dp"
                 android:id="@+id/btn_login"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Login"
-                android:layout_weight="3"
+                android:text="로그인"
+                android:textStyle="bold"
                 android:textColor="#ffffff"
-                android:background="@drawable/btn_blue"
-
-                android:layout_marginLeft="16dp"
+                android:background="@drawable/login_btn"
                 />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="OR"
-            android:gravity="center"
-            android:layout_marginTop="16dp"
-            android:layout_weight="3"
-
-            />
-
         <Button
+            android:layout_marginTop="25dp"
+            android:textStyle="bold"
             android:id="@+id/btn_sign_up"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_weight="3"
-            android:text="Sing up"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/btn_dark_blue"
-            android:layout_marginRight="16dp"
+            android:text="회원 가입"
+            android:textColor="#171515"
+            android:background="@drawable/sign_up_btn"
             />
     </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="center"
-        android:weightSum="10"
-        android:layout_margin="16dp"
-        >
-
-
-        <TextView
-            android:id="@+id/Login_Find_Id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Find ID"
-            android:clickable="true"
-            android:layout_weight="5"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:layout_marginRight="50dp"
-            />
-
-        <TextView
-            android:id="@+id/Login_Find_Pw"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Find Password"
-            android:clickable="true"
-            android:layout_weight="7"
-            android:layout_gravity="center"
-            android:gravity="center"
-            />
-
-    </LinearLayout>
-
 </LinearLayout>

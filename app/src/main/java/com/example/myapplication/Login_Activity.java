@@ -59,25 +59,8 @@ public class Login_Activity extends AppCompatActivity {
         password = findViewById(R.id.password);
         btn_login = findViewById(R.id.btn_login);
         btn_sign_up = findViewById(R.id.btn_sign_up);
-        Login_Find_Id = findViewById(R.id.Login_Find_Id);
-        Login_Find_Pw = findViewById(R.id.Login_Find_Pw);
 
-        Login_Find_Pw.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Login_Activity.this, Find_Pw_Activity.class);
-                startActivity(intent);
-            }
-        });
 
-        //아이디 찾기 버튼
-        Login_Find_Id.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Login_Activity.this, Find_Id_Activity.class);
-                startActivity(intent);
-            }
-        });
 
         //회원가입 버튼
         btn_sign_up.setOnClickListener(new View.OnClickListener() {
