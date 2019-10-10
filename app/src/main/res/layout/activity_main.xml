@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_login"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="10"
+    >
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:src="@drawable/market"
+        android:layout_marginTop="100dp"
+
+        />
+
+    <TextView
+        android:id="@+id/text1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="중부시장"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textStyle="italic|bold"
+        android:textSize="40dp"
+        android:visibility="visible"
+        app:fontFamily="serif"
+
+        />
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        >
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/id"
+            android:layout_width = "match_parent"
+            android:layout_height = "50dp"
+            android:hint = "Email"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        >
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/password"
+            android:layout_width = "match_parent"
+            android:layout_height = "50dp"
+            android:hint = "Password"
+            android:inputType="textPassword"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:weightSum="9"
+        android:layout_marginTop="40dp"
+        >
+
+
+            <Button
+                android:id="@+id/btn_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Login"
+                android:layout_weight="3"
+                android:textColor="#ffffff"
+                android:background="@drawable/btn_blue"
+
+                android:layout_marginLeft="16dp"
+                />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="OR"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            android:layout_weight="3"
+
+            />
+
+        <Button
+            android:id="@+id/btn_sign_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="3"
+            android:text="Sing up"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/btn_dark_blue"
+            android:layout_marginRight="16dp"
+            />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:weightSum="10"
+        android:layout_margin="16dp"
+        >
+
+
+        <TextView
+            android:id="@+id/Login_Find_Id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Find ID"
+            android:clickable="true"
+            android:layout_weight="5"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginRight="50dp"
+            />
+
+        <TextView
+            android:id="@+id/Login_Find_Pw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Find Password"
+            android:clickable="true"
+            android:layout_weight="7"
+            android:layout_gravity="center"
+            android:gravity="center"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>

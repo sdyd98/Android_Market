@@ -1,0 +1,571 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="vertical"
+        android:layout_weight="1"
+        >
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#ffffff"
+
+            >
+            <ImageView
+                android:layout_marginTop="30dp"
+                android:id="@+id/back"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/back"
+                android:layout_marginLeft="10dp"
+                android:layout_margin="10dp"
+                />
+            <TextView
+                android:id="@+id/t1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                app:layout_constraintBottom_toBottomOf="@+id/back"
+                app:layout_constraintLeft_toRightOf="@+id/back"
+                app:layout_constraintTop_toTopOf="@+id/back"
+                android:text="상품 정보"
+                android:textSize="16dp"
+                android:textColor="#1f1f1f"
+                android:textStyle="bold"
+                />
+
+            <ImageView
+                android:id="@+id/user"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/user_icon2"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/back"
+                app:layout_constraintBottom_toBottomOf="@id/back"
+                android:layout_marginRight="10dp"
+                />
+
+            <ImageView
+                android:id="@+id/Buy_Search_Icon"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/search3"
+                app:layout_constraintRight_toLeftOf="@id/user"
+                app:layout_constraintTop_toTopOf="@id/back"
+                app:layout_constraintBottom_toBottomOf="@id/back"
+                android:layout_marginRight="15dp"
+                />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="8"
+        >
+
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                >
+
+
+
+
+                <ImageView
+                    android:id="@+id/Buy_Image"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:src="@drawable/image"
+                    />
+
+                <View
+                    android:id="@+id/bar10"
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:background="#dedede"
+                    />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/price1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="25dp"
+                        android:text="가격 (원)"
+                        android:textSize="20dp"
+                        android:textStyle="bold"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Button
+                        android:id="@+id/del"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="120dp"
+                        android:text="삭제"
+                        app:layout_constraintRight_toLeftOf="@id/fix"
+                        app:layout_constraintTop_toTopOf="@id/price1" />
+
+                    <Button
+                        android:id="@+id/fix"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:text="수정"
+                        app:layout_constraintBaseline_toBaselineOf="@id/del"
+                        app:layout_constraintRight_toRightOf="parent" />
+
+                    <TextView
+                        android:id="@+id/itemname"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="상품명"
+                        android:textSize="16dp"
+                        app:layout_constraintLeft_toLeftOf="@id/price1"
+                        app:layout_constraintTop_toBottomOf="@id/price1" />
+
+                    <ImageView
+                        android:id="@+id/time"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginTop="15dp"
+                        android:src="@drawable/time"
+                        app:layout_constraintLeft_toLeftOf="@id/itemname"
+                        app:layout_constraintTop_toBottomOf="@id/itemname" />
+
+                    <TextView
+                        android:id="@+id/timetext"
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="7dp"
+                        android:text="몇 시간전"
+                        app:layout_constraintBottom_toBottomOf="@id/time"
+                        app:layout_constraintLeft_toRightOf="@id/time"
+                        app:layout_constraintTop_toTopOf="@id/time" />
+
+                    <ImageView
+                        android:id="@+id/look"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="30dp"
+                        android:src="@drawable/look"
+                        app:layout_constraintBottom_toBottomOf="@id/timetext"
+                        app:layout_constraintLeft_toRightOf="@id/timetext"
+                        app:layout_constraintTop_toTopOf="@id/timetext" />
+
+                    <TextView
+                        android:id="@+id/looktext"
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="7dp"
+                        android:text="조회수"
+                        app:layout_constraintBottom_toBottomOf="@id/look"
+                        app:layout_constraintLeft_toRightOf="@id/look"
+                        app:layout_constraintTop_toTopOf="@id/look" />
+
+                    <CheckBox
+                        android:id="@+id/heart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="30dp"
+                        android:enabled="true"
+                        app:layout_constraintBottom_toBottomOf="@id/looktext"
+                        app:layout_constraintLeft_toRightOf="@id/looktext"
+                        app:layout_constraintTop_toTopOf="@id/looktext" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="7dp"
+                        android:text="좋아요 수"
+                        app:layout_constraintBottom_toBottomOf="@id/heart"
+                        app:layout_constraintLeft_toRightOf="@id/heart"
+                        app:layout_constraintTop_toTopOf="@id/heart" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="20dp"
+                        android:background="#dedede"
+                        app:layout_constraintTop_toBottomOf="@id/time" />
+
+                    <TextView
+                        android:id="@+id/item_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="50dp"
+                        android:text="글 내용"
+                        android:textColor="#000000"
+                        android:textStyle="bold"
+                        app:layout_constraintLeft_toLeftOf="@id/time"
+                        app:layout_constraintTop_toBottomOf="@id/time" />
+
+                    <TextView
+                        android:id="@+id/trade_place"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="거래지역"
+                        android:textStyle="bold"
+                        app:layout_constraintLeft_toLeftOf="@id/item_text"
+                        app:layout_constraintTop_toBottomOf="@id/item_text" />
+
+                    <TextView
+                        android:id="@+id/categori"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="카테고리"
+                        android:textStyle="bold"
+                        app:layout_constraintLeft_toLeftOf="@id/trade_place"
+                        app:layout_constraintTop_toBottomOf="@id/trade_place" />
+
+                    <TextView
+                        android:id="@+id/Buy_Call_Icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="전화하기"
+                        android:textStyle="bold"
+                        app:layout_constraintLeft_toLeftOf="@id/categori"
+                        app:layout_constraintTop_toBottomOf="@id/categori" />
+
+                    <ImageView
+                        android:id="@+id/location"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="15dp"
+                        android:src="@drawable/map"
+                        app:layout_constraintBottom_toBottomOf="@id/trade_place"
+                        app:layout_constraintLeft_toRightOf="@id/trade_place"
+                        app:layout_constraintTop_toTopOf="@id/trade_place" />
+
+                    <TextView
+                        android:id="@+id/Buy_Location_Icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="7dp"
+                        android:text="거래 위치"
+                        app:layout_constraintBottom_toBottomOf="@id/location"
+                        app:layout_constraintLeft_toRightOf="@id/location"
+                        app:layout_constraintTop_toTopOf="@id/location" />
+
+                    <TextView
+                        android:id="@+id/categori_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="15dp"
+                        android:text="카테고리 명"
+                        app:layout_constraintBottom_toBottomOf="@id/categori"
+                        app:layout_constraintLeft_toRightOf="@id/categori"
+                        app:layout_constraintTop_toTopOf="@id/categori" />
+
+                    <ImageView
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:layout_marginLeft="1dp"
+                        android:src="@drawable/next3"
+                        app:layout_constraintBottom_toBottomOf="@id/categori_name"
+                        app:layout_constraintLeft_toRightOf="@id/categori_name"
+                        app:layout_constraintTop_toTopOf="@id/categori_name" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="3dp"
+                        android:src="@drawable/call"
+                        app:layout_constraintBottom_toBottomOf="@id/Buy_Call_Icon"
+                        app:layout_constraintLeft_toRightOf="@id/Buy_Call_Icon"
+                        app:layout_constraintTop_toTopOf="@id/Buy_Call_Icon" />
+
+
+                    <View
+                        android:id="@+id/bar"
+                        android:layout_width="match_parent"
+                        android:layout_height="5dp"
+                        android:layout_marginTop="50dp"
+                        android:background="#dedede"
+                        app:layout_constraintTop_toBottomOf="@id/categori_name" />
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/user_icon"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="25dp"
+                        android:src="@drawable/user_icon"
+                        app:layout_constraintLeft_toLeftOf="@id/bar"
+                        app:layout_constraintTop_toBottomOf="@id/bar" />
+
+                    <TextView
+                        android:id="@+id/user_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:text="user"
+                        android:textColor="#000000"
+                        android:textSize="20dp"
+                        android:textStyle="bold"
+                        app:layout_constraintLeft_toRightOf="@id/user_icon"
+                        app:layout_constraintTop_toTopOf="@id/user_icon" />
+
+                    <TextView
+                        android:id="@+id/open_day"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="오픈일"
+                        app:layout_constraintLeft_toLeftOf="@id/user_name"
+                        app:layout_constraintTop_toBottomOf="@id/user_name" />
+
+                    <TextView
+                        android:id="@+id/open_days"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="1dp"
+                        android:text="+200"
+                        android:textColor="#000000"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@id/open_day"
+                        app:layout_constraintLeft_toRightOf="@id/open_day"
+                        app:layout_constraintTop_toTopOf="@id/open_day" />
+
+                    <TextView
+                        android:id="@+id/follower"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:text="팔로워"
+                        app:layout_constraintBottom_toBottomOf="@id/open_days"
+                        app:layout_constraintLeft_toRightOf="@id/open_days"
+                        app:layout_constraintTop_toTopOf="@id/open_days" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="1dp"
+                        android:text="100"
+                        android:textColor="#000000"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@id/follower"
+                        app:layout_constraintLeft_toRightOf="@id/follower"
+                        app:layout_constraintTop_toTopOf="@id/follower" />
+
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginRight="15dp"
+                        android:src="@drawable/followe"
+                        app:layout_constraintBottom_toBottomOf="@id/user_icon"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/user_icon" />
+
+                    <View
+                        android:id="@+id/bar2"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="10dp"
+                        android:background="#dedede"
+                        app:layout_constraintLeft_toLeftOf="@id/user_icon"
+                        app:layout_constraintTop_toBottomOf="@id/user_icon" />
+
+                    <TextView
+                        android:id="@+id/item_sell"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="20dp"
+                        android:text="판매상품"
+                        android:textColor="#000000"
+                        android:textStyle="bold"
+                        app:layout_constraintLeft_toLeftOf="@id/bar2"
+                        app:layout_constraintTop_toBottomOf="@id/bar2" />
+
+
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/Buy_My_Item_List_Recycle"
+                        app:layout_constraintTop_toBottomOf="@id/item_sell"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        />
+
+                    <View
+                        android:id="@+id/bar3"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="10dp"
+                        android:background="#dedede"
+                        app:layout_constraintLeft_toLeftOf="@id/Buy_My_Item_List_Recycle"
+                        app:layout_constraintTop_toBottomOf="@id/Buy_My_Item_List_Recycle" />
+
+                    <TextView
+                        android:id="@+id/market_comments"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="20dp"
+                        android:text="시장후기"
+                        android:textColor="#000000"
+                        android:textStyle="bold"
+                        app:layout_constraintLeft_toLeftOf="@id/bar3"
+                        app:layout_constraintTop_toBottomOf="@id/bar3" />
+                    ////////////////////////////////////////////////////////////
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_marginTop="20dp"
+                    android:id="@+id/Comments_Recycle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="10dp"
+                    />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:background="@drawable/btn_search_text"
+                    >
+                <EditText
+                    android:id="@+id/Comments_Detail"
+                    android:layout_marginLeft="20dp"
+                    android:layout_width="300dp"
+                    android:layout_height="40dp"
+                    android:background="@null"
+                    android:hint="댓글 쓰기"
+                    />
+                    <Button
+                        android:id="@+id/Comments_Btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="등록"
+                        android:background="@null"
+                        />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:background="#ffffff"
+        android:orientation="vertical"
+        android:layout_weight="2"
+        >
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#dedede"
+            />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <CheckBox
+                android:id="@+id/heart2"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="15dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
+            <TextView
+                android:id="@+id/heart_korea"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="찜"
+                android:textColor="#fc5157"
+                app:layout_constraintTop_toTopOf="@id/heart2"
+                app:layout_constraintBottom_toBottomOf="@id/heart2"
+                app:layout_constraintLeft_toRightOf="@id/heart2"
+                android:layout_marginLeft="7dp"
+                android:textStyle="bold"
+                />
+
+            <LinearLayout
+                android:layout_marginLeft="40dp"
+                android:id="@+id/layout1"
+                android:layout_width="300dp"
+                android:layout_height="40dp"
+                android:background="@drawable/btn_pink_text"
+                app:layout_constraintTop_toTopOf="@id/heart_korea"
+                app:layout_constraintBottom_toBottomOf="@id/heart_korea"
+                app:layout_constraintLeft_toRightOf="@id/heart_korea"
+                android:orientation="horizontal"
+                >
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    >
+
+                    <ImageView
+                        android:id="@+id/chat_img"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/chat2"
+                        android:layout_marginRight="50dp"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="채팅하기"
+                        android:background="@null"
+                        android:textColor="#ffffff"
+                        android:textStyle="bold"
+                        app:layout_constraintTop_toTopOf="@id/chat_img"
+                        app:layout_constraintBottom_toBottomOf="@id/chat_img"
+                        app:layout_constraintLeft_toRightOf="@id/chat_img"
+                        />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

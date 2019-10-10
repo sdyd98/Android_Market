@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="20dp"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:weightSum="10">
+
+    <ImageView
+        android:id="@+id/Icon_Cpu"
+        android:clickable="true"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/cpu"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/Text_Cpu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="0.5dp"
+        android:text="CPU"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="@id/Icon_Cpu"
+        app:layout_constraintRight_toRightOf="@id/Icon_Cpu"
+        app:layout_constraintTop_toBottomOf="@id/Icon_Cpu" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

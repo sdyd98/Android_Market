@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    android:id="@+id/main_display">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        //카테고리 아이콘
+        <ImageView
+            android:id="@+id/Main_Category_btn"
+            android:clickable="true"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/menu"
+            />
+
+        // 채팅 아이콘
+        <ImageView
+            android:id="@+id/Main_Icon_Chat"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginLeft="303dp"
+            android:src="@drawable/chat"
+            />
+
+        //내정보 아이콘
+        <ImageView
+            android:id="@+id/Main_My_Menu"
+            android:layout_marginLeft="10dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:src="@drawable/user"
+            />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+
+            >
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="70dp"
+                android:text="무엇을 찾고 계신가요?"
+                android:textColor="#000000"
+                android:textSize="25dp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/Main_Icon_Search_Btn"
+                android:clickable="true"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_search"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:background="#ffffff"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="4dp"
+                    android:text="검색어를 입력해보세요"
+                    android:textColor="#b5b5b5"
+                    android:textSize="16dp"
+                    android:textStyle="bold"
+                    />
+
+
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="175dp"
+                    android:src="@drawable/search4" />
+
+
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                >
+                <TextView
+                    android:id="@+id/Main_User_Name"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:text="User"
+                    android:textColor="#000000"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" 님을 위한 추천 컨텐츠"
+                    android:textStyle="bold"
+                    android:textSize="16dp"
+                    android:textColor="#000000"
+                    app:layout_constraintTop_toTopOf="@id/Main_User_Name"
+                    app:layout_constraintLeft_toRightOf="@id/Main_User_Name"
+                    />
+
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <HorizontalScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:weightSum="10">
+
+                <ImageView
+                    android:id="@+id/Main_Icon_Sell"
+                    android:clickable="true"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:src="@drawable/sell2" />
+
+                <ImageView
+                    android:layout_marginLeft="5dp"
+                    android:id="@+id/Main_My_Item"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+
+                    android:src="@drawable/heart" />
+
+                <ImageView
+                    android:layout_marginLeft="5dp"
+                    android:id="@+id/Main_ad"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+
+                    android:src="@drawable/ad" />
+
+                <ImageView
+                    android:layout_marginLeft="5dp"
+                    android:id="@+id/Main_app"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+
+                    android:src="@drawable/danawa" />
+
+
+            </LinearLayout>
+            </HorizontalScrollView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="추천 카테고리"
+                android:textColor="#000000"
+                android:textSize="16dp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/Category_Recycle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="모든 상품"
+                android:textColor="#000000"
+                android:textSize="16dp"
+                android:textStyle="bold" />
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/My_TestRe"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+
+
+        </LinearLayout>
+
+
+
+    </ScrollView>
+
+</LinearLayout>

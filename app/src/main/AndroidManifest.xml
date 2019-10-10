@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.myapplication">
+
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature android:name="android.hardware.camera"
+        android:required="true" />
+
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/icon"
+        android:label="중부시장"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".Main_Activity">
+            <intent-filter >
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".Login_Activity">
+
+        </activity>
+
+        <activity android:name=".Sign_Up_Activity">
+
+        </activity>
+
+        <activity android:name=".Find_Id_Activity">
+
+        </activity>
+
+        <activity android:name=".Find_Pw_Activity">
+
+        </activity>
+
+        <activity android:name=".Category_Activity">
+
+        </activity>
+
+        <activity android:name=".Category_Cpu_Activity">
+
+        </activity>
+
+        <activity android:name=".Mymenu_Activity">
+
+        </activity>
+
+        <activity android:name=".Sell_Activity">
+
+        </activity>
+
+        <activity android:name=".Chat_Activity">
+
+        </activity>
+
+        <activity android:name=".Search_Activity">
+
+        </activity>
+
+        <activity android:name=".My_Menu_Detail_Activity">
+
+        </activity>
+
+        <activity android:name=".My_Item_Activity">
+
+        </activity>
+
+        <activity android:name=".Comments_Activity">
+
+        </activity>
+
+        <activity android:name=".Followers_Activity">
+
+        </activity>
+
+        <activity android:name=".Following_Activity">
+
+        </activity>
+
+        <activity android:name=".Heart_Activity">
+
+        </activity>
+
+        <activity android:name=".allim_Activity">
+
+        </activity>
+
+        <activity android:name=".Keyword_allim_Activity">
+
+        </activity>
+
+        <activity android:name=".Keyword2_allim_Activity">
+
+        </activity>
+
+        <activity android:name=".Keyword_allim_Input_Activity">
+
+        </activity>
+
+        <activity android:name=".Certification_Activity">
+
+        </activity>
+
+        <activity android:name=".Buy_Activity">
+
+        </activity>
+
+        <activity android:name=".Sell_fix_Activity">
+
+        </activity>
+
+        <activity android:name=".Chat_Message_Activity">
+
+        </activity>
+
+
+
+
+    </application>
+
+</manifest>
