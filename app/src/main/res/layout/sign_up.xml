@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="20dp"
     android:weightSum="10"
-    >
+    android:background="#ffffff">
 
     // 회원가입
         <TextView
@@ -59,7 +61,10 @@
             android:layout_width = "match_parent"
             android:layout_height = "wrap_content"
             android:hint = "닉네임 설정"
-            />
+            android:inputType="textPersonName">
+        </com.google.android.material.textfield.TextInputEditText>
+
+
     </com.google.android.material.textfield.TextInputLayout>
 
     // 아이디
@@ -80,6 +85,7 @@
                 android:layout_width = "200dp"
                 android:layout_height = "wrap_content"
                 android:hint = "아이디"
+                android:inputType="textEmailAddress"
                 />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -107,26 +113,50 @@
             android:layout_width = "match_parent"
             android:layout_height = "wrap_content"
             android:hint = "비밀번호"
+            android:inputType="textPassword"
             />
     </com.google.android.material.textfield.TextInputLayout>
+
     // 비밀번호 확인
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            >
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_width = "match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width = "wrap_content"
         android:layout_height = "wrap_content"
         android:layout_marginTop = "15dp"
         >
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/Sign_Up_Pw2"
-            android:layout_width = "match_parent"
+            android:id="@+id/Sign_Up_Pw_Check"
+            android:layout_width = "321dp"
             android:layout_height = "wrap_content"
             android:hint = "비밀번호 확인"
+            android:inputType="textPassword"
+
             />
     </com.google.android.material.textfield.TextInputLayout>
+            <ImageView
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
 
+                android:id="@+id/Password_Check_Img"
+                android:layout_marginTop="30dp"
+                android:layout_marginRight="3dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/password_check"
+                android:scaleType="fitStart"
+                />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     //회원가입 버튼
     <Button
-        android:id="@+id/btn_Sign_up_real"
+        android:id="@+id/Sign_Up_Btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="회원가입"
@@ -134,6 +164,7 @@
         android:textStyle="bold"
         android:textColor="#ffffff"
         android:layout_marginTop="70dp"
+        android:onClick="Sign_Up_Btn"
         />
     </LinearLayout>
 </LinearLayout>
