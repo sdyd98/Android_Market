@@ -22,7 +22,11 @@ import java.util.List;
 
 public class Main_Activity extends AppCompatActivity {
 
+    // 뒤로가기 2번 종료 클래스
     BackPressCloseHandler backPressCloseHandler;
+
+    // 로그인 정보
+    String user_id;
 
     // drawable 파일 string 변환 메소드
     private String getURLForResource(int resId) {
@@ -34,6 +38,7 @@ public class Main_Activity extends AppCompatActivity {
     private RecyclerView recyclerView, Category_recycle;
     private RecyclerView.Adapter mAdapter,cAdapter;
     private RecyclerView.LayoutManager layoutManager, LayoutManager_Category_recycle;
+
     // 넘겨줄 데이터 세팅
     static ArrayList<Item_Profile> test1 = new ArrayList<>();
     static ArrayList<Category_Profile> Category_ArrayList = new ArrayList<>();
@@ -68,8 +73,8 @@ public class Main_Activity extends AppCompatActivity {
 
         backPressCloseHandler = new BackPressCloseHandler(this);
 
-
-
+        // 로그인 아이디 받기
+        user_id = getIntent().getStringExtra("User_ID");
 
         // 카테고리 더미값 추가
         Category_ArrayList.add(CPU);
@@ -92,6 +97,8 @@ public class Main_Activity extends AppCompatActivity {
         Main_Icon_Chat = findViewById(R.id.Main_Icon_Chat);
         Main_My_Menu = findViewById(R.id.Main_My_Menu);
         Main_Category_btn = findViewById(R.id.Main_Category_btn);
+
+
 
 
 

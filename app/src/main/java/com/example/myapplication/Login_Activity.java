@@ -158,6 +158,8 @@ public class Login_Activity extends AppCompatActivity {
             if(User_Db_ArrayList.get(i).getUser_id().equals(User_Id)){
                 if(User_Db_ArrayList.get(i).getUser_pw().equals(User_PW)){
                     Intent intent = new Intent(getApplicationContext(), Main_Activity.class);
+                    // 로그인 아이디 전달
+                    intent.putExtra("User_ID", User_Id);
                     startActivity(intent);
                     Toast.makeText(getApplicationContext(), "로그인 성공!!", Toast.LENGTH_SHORT).show();
                     finish();

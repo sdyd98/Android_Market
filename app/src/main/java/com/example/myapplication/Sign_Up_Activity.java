@@ -186,7 +186,9 @@ public class Sign_Up_Activity extends AppCompatActivity {
             User_setShared("User","Data", User_Db_ArrayList);
             Intent intent = new Intent(getApplicationContext(), Login_Activity.class);
             startActivity(intent);
+            finish();
             Toast.makeText(getApplicationContext(), "회원가입 성공!!", Toast.LENGTH_SHORT).show();
+
         }
     }
 
