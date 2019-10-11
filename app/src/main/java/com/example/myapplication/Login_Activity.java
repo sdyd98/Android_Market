@@ -27,9 +27,8 @@ public class Login_Activity extends AppCompatActivity {
 
     TextInputEditText id, password;
     Button btn_login, btn_sign_up;
+    // 쉐어드 정보를 담을 어레이
     ArrayList<User_DB> User_Db_ArrayList = new ArrayList<>();
-    Sign_Up_Activity sign_up_activity = new Sign_Up_Activity();
-
 
 //    int check_id_num;
 //    boolean check_id_value;
@@ -60,6 +59,7 @@ public class Login_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
+        // 뷰매칭
         id = findViewById(R.id.id);
         password = findViewById(R.id.password);
         btn_login = findViewById(R.id.btn_login);
@@ -120,9 +120,11 @@ public class Login_Activity extends AppCompatActivity {
 //        });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-    public void Login_Btn(View view){
-
+        // 쉐어드 파일이름과 모드 선언
         SharedPreferences sharedPreferences = getSharedPreferences("User",0);
         // key를 통해 벨류값  (get ArrayList 전체 목록) 저장
         String user_db_array = sharedPreferences.getString("Data", "");
@@ -143,15 +145,22 @@ public class Login_Activity extends AppCompatActivity {
             }
         }
 
+    }
+
+    // 로그인 버튼
+    public void Login_Btn(View view){
+
         String User_Id = id.getText().toString();
         String User_PW = password.getText().toString();
 
+        // 어레이 크기만큼 ID PW 중복검사
         for(int i = 0; i < User_Db_ArrayList.size(); i++){
             if(User_Db_ArrayList.get(i).getUser_id().equals(User_Id)){
                 if(User_Db_ArrayList.get(i).getUser_pw().equals(User_PW)){
                     Intent intent = new Intent(getApplicationContext(), Main_Activity.class);
                     startActivity(intent);
                     Toast.makeText(getApplicationContext(), "로그인 성공!!", Toast.LENGTH_SHORT).show();
+                    finish();
                     break;
                 }
                 else{

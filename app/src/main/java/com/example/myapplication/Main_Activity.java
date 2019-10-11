@@ -22,6 +22,8 @@ import java.util.List;
 
 public class Main_Activity extends AppCompatActivity {
 
+    BackPressCloseHandler backPressCloseHandler;
+
     // drawable 파일 string 변환 메소드
     private String getURLForResource(int resId) {
         return Uri.parse("android.resource://" + R.class.getPackage().getName() + "/" + resId).toString();
@@ -63,6 +65,9 @@ public class Main_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        backPressCloseHandler = new BackPressCloseHandler(this);
+
 
 
 
@@ -245,6 +250,11 @@ public class Main_Activity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        backPressCloseHandler.onBackPressed();
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
