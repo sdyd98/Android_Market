@@ -32,6 +32,11 @@ import java.util.List;
 
 public class Buy_Activity extends AppCompatActivity {
 
+    static String User_id_test;
+
+    // 유저 정보를 담을 어레이
+    ArrayList<User_DB> User_Db_ArrayList = new ArrayList<>();
+
     // 상품 어레이 객체 생성
     ArrayList<Item_DB> item_db_array = new ArrayList<>();
 
@@ -46,6 +51,10 @@ public class Buy_Activity extends AppCompatActivity {
 
     // 로그인한 유저
     String User_ID;
+
+
+    // 로그인한 유저 img
+    String User_img;
     // requestcoed
     //final static int Sell_fix_Check = 750;
 
@@ -64,14 +73,20 @@ public class Buy_Activity extends AppCompatActivity {
     //static ArrayList<Buy_My_Item_List> Buy_my_item = new ArrayList<>();
 
 
+
     // 액티비티 생성
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.buy_interface);
 
+
+
         // 아이템 전체 정보 가져옴
         Item_getShared();
+
+        // 유저 전체 정보 가져옴
+        User_getShared();
 
         // 게시물 고유번호로 포지션 확인
         for(int i = 0; i < item_db_array.size(); i++){
@@ -119,11 +134,13 @@ public class Buy_Activity extends AppCompatActivity {
         Comments_RecyclerView.setLayoutManager(LayoutManager_Comments);
 
         // ?
-        CmmAdapter = new CustomAdapter(this , Comments_Array);
+        CmmAdapter = new CustomAdapter( this , item_db_array.get(position).getUser_comments());
+        Comments_RecyclerView.setAdapter(CmmAdapter);
 //     public Buy_My_Item_List(String buy_Item_Name, String buy_Item_Price, String buy_Item_Img, String buy_Item_Detail, String buy_Categori_Name) {
 
         // 게시물 수정/삭제  버튼 보이기 / 안보이기
         User_ID = getIntent().getStringExtra("User_ID");
+        User_id_test = User_ID;
         if(item_db_array.get(position).getItem_writer().equals(User_ID)){
             fix.setVisibility(View.VISIBLE);
             del.setVisibility(View.VISIBLE);
@@ -178,6 +195,7 @@ public class Buy_Activity extends AppCompatActivity {
         });
         My_Sell_Item_Recycle.setAdapter(My_Sell_Item_Adapter);
 
+
        // CmmAdapter = new Comments_Adapter( Comments_Array , new View.OnClickListener(){
        //         @Override
        //         public void onClick(View v) {
@@ -192,14 +210,19 @@ public class Buy_Activity extends AppCompatActivity {
        //             }
        //         }
        //     });
-        //Comments_RecyclerView.setAdapter(CmmAdapter);
+
 
         // 댓글 입력 버튼
         Comments_Btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Comments comments = new Comments(Comments_Detail.getText().toString(),"User",getURLForResource(R.drawable.user_icon));
-                Comments_Array.add(comments);
+                for(int i = 0; i < User_Db_ArrayList.size(); i++){
+                    if(User_Db_ArrayList.get(i).getUser_id().equals(User_ID)){
+                        User_img = User_Db_ArrayList.get(i).getUser_icon_img();
+                    }
+                }
+                User_Comments user_comments = new User_Comments(User_ID,User_img, Comments_Detail.getText().toString());
+                item_db_array.get(position).getUser_comments().add(user_comments);
                 Comments_Detail.setText(null);
                 CmmAdapter.notifyDataSetChanged();
             }
@@ -429,6 +452,29 @@ public class Buy_Activity extends AppCompatActivity {
         Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
         return  decodedBitmap;
     }
+
+    public void User_getShared(){
+        // 쉐어드 파일이름과 모드 선언
+        SharedPreferences sharedPreferences = getSharedPreferences("User",0);
+        // key를 통해 벨류값  (get ArrayList 전체 목록) 저장
+        String user_db_array = sharedPreferences.getString("Data", "");
+
+        // JsonArray를 파싱하여 User_DB형 어레이리스트에 담는과정
+        if(user_db_array !=  null) {
+            try {
+                JSONArray jsonArray_user_db = new JSONArray(user_db_array);
+                for (int i = 0; i < jsonArray_user_db.length(); i++) {
+                    String data = jsonArray_user_db.optString(i);
+                    Log.e("test3", data);
+                    Gson gson = new Gson();
+                    User_DB user_db = gson.fromJson(data, User_DB.class);
+                    User_Db_ArrayList.add(user_db);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
     
     @Override
     public void onResume(){
@@ -454,5 +500,11 @@ public class Buy_Activity extends AppCompatActivity {
         //    }
         //    Buy_my_item.remove(Mymenu_Activity.My_Menu_Position);
         //}
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Item_refreshShared();
     }
 }
