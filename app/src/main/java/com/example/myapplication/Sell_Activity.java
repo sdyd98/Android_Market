@@ -8,10 +8,14 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.provider.ContactsContract.RawContacts;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -33,22 +37,36 @@ import com.google.gson.JsonArray;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+
+import static android.provider.ContactsContract.RawContacts.*;
 
 public class Sell_Activity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
     // 상품 어레이 객체 생성
     ArrayList<Item_DB> item_db_array = new ArrayList<>();
 
-    Main_Activity main_activity = new Main_Activity();
-    String user_id = main_activity.user_id;
+    // 유저 저옵 어레이 객체 생성
+    ArrayList<User_DB> User_Db_ArrayList = new ArrayList<>();
+
+    // 현재 작성자 아이디
+    String user_id;
+    String user_img;
+
+    // test
+    int count;
 
     // requestcode
     private final int GET_GALLERY_IMAGE = 200;
     private final int CAPTURE_IMAGE = 300;
-
-    static Bitmap Camera_Bitmap;
 
     // 선언
     ImageView Sell_Back_Btn, Sell_Image_Btn;
@@ -56,7 +74,7 @@ public class Sell_Activity extends AppCompatActivity implements AdapterView.OnIt
     String Categori_Name;
     EditText Sell_Item_Name, Sell_Item_Price,Sell_Item_Detail;
     LinearLayout Sell_Location_Icon;
-    Uri Image_save;
+    String Image_save;
     Spinner spinner;
     String[] item;
 
@@ -66,7 +84,24 @@ public class Sell_Activity extends AppCompatActivity implements AdapterView.OnIt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sell);
 
+        // 게시글 고유 번호 get
+        Item_Count_getShared();
+
+        // 현재 접속 유저 아이디 인텐트 받은거 저장
+        user_id = getIntent().getStringExtra("User_ID");
+
+        // 아이템 전체 목록 쉐어드 정보 세팅
         Item_getShared();
+
+        // 유저 정보 세팅
+        User_getShared();
+
+        // 유저 아이디와 맞는 이미지 저장
+        for(int i = 0; i < User_Db_ArrayList.size(); i++){
+            if(user_id.equals(User_Db_ArrayList.get(i).getUser_id())){
+                user_img = User_Db_ArrayList.get(i).getUser_icon_img();
+            }
+        }
 
         // 키보드 자동 올리기
         final InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -195,7 +230,8 @@ public class Sell_Activity extends AppCompatActivity implements AdapterView.OnIt
                 // 상품 등록 정보 쉐어드 저장 부분
                 if(bitmap != bitmap2 && !Sell_Item_Name.getText().toString().equals("") && !Categori_Name.equals("카테고리") && !Sell_Item_Price.getText().toString().equals("") && !Sell_Item_Detail.getText().toString().equals("")){
                     Item_setShared();
-                    Toast.makeText(getApplicationContext(), "게시글 등록 완료!", Toast.LENGTH_SHORT).show();
+                    Item_Count_setShared();
+                    Toast.makeText(getApplicationContext(), "게시글 등록 완료! ==== "+count, Toast.LENGTH_SHORT).show();
                     finish();
                 }
                 // 수정 끝
@@ -225,10 +261,14 @@ public class Sell_Activity extends AppCompatActivity implements AdapterView.OnIt
 
     }
 
+    // 사진 가져올 선택 다이얼로그
     public void photoDialogRadio(View v){
-        final CharSequence[] PhotoModels = {"갤러리에서 가져오기", "직접찍오서 가져오기"};
+        // 항목 설정
+        final CharSequence[] PhotoModels = {"갤러리에서 가져오기", "직접찍어서 가져오기"};
+        // 다이얼로그 선언
         AlertDialog.Builder alt_bld = new AlertDialog.Builder(this);
 
+        // 타이틀 설정
         alt_bld.setTitle("사진 가져오기");
         alt_bld.setSingleChoiceItems(PhotoModels, -1, new DialogInterface.OnClickListener() {
 
@@ -254,26 +294,38 @@ public class Sell_Activity extends AppCompatActivity implements AdapterView.OnIt
 
 
 
+    // startActivityForResult 값 받아오기
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
 
+        // 카메라 사진일때
         if(resultCode == RESULT_OK  && requestCode == CAPTURE_IMAGE){
             Bitmap bitmap = (Bitmap) intent.getExtras().get("data");
             if(bitmap != null){
             Sell_Image_Btn.setImageBitmap(bitmap);
-            Camera_Bitmap = bitmap;
-            Image_save = null;
+            Image_save = getBitmap_String(bitmap);
             }
         }
+
+        // 갤러리 사진일때
         else if (requestCode == GET_GALLERY_IMAGE && resultCode == RESULT_OK && intent != null && intent.getData() != null) {
-            Uri selectedImageUri = intent.getData();
-            Image_save = selectedImageUri;
-            Sell_Image_Btn.setImageURI(selectedImageUri);
-            Camera_Bitmap = null;
+
+            try {
+                InputStream in = getContentResolver().openInputStream(intent.getData());
+                Bitmap img = BitmapFactory.decodeStream(in);
+                Image_save = getBitmap_String(img);
+                Sell_Image_Btn.setImageBitmap(img);
+                in.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
 
+    // 구글 맵 암시적 인텐트 (삭제 예정)
     public boolean getPackageList() {
         boolean isExist = false;
 
@@ -337,18 +389,43 @@ public class Sell_Activity extends AppCompatActivity implements AdapterView.OnIt
 //        }
 //    }
 
+    // 아이템 갯수 쉐어드 get
+    public void Item_Count_getShared(){
+        SharedPreferences sharedPreferences = getSharedPreferences("count", 0);
+        count = sharedPreferences.getInt("item_count", 0);
+    }
+
+    // 아이템 갯수 쉐어드 set
+    public void Item_Count_setShared(){
+        SharedPreferences sharedPreferences2 = getSharedPreferences("count", 0);
+        SharedPreferences.Editor editor2 = sharedPreferences2.edit();
+
+        if(count < 0){
+            editor2.putInt("item_count", 1);
+        }
+        else{
+            editor2.putInt("item_count", count+1);
+        }
+
+        editor2.commit();
+    }
+
+
     // 아이템 정보 set 쉐어드
     public void Item_setShared(){
+
         // 쉐어드 이름과 모드 선언
         SharedPreferences sharedPreferences = getSharedPreferences("Item", 0);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         //기존 어레이에 추가후  -> 하나씩 꺼내어 객체 문자화 - > 예비 어레이에 담고 - > 예비 어레이 문자화 - > 쉐어드 저장
-        ArrayList<String> item_db_string_array = new ArrayList<>();
+
         // 아이템 객체 생성
-        Item_DB item_db = new Item_DB(item_db_array.size()+1, user_id, Sell_Item_Price.getText().toString(), Sell_Item_Name.getText().toString(), "0", "0", "0", Sell_Item_Detail.getText().toString(), "0", "0", Image_save.toString());
+        Item_DB item_db = new Item_DB(count, user_id , Sell_Item_Price.getText().toString(), Sell_Item_Name.getText().toString(), time(), 0, 0, Sell_Item_Detail.getText().toString(), 0, 0, Image_save.toString(), user_img, Categori_Name);
         // 기존 아이템 정보 어레이에 데이터 추가
         item_db_array.add(item_db);
+
+        ArrayList<String> item_db_string_array = new ArrayList<>();
 
         //기존 어레이 모든 객체 하나씩 꺼내서 문자화 시킨후 예비 어레이에 추가
         Gson gson = new Gson();
@@ -401,4 +478,60 @@ public class Sell_Activity extends AppCompatActivity implements AdapterView.OnIt
             }
         }
     }
+
+    // 유저 정보 쉐어드 get
+    public void User_getShared(){
+        // 쉐어드 이름과 모드 설정
+        SharedPreferences sharedPreferences = getSharedPreferences("User",0);
+        // key를 통해 벨류값  (get ArrayList 전체 목록) 저장
+        String user_db_array = sharedPreferences.getString("Data", "");
+
+        // JsonArray를 파싱하여 User_DB형 어레이리스트에 담는과정
+        if(user_db_array !=  null) {
+            try {
+                JSONArray jsonArray_user_db = new JSONArray(user_db_array);
+                for (int i = 0; i < jsonArray_user_db.length(); i++) {
+                    String data = jsonArray_user_db.optString(i);
+                    Gson gson = new Gson();
+                    User_DB user_db = gson.fromJson(data, User_DB.class);
+                    User_Db_ArrayList.add(user_db);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // 시간 출력
+    public String time(){
+
+        // 현재시간 가져오기
+        SimpleDateFormat format = new SimpleDateFormat ( "yyyy년 MM월dd일 HH시mm분ss초");
+
+        // 캘린더 객체 time 생성
+        Calendar time = Calendar.getInstance();
+
+        // 포매팅
+        String format_time = format.format(time.getTime());
+
+        // 값 반환
+        return format_time;
+    }
+
+    // 비트맵을 String 변환
+    public String getBitmap_String(Bitmap bitmap)
+    {
+        // 객체 생성
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        // 비트맵 이미지 변환
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+
+        // 바이트 배열에 입력
+        byte[] imageBytes = byteArrayOutputStream.toByteArray();
+
+        // 스트링 값 반환
+        return Base64.encodeToString(imageBytes, Base64.NO_WRAP);
+    }
+
 }

@@ -1,6 +1,9 @@
 package com.example.myapplication;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +16,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
-    private ArrayList<Item_Profile> mDataset;
+
+    // 아이템 정보 객체 어레이를 받는다
+    private ArrayList<Item_DB> mDataset;
+    // 클릭 리스너 선언
     private static View.OnClickListener onClickListener;
 
 
@@ -21,6 +27,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
+    // 뷰홀더 선언
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public TextView TextView_titile;
@@ -43,7 +50,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
     // Provide a suitable constructor (depends on the kind of dataset)
     // 어뎁터 생성 부분
-    public MyAdapter(ArrayList<Item_Profile> myDataset, View.OnClickListener onClick) {
+    public MyAdapter(ArrayList<Item_DB> myDataset, View.OnClickListener onClick) {
         // 들어온 데이터 저장
         mDataset = myDataset;
         onClickListener = onClick;
@@ -67,9 +74,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     public void onBindViewHolder(MyViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.TextView_titile.setText(mDataset.get(position).getItem_Name());
-        holder.TextView_content.setText(mDataset.get(position).getItem_Price()+"원");
-        holder.ImageView_title.setImageURI(Uri.parse(mDataset.get(position).getItem_Img()));
+        // 데이터 추가
+        holder.TextView_titile.setText(mDataset.get(position).getItem_name());
+        holder.TextView_content.setText(mDataset.get(position).getItem_price()+"원");
+
+        //문자열 비트맵으로 변환
+        byte[] decodedByteArray = Base64.decode(mDataset.get(position).getitem_img(), Base64.NO_WRAP);
+        Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
+
+        holder.ImageView_title.setImageBitmap(decodedBitmap);
+        // position 값 획득
         holder.rootView.setTag(position);
     }
 
@@ -79,7 +93,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         return mDataset.size();
     }
 
-    public Item_Profile getData(int position){
+    // 포지션 값 반환
+    public Item_DB getData(int position){
         return mDataset.get(position) != null ? mDataset.get(position) : null;
     }
 }

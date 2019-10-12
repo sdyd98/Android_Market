@@ -1,6 +1,9 @@
 package com.example.myapplication;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class Buy_Adapter extends RecyclerView.Adapter<Buy_Adapter.MyViewHolder> {
-    private ArrayList<Buy_My_Item_List> mDataset;
+    private ArrayList<Item_DB> mDataset;
     private static View.OnClickListener onClickListener;
 
 
@@ -41,7 +44,7 @@ public class Buy_Adapter extends RecyclerView.Adapter<Buy_Adapter.MyViewHolder> 
 
     // Provide a suitable constructor (depends on the kind of dataset)
     // 어뎁터 생성 부분
-    public Buy_Adapter(ArrayList<Buy_My_Item_List> myDataset, View.OnClickListener onClick) {
+    public Buy_Adapter(ArrayList<Item_DB> myDataset, View.OnClickListener onClick) {
         // 들어온 데이터 저장
 
         mDataset = myDataset;
@@ -66,8 +69,13 @@ public class Buy_Adapter extends RecyclerView.Adapter<Buy_Adapter.MyViewHolder> 
     public void onBindViewHolder(MyViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-            holder.ImageView_title.setImageURI(Uri.parse(mDataset.get(position).getBuy_Item_Img()));
-            holder.TextView_Price.setText(mDataset.get(position).getBuy_Item_Price()+"원");
+
+            //문자열 비트맵으로 변환
+            byte[] decodedByteArray = Base64.decode(mDataset.get(position).getitem_img(), Base64.NO_WRAP);
+            Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
+
+            holder.ImageView_title.setImageBitmap(decodedBitmap);
+            holder.TextView_Price.setText(mDataset.get(position).getItem_price()+"원");
 
         holder.rootView.setTag(position);
     }
@@ -78,7 +86,7 @@ public class Buy_Adapter extends RecyclerView.Adapter<Buy_Adapter.MyViewHolder> 
         return mDataset.size();
     }
 
-    public Buy_My_Item_List getData(int position){
+    public Item_DB getData(int position){
         return mDataset.get(position) != null ? mDataset.get(position) : null;
     }
 }

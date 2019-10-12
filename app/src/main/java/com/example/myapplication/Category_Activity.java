@@ -30,8 +30,8 @@ public class Category_Activity extends AppCompatActivity {
         Category_Cpu_Btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Category_Activity.this, Category_Cpu_Activity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(Category_Activity.this, Category_Cpu_Activity.class);
+//                startActivity(intent);
             }
         });
 
