@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -100,7 +101,7 @@ public class Sell_fix_Activity extends AppCompatActivity implements AdapterView.
         Sell_Item_Detail.setText(item_db_array.get(position).getItem_detail());
         Sell_Item_Price.setText(item_db_array.get(position).getItem_price());
         Sell_Item_Name.setText(item_db_array.get(position).getItem_name());
-        Sell_Image_Btn.setImageBitmap(getBitmap());
+        Sell_Image_Btn.setImageURI(Uri.parse(item_db_array.get(position).getitem_img()));
         Categori_Name = item_db_array.get(position).getCategory_name();
 
         // 스피너 ?
@@ -184,7 +185,7 @@ public class Sell_fix_Activity extends AppCompatActivity implements AdapterView.
                     // 기존 박혀있는 Drawable 이미지 가져오기
                     Bitmap bitmap = ((BitmapDrawable)Sell_Image_Btn.getDrawable()).getBitmap();
                     //아이템 이미지
-                    item_db_array.get(position).setItem_img(getBitmap_String(bitmap));
+                    item_db_array.get(position).setItem_img(getImageUri(Sell_fix_Activity.this, bitmap).toString());
                     // 카테고리 이름
                     item_db_array.get(position).setCategory_name(Categori_Name);
                     // 아이템 디테일
@@ -267,16 +268,12 @@ public class Sell_fix_Activity extends AppCompatActivity implements AdapterView.
         if(resultCode == RESULT_OK  && requestCode == CAPTURE_IMAGE){
             Bitmap bitmap = (Bitmap) intent.getExtras().get("data");
             if(bitmap != null){
-            Sell_Image_Btn.setImageBitmap(bitmap);
-            Camera_Bitmap = bitmap;
-            Image_save = null;
+            Sell_Image_Btn.setImageURI(getImageUri(getApplicationContext(),bitmap));
             }
         }
         else if (requestCode == GET_GALLERY_IMAGE && resultCode == RESULT_OK && intent != null && intent.getData() != null) {
             Uri selectedImageUri = intent.getData();
-            Image_save = selectedImageUri;
             Sell_Image_Btn.setImageURI(selectedImageUri);
-            Camera_Bitmap = null;
         }
     }
 
@@ -383,37 +380,18 @@ public class Sell_fix_Activity extends AppCompatActivity implements AdapterView.
         }
     }
 
-    // 비트맵을 String 변환
-    public String getBitmap_String(Bitmap bitmap)
-    {
-        // 객체 생성
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-        // 비트맵 이미지 변환
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-
-        // 바이트 배열에 입력
-        byte[] imageBytes = byteArrayOutputStream.toByteArray();
-
-        // 스트링 값 반환
-        return Base64.encodeToString(imageBytes, Base64.NO_WRAP);
+    // bitmap 이미지 uri 변환
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
     }
 
-    //문자열 비트맵으로 변환
-    public Bitmap getBitmap(){
-        byte[] decodedByteArray = Base64.decode(item_db_array.get(position).getitem_img(), Base64.NO_WRAP);
-        Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
-        return  decodedBitmap;
-    }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        Intent intent = new Intent(getApplicationContext(), Buy_Activity.class);
-        intent.putExtra("Item_Number", getIntent().getIntExtra("Item_Number", 0));
-        intent.putExtra("User_ID", getIntent().getStringExtra("User_ID"));
-        startActivity(intent);
-        overridePendingTransition(0,0);
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     //

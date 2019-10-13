@@ -70,11 +70,7 @@ public class Buy_Adapter extends RecyclerView.Adapter<Buy_Adapter.MyViewHolder> 
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
 
-            //문자열 비트맵으로 변환
-            byte[] decodedByteArray = Base64.decode(mDataset.get(position).getitem_img(), Base64.NO_WRAP);
-            Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
-
-            holder.ImageView_title.setImageBitmap(decodedBitmap);
+            holder.ImageView_title.setImageURI(Uri.parse(mDataset.get(position).getitem_img()));
             holder.TextView_Price.setText(mDataset.get(position).getItem_price()+"원");
 
         holder.rootView.setTag(position);

@@ -39,7 +39,7 @@ public class Main_Activity extends AppCompatActivity {
     String user_id;
 
     //위치 확인 변수
-    static int position_number;
+    //static int position_number;
 
     // 리사이클러뷰 구성 선언
     private RecyclerView recyclerView, Category_recycle;
@@ -59,14 +59,14 @@ public class Main_Activity extends AppCompatActivity {
     Category_Profile COOLER = new Category_Profile("COOLER",getURLForResource(R.drawable.cooler));
 
     // requestcode
-    static final int REQUEST_TEST = 100;
+    // static final int REQUEST_TEST = 100;
     static final int REQUEST_TEST2 = 50;
 
     // ?
     String img;
 
     // ?
-    static boolean Position_Check;
+
 
     // 뷰 선언
     LinearLayout Main_Icon_Search_Btn;
@@ -146,9 +146,7 @@ public class Main_Activity extends AppCompatActivity {
                 Object obj = v.getTag();
                 if(obj != null) {
                     int position = (int)obj;
-                    // ?
-                    Position_Check = true;
-                    // ?
+
                     Intent intent = new Intent(Main_Activity.this, Buy_Activity.class);
                     // 게시물 고유 넘버 인텐트
                     intent.putExtra("Item_Number", ((MyAdapter)mAdapter).getData(position).getItem_number());
@@ -178,15 +176,14 @@ public class Main_Activity extends AppCompatActivity {
         cAdapter = new Category_MyAdapter(Category_ArrayList, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Object obj = v.getTag();
-//                if(obj != null){
-//                    int position = (int)obj;
-//                    ((Category_MyAdapter)cAdapter).getData(position);
-//                    Intent intent = new Intent(Main_Activity.this, Category_Cpu_Activity.class);
-//                    intent.putExtra("Category_Name", ((Category_MyAdapter)cAdapter).getData(position).getItem_Name());
-//                    startActivity(intent);
-//
-//                }
+                Object obj = v.getTag();
+                if(obj != null){
+                    int position = (int)obj;
+                    Intent intent = new Intent(Main_Activity.this, Category_Cpu_Activity.class);
+                    intent.putExtra("Category_Name", ((Category_MyAdapter)cAdapter).getData(position).getItem_Name());
+                    intent.putExtra("User_ID", user_id);
+                    startActivity(intent);
+                }
             }
         });
         Category_recycle.setAdapter(cAdapter);
@@ -228,6 +225,7 @@ public class Main_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Main_Activity.this, My_Item_Activity.class);
+                intent.putExtra("User_ID", user_id);
                 startActivity(intent);
             }
         });
@@ -295,45 +293,7 @@ public class Main_Activity extends AppCompatActivity {
             }
         }
          else {   // RESULT_CANCEL
-    }
-
-         // 판매하기 들어갔을때 상품 가져오기 (삭제 예정)
-        if (requestCode == REQUEST_TEST) {
-            if (resultCode == RESULT_OK) {
-                String Item_Name = data.getStringExtra("Item_Name");
-                String Item_Price = data.getStringExtra("Item_Price");
-                Item_Detail = data.getStringExtra("Item_Detail");
-                Categori_Name =  data.getStringExtra("Item_Categori");
-                String Image_uri = data.getStringExtra("Image_Uri");
-                img = Image_uri;
-
-                Item_Profile a = new Item_Profile(Item_Name,Item_Price,img,Item_Detail,Categori_Name);
-                test1.add(0, a);
-                mAdapter.notifyDataSetChanged();
-
-
-                //Item_Name1.setText(Item_Name);
-                //Item_Price1.setText(Item_Price);
-                //if(Main_Image != null && img != null) {
-                // Uri uri = Uri.parse(Image_uri);
-                //    Main_Image.setImageURI(uri);
-                //}
-
-                // 카메라 비트맵 to string 때문에 막은 부분
-//                if(Sell_Activity.Camera_Bitmap != null) {
-//                    Main_Image.setImageBitmap(Sell_Activity.Camera_Bitmap);
-//                }
-
-                //Main_Image.setVisibility(View.VISIBLE);
-                //Item_Name1.setVisibility(View.VISIBLE);
-                //Item_Price1.setVisibility(View.VISIBLE);
-
-            } else {   // RESULT_CANCEL
-                Toast.makeText(Main_Activity.this, "Failed", Toast.LENGTH_SHORT).show();
-            }
-//        } else if (requestCode == REQUEST_ANOTHER) {
-//            ...
-        }
+      }
     }
 
     // 앱있는지 없는지 판별

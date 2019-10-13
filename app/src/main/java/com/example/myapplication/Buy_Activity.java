@@ -69,7 +69,7 @@ public class Buy_Activity extends AppCompatActivity {
     private RecyclerView.Adapter CmmAdapter, My_Sell_Item_Adapter;
     private RecyclerView.LayoutManager LayoutManager_Comments, My_Sell_Item_LayoutManager;
 
-    static ArrayList<Comments> Comments_Array = new ArrayList<>();
+    //static ArrayList<Comments> Comments_Array = new ArrayList<>();
     //static ArrayList<Buy_My_Item_List> Buy_my_item = new ArrayList<>();
 
 
@@ -133,14 +133,20 @@ public class Buy_Activity extends AppCompatActivity {
         My_Sell_Item_Recycle.setLayoutManager(My_Sell_Item_LayoutManager);
         Comments_RecyclerView.setLayoutManager(LayoutManager_Comments);
 
+        // 게시물 수정/삭제  버튼 보이기 / 안보이기
+        User_ID = getIntent().getStringExtra("User_ID");
+
+        // 현재 접속 유저 아이디
+        User_id_test = User_ID;
+
         // ?
         CmmAdapter = new CustomAdapter( this , item_db_array.get(position).getUser_comments());
         Comments_RecyclerView.setAdapter(CmmAdapter);
 //     public Buy_My_Item_List(String buy_Item_Name, String buy_Item_Price, String buy_Item_Img, String buy_Item_Detail, String buy_Categori_Name) {
 
-        // 게시물 수정/삭제  버튼 보이기 / 안보이기
-        User_ID = getIntent().getStringExtra("User_ID");
-        User_id_test = User_ID;
+
+
+        // 유저 아이디에 따라 수정 삭제 버튼 보이기
         if(item_db_array.get(position).getItem_writer().equals(User_ID)){
             fix.setVisibility(View.VISIBLE);
             del.setVisibility(View.VISIBLE);
@@ -170,7 +176,7 @@ public class Buy_Activity extends AppCompatActivity {
         price1.setText(item_db_array.get(position).getItem_price()+"원");
         itemname.setText(item_db_array.get(position).getItem_name());
         item_text.setText(item_db_array.get(position).getItem_detail());
-        Buy_Image.setImageBitmap(getBitmap());
+        Buy_Image.setImageURI(Uri.parse(item_db_array.get(position).getitem_img()));
         user_name.setText(item_db_array.get(position).getItem_writer());
         //user_icon.setImageURI(Uri.parse(item_db_array.get(position).getSeller_img()));
 
@@ -303,7 +309,6 @@ public class Buy_Activity extends AppCompatActivity {
                 intent.putExtra("Item_Number", item_db_array.get(position).getItem_number());
                 intent.putExtra("User_ID", User_ID);
                 startActivity(intent);
-                finish();
 //                intent.putExtra("Item_Category", categori_name.getText().toString());
 //                intent.putExtra("Item_Price", price1.getText().toString());
 //                intent.putExtra("Item_Name", itemname.getText().toString());
@@ -446,12 +451,12 @@ public class Buy_Activity extends AppCompatActivity {
         editor.commit();
     }
 
-    //문자열 비트맵으로 변환
-    public Bitmap getBitmap(){
-        byte[] decodedByteArray = Base64.decode(item_db_array.get(position).getitem_img(), Base64.NO_WRAP);
-        Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
-        return  decodedBitmap;
-    }
+//    //문자열 비트맵으로 변환
+//    public Bitmap getBitmap(){
+//        byte[] decodedByteArray = Base64.decode(item_db_array.get(position).getitem_img(), Base64.NO_WRAP);
+//        Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
+//        return  decodedBitmap;
+//    }
 
     public void User_getShared(){
         // 쉐어드 파일이름과 모드 선언
@@ -506,5 +511,19 @@ public class Buy_Activity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         Item_refreshShared();
+//            Intent intent = new Intent(getApplicationContext(), Category_Cpu_Activity.class);
+//            intent.putExtra( "Category_Name", getIntent().getStringExtra("Category_Name"));
+//            startActivity(intent);
+        }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        finish();
+        Intent intent = new Intent(getApplicationContext(), Buy_Activity.class);
+        intent.putExtra("Item_Number", getIntent().getIntExtra("Item_Number", 0));
+        intent.putExtra("User_ID", getIntent().getStringExtra("User_ID"));
+        startActivity(intent);
+        overridePendingTransition(0,0);
     }
 }

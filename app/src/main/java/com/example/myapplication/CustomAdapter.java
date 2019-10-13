@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,42 +23,40 @@ import java.util.ArrayList;
 
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomViewHolder> {
 
+    // List 받을곳
     private ArrayList<User_Comments> mList;
     private Context mContext;
 
     public class CustomViewHolder extends RecyclerView.ViewHolder
             implements View.OnCreateContextMenuListener { // 1. 리스너 추가
+        // 뷰 선언
         protected TextView User_id;
         protected TextView User_Comments;
 
 
         public CustomViewHolder(View view) {
+            // 뷰 매칭
             super(view);
             this.User_id = (TextView) view.findViewById(R.id.User_Id);
             this.User_Comments = (TextView) view.findViewById(R.id.User_Comments);
-
-                view.setOnCreateContextMenuListener(this); //2. 리스너 등록
-            if(Buy_Activity.User_id_test.equals(User_id.getText().toString())) {
-                Toast.makeText(mContext, "트루다 트루", Toast.LENGTH_SHORT).show();
-                view.setEnabled(true);
-            }
-            else{
-                Toast.makeText(mContext, "펄스다 펄스 안눌린다", Toast.LENGTH_SHORT).show();
-                view.setEnabled(false);
-            }
-
+            //2. 리스너 등록
+            view.setOnCreateContextMenuListener(this);
         }
 
 
 
+        // 메뉴 만들기
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {  // 3. 메뉴 추가
-
+            String Check = mList.get(getAdapterPosition()).getComment_user_name();
+            Log.e("test1", "작성자 ID ="+Check+"/// 로그인 ID = "+Buy_Activity.User_id_test);
+            // 작성자 , 로그인 유저 판별
+            if(Buy_Activity.User_id_test.equals(Check)) {
                 MenuItem Edit = menu.add(Menu.NONE, 1001, 1, "편집");
                 MenuItem Delete = menu.add(Menu.NONE, 1002, 2, "삭제");
                 Edit.setOnMenuItemClickListener(onEditMenu);
                 Delete.setOnMenuItemClickListener(onEditMenu);
-
+            }
         }
 
 
@@ -67,32 +66,43 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
                 public boolean onMenuItemClick(MenuItem item) {
 
                         switch (item.getItemId()) {
+                            // 편집
                             case 1001:
-
+                                // 다이얼 로그 선언
                                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                                 View view = LayoutInflater.from(mContext)
                                         .inflate(R.layout.edit_box, null, false);
                                 builder.setView(view);
+                                // 완료 버튼
                                 final Button ButtonSubmit = (Button) view.findViewById(R.id.User_Fix_Btn);
+                                // 텍스트 입력
                                 final EditText editTextID = (EditText) view.findViewById(R.id.User_Text_Fix);
-
-
+                                // 댓글 내용 가져옴
                                 editTextID.setText(mList.get(getAdapterPosition()).getComment_user_comments());
 
+                                // 생성
                                 final AlertDialog dialog = builder.create();
+                                // 완료 버튼 누르면
                                 ButtonSubmit.setOnClickListener(new View.OnClickListener() {
                                     public void onClick(View v) {
-                                        String strID = editTextID.getText().toString();
-                                        String strEnglish = mList.get(getAdapterPosition()).getComment_user_comments();
+                                        // 텍스트 내용
+                                        String User_Comments = editTextID.getText().toString();
+                                        // 유저 아이디
+                                        String User_ID = mList.get(getAdapterPosition()).getComment_user_name();
+                                        // 유저 이미지
                                         String Img = Uri.parse("android.resource://" + R.class.getPackage().getName() + "/" + R.drawable.user_icon).toString();
 
 
                                         //Comments comments = new Comments(strID, strEnglish, Img);
-                                        User_Comments user_comments = new User_Comments(strEnglish, Img, strID);
+                                        // 유저 객체 새로 생성
+                                        User_Comments user_comments = new User_Comments(User_ID, Img, User_Comments);
 
+                                        // 정보 변경
                                         mList.set(getAdapterPosition(), user_comments);
+                                        // 새로고침
                                         notifyItemChanged(getAdapterPosition());
 
+                                        // 다이얼로그 삭제
                                         dialog.dismiss();
                                     }
                                 });
@@ -103,10 +113,11 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
 
                             case 1002:
 
+                                // 위치 정보 삭제
                                 mList.remove(getAdapterPosition());
+                                // 포지션 값도 삭제
                                 notifyItemRemoved(getAdapterPosition());
                                 notifyItemRangeChanged(getAdapterPosition(), mList.size());
-                                notifyDataSetChanged();
                                 break;
 
                             }
@@ -145,7 +156,6 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
 
     @Override
     public void onBindViewHolder(@NonNull CustomViewHolder viewholder, int position) {
-
         viewholder.User_id.setText(mList.get(position).getComment_user_name());
         viewholder.User_Comments.setText(mList.get(position).getComment_user_comments());
         //viewholder.User_Img.setText(mList.get(position).getKorean());

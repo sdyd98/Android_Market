@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class My_Item_Adapter extends RecyclerView.Adapter<My_Item_Adapter.MyViewHolder> {
-    private ArrayList<Item_Profile> mDataset;
+    private ArrayList<Item_DB> mDataset;
     private static View.OnClickListener onClickListener;
 
 
@@ -43,7 +43,7 @@ public class My_Item_Adapter extends RecyclerView.Adapter<My_Item_Adapter.MyView
 
     // Provide a suitable constructor (depends on the kind of dataset)
     // 어뎁터 생성 부분
-    public My_Item_Adapter(ArrayList<Item_Profile> myDataset, View.OnClickListener onClick) {
+    public My_Item_Adapter(ArrayList<Item_DB> myDataset, View.OnClickListener onClick) {
         // 들어온 데이터 저장
         mDataset = myDataset;
         onClickListener = onClick;
@@ -67,9 +67,9 @@ public class My_Item_Adapter extends RecyclerView.Adapter<My_Item_Adapter.MyView
     public void onBindViewHolder(MyViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.TextView_titile.setText(mDataset.get(position).getItem_Name());
-        holder.TextView_content.setText(mDataset.get(position).getItem_Price());
-        holder.ImageView_title.setImageURI(Uri.parse(mDataset.get(position).getItem_Img()));
+        holder.TextView_titile.setText(mDataset.get(position).getItem_name());
+        holder.TextView_content.setText(mDataset.get(position).getItem_price());
+        holder.ImageView_title.setImageURI(Uri.parse(mDataset.get(position).getitem_img()));
         holder.rootView.setTag(position);
     }
 
@@ -79,7 +79,7 @@ public class My_Item_Adapter extends RecyclerView.Adapter<My_Item_Adapter.MyView
         return mDataset.size();
     }
 
-    public Item_Profile getData(int position){
+    public Item_DB getData(int position){
         return mDataset.get(position) != null ? mDataset.get(position) : null;
     }
 }

@@ -1,9 +1,6 @@
 package com.example.myapplication;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
+public class Category_Adapter extends RecyclerView.Adapter<Category_Adapter.MyViewHolder> {
 
     // 아이템 정보 객체 어레이를 받는다
     private ArrayList<Item_DB> mDataset;
@@ -50,7 +47,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
     // Provide a suitable constructor (depends on the kind of dataset)
     // 어뎁터 생성 부분
-    public MyAdapter(ArrayList<Item_DB> myDataset, View.OnClickListener onClick) {
+    public Category_Adapter(ArrayList<Item_DB> myDataset, View.OnClickListener onClick) {
         // 들어온 데이터 저장
         mDataset = myDataset;
         onClickListener = onClick;
@@ -59,8 +56,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     // Create new views (invoked by the layout manager)
     // 레이아웃 매칭하는 부분 (레이아웃 전체를 찍어낸다)
     @Override
-    public MyAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
-                                                     int viewType) {
+    public Category_Adapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
+                                                            int viewType) {
         // create a new view
         LinearLayout v = (LinearLayout) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.main_item_view, parent, false);

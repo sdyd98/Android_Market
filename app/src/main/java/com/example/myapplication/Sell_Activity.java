@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.RawContacts;
+import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -302,25 +303,15 @@ public class Sell_Activity extends AppCompatActivity implements AdapterView.OnIt
         if(resultCode == RESULT_OK  && requestCode == CAPTURE_IMAGE){
             Bitmap bitmap = (Bitmap) intent.getExtras().get("data");
             if(bitmap != null){
-            Sell_Image_Btn.setImageBitmap(bitmap);
-            Image_save = getBitmap_String(bitmap);
+            Sell_Image_Btn.setImageURI(getImageUri(getApplicationContext(), bitmap));
+            Image_save = getImageUri(getApplicationContext(), bitmap).toString();
             }
         }
 
         // 갤러리 사진일때
         else if (requestCode == GET_GALLERY_IMAGE && resultCode == RESULT_OK && intent != null && intent.getData() != null) {
-
-            try {
-                InputStream in = getContentResolver().openInputStream(intent.getData());
-                Bitmap img = BitmapFactory.decodeStream(in);
-                Image_save = getBitmap_String(img);
-                Sell_Image_Btn.setImageBitmap(img);
-                in.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+                Image_save = intent.getData().toString();
+                Sell_Image_Btn.setImageURI(intent.getData());
         }
     }
 
@@ -421,7 +412,7 @@ public class Sell_Activity extends AppCompatActivity implements AdapterView.OnIt
         //기존 어레이에 추가후  -> 하나씩 꺼내어 객체 문자화 - > 예비 어레이에 담고 - > 예비 어레이 문자화 - > 쉐어드 저장
 
         // 아이템 객체 생성
-        Item_DB item_db = new Item_DB(count, user_id , Sell_Item_Price.getText().toString(), Sell_Item_Name.getText().toString(), time(), 0, 0, Sell_Item_Detail.getText().toString(), 0, 0, Image_save.toString(), user_img, Categori_Name);
+        Item_DB item_db = new Item_DB(count, user_id , Sell_Item_Price.getText().toString(), Sell_Item_Name.getText().toString(), time(), 0, 0, Sell_Item_Detail.getText().toString(), 0, 0, Image_save, user_img, Categori_Name);
         // 기존 아이템 정보 어레이에 데이터 추가
         item_db_array.add(item_db);
 
@@ -518,20 +509,28 @@ public class Sell_Activity extends AppCompatActivity implements AdapterView.OnIt
         return format_time;
     }
 
-    // 비트맵을 String 변환
-    public String getBitmap_String(Bitmap bitmap)
-    {
-        // 객체 생성
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-        // 비트맵 이미지 변환
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-
-        // 바이트 배열에 입력
-        byte[] imageBytes = byteArrayOutputStream.toByteArray();
-
-        // 스트링 값 반환
-        return Base64.encodeToString(imageBytes, Base64.NO_WRAP);
+    // bitmap 이미지 uri 변환
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
     }
+
+//    // 비트맵을 String 변환
+//    public String getBitmap_String(Bitmap bitmap)
+//    {
+//        // 객체 생성
+//        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//
+//        // 비트맵 이미지 변환
+//        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+//
+//        // 바이트 배열에 입력
+//        byte[] imageBytes = byteArrayOutputStream.toByteArray();
+//
+//        // 스트링 값 반환
+//        return Base64.encodeToString(imageBytes, Base64.NO_WRAP);
+//    }
 
 }

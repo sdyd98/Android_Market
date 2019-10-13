@@ -65,7 +65,6 @@ public class Mymenu_Activity extends AppCompatActivity {
                 if(obj != null) {
                     int position = (int)obj;
                     My_Menu_Position = position;
-                    Main_Activity.Position_Check = false;
                     ((My_Menu_Adapter)My_Menu_Adapter).getData(position);
                     Intent intent = new Intent(Mymenu_Activity.this, Buy_Activity.class);
                     intent.putExtra("Item_Name", ((My_Menu_Adapter)My_Menu_Adapter).getData(position).getItem_Name());
