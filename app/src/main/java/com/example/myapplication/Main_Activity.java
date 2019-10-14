@@ -235,6 +235,7 @@ public class Main_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Main_Activity.this, Search_Activity.class);
+                intent.putExtra("User_ID", user_id);
                 startActivity(intent);
             }
         });
@@ -244,6 +245,7 @@ public class Main_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Main_Activity.this, Mymenu_Activity.class);
+                intent.putExtra("User_ID", user_id);
                 startActivityForResult(intent, REQUEST_TEST2);
             }
         });

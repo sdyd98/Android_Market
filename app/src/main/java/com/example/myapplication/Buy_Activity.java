@@ -80,8 +80,6 @@ public class Buy_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.buy_interface);
 
-
-
         // 아이템 전체 정보 가져옴
         Item_getShared();
 
@@ -94,7 +92,6 @@ public class Buy_Activity extends AppCompatActivity {
                 position = i;
             }
         }
-
 
         // 뷰 매칭
         timetext = findViewById(R.id.timetext);
@@ -144,7 +141,23 @@ public class Buy_Activity extends AppCompatActivity {
         Comments_RecyclerView.setAdapter(CmmAdapter);
 //     public Buy_My_Item_List(String buy_Item_Name, String buy_Item_Price, String buy_Item_Img, String buy_Item_Detail, String buy_Categori_Name) {
 
+        // 최근본 상품 고유 번호 판단
 
+        // 고유번호 어레이 리스트 사이즈 만큼 반복
+        for(int i = 0; i < Mymenu_Activity.My_Menu_Number_Array.size(); i++){
+            // 만약 가지고 있는 고유 번호와 현 게시글 고유번호가 같다면
+            if(Mymenu_Activity.My_Menu_Number_Array.get(i) == getIntent().getIntExtra("Item_Number", 0)){
+                Toast.makeText(getApplicationContext(), "삭제됨", Toast.LENGTH_SHORT).show();
+                // 일치하는 고유 번호 삭제
+                Mymenu_Activity.My_Menu_Number_Array.remove(i);
+            }
+        }
+
+        // 게시글 작성자와 로그인 유저 아이디가 다를때 게시물 저장
+        if(!item_db_array.get(position).getItem_writer().equals(getIntent().getStringExtra("User_ID"))){
+            // 내가 본 게시물 번호 저장
+            Mymenu_Activity.My_Menu_Number_Array.add(getIntent().getIntExtra("Item_Number", 0));
+        }
 
         // 유저 아이디에 따라 수정 삭제 버튼 보이기
         if(item_db_array.get(position).getItem_writer().equals(User_ID)){

@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class My_Menu_Adapter extends RecyclerView.Adapter<My_Menu_Adapter.MyViewHolder> {
-    private ArrayList<Item_DB> mDataset;
+public class Search_Adapter extends RecyclerView.Adapter<Search_Adapter.MyViewHolder> {
+    private ArrayList<String> mDataset;
     private static View.OnClickListener onClickListener;
 
 
@@ -23,14 +23,14 @@ public class My_Menu_Adapter extends RecyclerView.Adapter<My_Menu_Adapter.MyView
     // you provide access to all the views for a data item in a view holder
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public ImageView ImageView_title;
-        public TextView My_Menu_Price;
+        public TextView Search_text_test;
         public View rootView;
+
         public MyViewHolder(View v) {
             super(v);
-            ImageView_title = v.findViewById(R.id.Buy_My_Item_List_Img);
-            My_Menu_Price = v.findViewById(R.id.Buy_My_Item_List_Price);
+            Search_text_test = v.findViewById(R.id.Search_text_test);
             rootView = v;
+
             v.setClickable(true);
             v.setEnabled(true);
             v.setOnClickListener(onClickListener);
@@ -39,8 +39,8 @@ public class My_Menu_Adapter extends RecyclerView.Adapter<My_Menu_Adapter.MyView
 
     // Provide a suitable constructor (depends on the kind of dataset)
     // 어뎁터 생성 부분
-    public My_Menu_Adapter(ArrayList<Item_DB> myDataset, View.OnClickListener onClick) {
-        // 들어온 데이터 저장
+    public Search_Adapter(ArrayList<String> myDataset, View.OnClickListener onClick) {
+        // 들어온 데이터 저장m
         mDataset = myDataset;
         onClickListener = onClick;
     }
@@ -48,14 +48,15 @@ public class My_Menu_Adapter extends RecyclerView.Adapter<My_Menu_Adapter.MyView
     // Create new views (invoked by the layout manager)
     // 레이아웃 매칭하는 부분 (레이아웃 전체를 찍어낸다)
     @Override
-    public My_Menu_Adapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
-                                                           int viewType) {
+    public Search_Adapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
+                                                          int viewType) {
         // create a new view
         LinearLayout v = (LinearLayout) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.buy_my_item_list, parent, false);
+                .inflate(R.layout.search_view, parent, false);
         MyViewHolder vh = new MyViewHolder(v);
         return vh;
     }
+
 
     // Replace the contents of a view (invoked by the layout manager)
     // 어느 뷰에 데이터를 넣을지 설정
@@ -63,8 +64,7 @@ public class My_Menu_Adapter extends RecyclerView.Adapter<My_Menu_Adapter.MyView
     public void onBindViewHolder(MyViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.ImageView_title.setImageURI(Uri.parse(mDataset.get(position).getitem_img()));
-        holder.My_Menu_Price.setText(mDataset.get(position).getItem_price()+"원");
+        holder.Search_text_test.setText(mDataset.get(position));
         holder.rootView.setTag(position);
     }
 
@@ -74,7 +74,7 @@ public class My_Menu_Adapter extends RecyclerView.Adapter<My_Menu_Adapter.MyView
         return mDataset.size();
     }
 
-    public Item_DB getData(int position){
+    public String getData(int position){
         return mDataset.get(position) != null ? mDataset.get(position) : null;
     }
 }

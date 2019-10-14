@@ -121,6 +121,10 @@
 
         </activity>
 
+        <activity android:name=".Search_Result_Activity">
+
+        </activity>
+
 
 
 

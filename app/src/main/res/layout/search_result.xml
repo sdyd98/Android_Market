@@ -37,12 +37,10 @@
             app:layout_constraintTop_toTopOf="@+id/back"
             android:hint="   검색어를 입력해주세요"
             android:textSize="16dp"
-            android:inputType="text"
-            android:imeOptions="actionSearch"
+
             />
 
         <ImageView
-            android:id="@+id/Search_Btn"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:src="@drawable/search4"
@@ -59,10 +57,19 @@
         android:background="#dedede"
         />
 
+    <TextView
+        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="검색 결과"
+        android:textStyle="bold"
+        />
+
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/Search_Recycle"
+        android:id="@+id/Search_Result_Recycle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         />
 
 
