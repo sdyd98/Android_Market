@@ -20,6 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomViewHolder> {
 
@@ -32,6 +34,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
         // 뷰 선언
         protected TextView User_id;
         protected TextView User_Comments;
+        protected CircleImageView User_Img;
 
 
         public CustomViewHolder(View view) {
@@ -39,6 +42,8 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
             super(view);
             this.User_id = (TextView) view.findViewById(R.id.User_Id);
             this.User_Comments = (TextView) view.findViewById(R.id.User_Comments);
+            this.User_Img = view.findViewById(R.id.User_Img);
+
             //2. 리스너 등록
             view.setOnCreateContextMenuListener(this);
         }
@@ -48,8 +53,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
         // 메뉴 만들기
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {  // 3. 메뉴 추가
-            String Check = mList.get(getAdapterPosition()).getComment_user_name();
-            Log.e("test1", "작성자 ID ="+Check+"/// 로그인 ID = "+Buy_Activity.User_id_test);
+            String Check = mList.get(getAdapterPosition()).getComment_user_id();
             // 작성자 , 로그인 유저 판별
             if(Buy_Activity.User_id_test.equals(Check)) {
                 MenuItem Edit = menu.add(Menu.NONE, 1001, 1, "편집");
@@ -87,15 +91,17 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
                                     public void onClick(View v) {
                                         // 텍스트 내용
                                         String User_Comments = editTextID.getText().toString();
-                                        // 유저 아이디
-                                        String User_ID = mList.get(getAdapterPosition()).getComment_user_name();
+                                        // 유저 닉네임
+                                        String User_Name = mList.get(getAdapterPosition()).getComment_user_name();
                                         // 유저 이미지
-                                        String Img = Uri.parse("android.resource://" + R.class.getPackage().getName() + "/" + R.drawable.user_icon).toString();
+                                        String Img = mList.get(getAdapterPosition()).getComment_user_icon();
+                                        // 유저 아이디
+                                        String User_ID = mList.get(getAdapterPosition()).getComment_user_id();
 
 
                                         //Comments comments = new Comments(strID, strEnglish, Img);
                                         // 유저 객체 새로 생성
-                                        User_Comments user_comments = new User_Comments(User_ID, Img, User_Comments);
+                                        User_Comments user_comments = new User_Comments(User_Name, Img, User_Comments, User_ID);
 
                                         // 정보 변경
                                         mList.set(getAdapterPosition(), user_comments);
@@ -156,6 +162,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
 
     @Override
     public void onBindViewHolder(@NonNull CustomViewHolder viewholder, int position) {
+        viewholder.User_Img.setImageURI(Uri.parse(mList.get(position).getComment_user_icon()));
         viewholder.User_id.setText(mList.get(position).getComment_user_name());
         viewholder.User_Comments.setText(mList.get(position).getComment_user_comments());
         //viewholder.User_Img.setText(mList.get(position).getKorean());

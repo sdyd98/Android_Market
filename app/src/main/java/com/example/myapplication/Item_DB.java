@@ -5,6 +5,8 @@ import java.util.ArrayList;
 class Item_DB {
     // 게시글 고유 번호
     int item_number;
+    // 작성자 아이디
+    String item_id;
     // 작성자 이름
     String item_writer;
     // 상품 가격
@@ -21,6 +23,8 @@ class Item_DB {
     String item_detail;
     //게시글 댓글
     ArrayList<User_Comments>  user_comments = new ArrayList<>();
+    //게시글 조회 판단
+    ArrayList<User_See> user_sees = new ArrayList<>();
     //작성자 오픈일
     int item_user_open;
     //작성자 팔로워
@@ -34,7 +38,7 @@ class Item_DB {
     // 판매자 이미지
     String seller_img;
 
-    public Item_DB(int item_number, String item_writer, String item_price, String item_name, String item_create_time, int item_watch, int item_heart, String item_detail, int item_user_open, int item_user_follower, String item_img, String seller_img, String category_name) {
+    public Item_DB(int item_number, String item_writer, String item_price, String item_name, String item_create_time, int item_watch, int item_heart, String item_detail, int item_user_open, int item_user_follower, String item_img, String seller_img, String category_name, String item_id) {
         this.item_number = item_number;
         this.item_writer = item_writer;
         this.item_price = item_price;
@@ -48,6 +52,23 @@ class Item_DB {
         this.item_img = item_img;
         this.seller_img = seller_img;
         this.category_name = category_name;
+        this.item_id = item_id;
+    }
+
+    public ArrayList<User_See> getUser_sees() {
+        return user_sees;
+    }
+
+    public void setUser_sees(ArrayList<User_See> user_sees) {
+        this.user_sees = user_sees;
+    }
+
+    public String getItem_id() {
+        return item_id;
+    }
+
+    public void setItem_id(String item_id) {
+        this.item_id = item_id;
     }
 
     public String getCategory_name() {

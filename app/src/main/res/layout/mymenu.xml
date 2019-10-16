@@ -340,6 +340,7 @@
         android:layout_height="match_parent"
         >
     <Button
+        android:id="@+id/My_Menu_Logout"
         android:layout_gravity="bottom"
         android:textColor="#ffffff"
         android:textSize="20dp"

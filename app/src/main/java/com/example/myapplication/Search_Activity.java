@@ -53,7 +53,7 @@ public class Search_Activity extends AppCompatActivity {
         Item_getShared();
 
         // 뷰 매칭
-        Search_Icon_Back_Btn = findViewById(R.id.back);
+        Search_Icon_Back_Btn = findViewById(R.id.Search_Result_Back);
         Search_text = findViewById(R.id.Search_text);
         Search_Recycle = findViewById(R.id.Search_Recycle);
         Search_Btn = findViewById(R.id.Search_Btn);
@@ -69,6 +69,7 @@ public class Search_Activity extends AppCompatActivity {
 
         // 포커스 주기
         Search_text.requestFocus();
+
         // 키보드 자동 올리기
         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(Search_text, 0);
@@ -168,7 +169,7 @@ public class Search_Activity extends AppCompatActivity {
                             finish();
                         }
                     }
-                });
+                }, Search_text.getText().toString());
                 Search_Recycle.setAdapter(Search_Adapter);
             }
         });

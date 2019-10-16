@@ -78,6 +78,7 @@ public class Sell_Activity extends AppCompatActivity implements AdapterView.OnIt
     String Image_save;
     Spinner spinner;
     String[] item;
+    private int User_Position;
 
 
     @Override
@@ -90,6 +91,12 @@ public class Sell_Activity extends AppCompatActivity implements AdapterView.OnIt
 
         // 현재 접속 유저 아이디 인텐트 받은거 저장
         user_id = getIntent().getStringExtra("User_ID");
+
+        // 유저 포지션 알아 내기
+        for(int i = 0; i < User_Db_ArrayList.size(); i++){
+            User_Db_ArrayList.get(i).getUser_id().equals(user_id);
+            User_Position = i;
+        }
 
         // 아이템 전체 목록 쉐어드 정보 세팅
         Item_getShared();
@@ -412,7 +419,7 @@ public class Sell_Activity extends AppCompatActivity implements AdapterView.OnIt
         //기존 어레이에 추가후  -> 하나씩 꺼내어 객체 문자화 - > 예비 어레이에 담고 - > 예비 어레이 문자화 - > 쉐어드 저장
 
         // 아이템 객체 생성
-        Item_DB item_db = new Item_DB(count, user_id , Sell_Item_Price.getText().toString(), Sell_Item_Name.getText().toString(), time(), 0, 0, Sell_Item_Detail.getText().toString(), 0, 0, Image_save, user_img, Categori_Name);
+        Item_DB item_db = new Item_DB(count, User_Db_ArrayList.get(User_Position).getUser_name() , Sell_Item_Price.getText().toString(), Sell_Item_Name.getText().toString(), time(), 0, 0, Sell_Item_Detail.getText().toString(), 0, 0, Image_save, user_img, Categori_Name, user_id);
         // 기존 아이템 정보 어레이에 데이터 추가
         item_db_array.add(item_db);
 
@@ -497,7 +504,7 @@ public class Sell_Activity extends AppCompatActivity implements AdapterView.OnIt
     public String time(){
 
         // 현재시간 가져오기
-        SimpleDateFormat format = new SimpleDateFormat ( "yyyy년 MM월dd일 HH시mm분ss초");
+        SimpleDateFormat format = new SimpleDateFormat ("yyyyMMddHHmm");
 
         // 캘린더 객체 time 생성
         Calendar time = Calendar.getInstance();

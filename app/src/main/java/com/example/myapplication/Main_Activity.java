@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -32,11 +33,17 @@ public class Main_Activity extends AppCompatActivity {
     // 상품 어레이 객체 생성
     ArrayList<Item_DB> item_db_array = new ArrayList<>();
 
+    // 유저 정보 어레이 객체 생성
+    ArrayList<User_DB> User_Db_ArrayList = new ArrayList<>();
+
     // 뒤로가기 2번 종료 클래스
     BackPressCloseHandler backPressCloseHandler;
 
     // 로그인 정보
     String user_id;
+
+    // 로그 아웃 체크
+    public static Activity activity;
 
     //위치 확인 변수
     //static int position_number;
@@ -62,20 +69,12 @@ public class Main_Activity extends AppCompatActivity {
     // static final int REQUEST_TEST = 100;
     static final int REQUEST_TEST2 = 50;
 
-    // ?
-    String img;
-
-    // ?
-
-
     // 뷰 선언
     LinearLayout Main_Icon_Search_Btn;
     ImageView Icon_Cpu, Main_Icon_Sell,Main_Icon_Chat,Main_My_Menu, Main_My_Item;
     ImageView Main_Category_btn, Main_ad, Main_app;
     TextView Main_User_Name;
-    ImageView Main_Image;
-    String Item_Detail, Categori_Name;
-
+    private int User_position;
 
 
     // 액티비티 생성
@@ -83,6 +82,9 @@ public class Main_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        // 액티비티 넘겨주기 위함
+        activity = Main_Activity.this;
 
         // 뒤로가기 하기 위한 핸들러 선언
         backPressCloseHandler = new BackPressCloseHandler(this);
@@ -285,18 +287,18 @@ public class Main_Activity extends AppCompatActivity {
         backPressCloseHandler.onBackPressed();
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // 이름 변경시 가져오기 (삭제 예정)
-        if( requestCode == REQUEST_TEST2){
-            if(My_Menu_Detail_Activity.User_Name != null){
-                Main_User_Name.setText(My_Menu_Detail_Activity.User_Name);
-            }
-        }
-         else {   // RESULT_CANCEL
-      }
-    }
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        // 이름 변경시 가져오기 (삭제 예정)
+//        if( requestCode == REQUEST_TEST2){
+//            if(My_Menu_Detail_Activity.User_Name != null){
+//                Main_User_Name.setText(My_Menu_Detail_Activity.User_Name);
+//            }
+//        }
+//         else {   // RESULT_CANCEL
+//      }
+//    }
 
     // 앱있는지 없는지 판별
     public boolean getPackageList() {
@@ -347,6 +349,30 @@ public class Main_Activity extends AppCompatActivity {
         }
     }
 
+    // 유저 정보 쉐어드 get
+    public void User_getShared(String Name, String Key, ArrayList<User_DB> User_Db_ArrayList) {
+        // 쉐어드 이름과 모드 설정
+        SharedPreferences sharedPreferences = getSharedPreferences(Name, 0);
+        // key를 통해 벨류값  (get ArrayList 전체 목록) 저장
+        String user_db_array = sharedPreferences.getString(Key, "");
+
+        // JsonArray를 파싱하여 User_DB형 어레이리스트에 담는과정
+        if (user_db_array != null) {
+            try {
+                JSONArray jsonArray_user_db = new JSONArray(user_db_array);
+                for (int i = 0; i < jsonArray_user_db.length(); i++) {
+                    String data = jsonArray_user_db.optString(i);
+                    Gson gson = new Gson();
+                    User_DB user_db = gson.fromJson(data, User_DB.class);
+                    User_Db_ArrayList.add(user_db);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
     // drawable 파일 string 변환 메소드
     private String getURLForResource(int resId) {
         return Uri.parse("android.resource://" + R.class.getPackage().getName() + "/" + resId).toString();
@@ -381,6 +407,23 @@ public class Main_Activity extends AppCompatActivity {
     @Override
     protected  void onResume(){
         super.onResume();
+
+        User_Db_ArrayList.clear();
+
+        // 유저 정보 가져오기
+        User_getShared("User", "Data", User_Db_ArrayList);
+
+        // 유저 정보에서 로그인 할때 아이디와 같은 유저정보 파악
+        for(int i = 0;  i< User_Db_ArrayList.size(); i++){
+            if(User_Db_ArrayList.get(i).getUser_id().equals(user_id)){
+                User_position = i;
+                break;
+            }
+        }
+
+        // 유저 아이디 설정
+        Main_User_Name.setText(User_Db_ArrayList.get(User_position).getUser_name());
+
         // main 화면이 보일때 마다 아이템 쉐어드 정보 가져옴
         item_db_array.clear();
         Item_getShared();

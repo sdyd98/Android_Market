@@ -38,6 +38,7 @@
         android:layout_width="150dp"
         android:layout_height="0dp"
         android:src="@drawable/user_icon_3"
+        android:onClick="photoDialogRadio"
         />
 
 

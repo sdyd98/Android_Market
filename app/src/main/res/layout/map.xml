@@ -16,7 +16,7 @@
         >
         <ImageView
             android:layout_marginTop="30dp"
-            android:id="@+id/back"
+            android:id="@+id/Search_Result_Back"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_width="30dp"
@@ -30,9 +30,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="12dp"
-            app:layout_constraintBottom_toBottomOf="@+id/back"
-            app:layout_constraintLeft_toRightOf="@+id/back"
-            app:layout_constraintTop_toTopOf="@+id/back"
+            app:layout_constraintBottom_toBottomOf="@+id/Search_Result_Back"
+            app:layout_constraintLeft_toRightOf="@+id/Search_Result_Back"
+            app:layout_constraintTop_toTopOf="@+id/Search_Result_Back"
             android:text="거래위치 선택"
             android:textSize="16dp"
             android:textColor="#1f1f1f"

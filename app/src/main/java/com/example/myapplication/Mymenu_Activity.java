@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,6 +29,9 @@ public class Mymenu_Activity extends AppCompatActivity {
     // 상품 어레이 객체 생성
     ArrayList<Item_DB> item_db_array = new ArrayList<>();
 
+    // 유저 정보 어레이 객체 생성
+    ArrayList<User_DB> User_Db_ArrayList = new ArrayList<>();
+
     // 내가 본상품 고유번호
     static ArrayList<Integer> My_Menu_Number_Array = new ArrayList();
 
@@ -45,10 +49,13 @@ public class Mymenu_Activity extends AppCompatActivity {
     ImageView My_Menu_Icon_User;
     TextView My_Menu_Icon_Chat, My_Menu_Icon_Allim, My_Menu_Icon_Keyword_Allim, My_Menu_Icon_Heart, My_Menu_User_Name;
     LinearLayout Item_Layout, Comments_Layout, Heart_Layout, Following_Layout, Followers_Layout;
+    // 로그아웃 버튼 선언
+    Button My_Menu_Logout;
 
     RecyclerView My_Menu_Recycle;
     RecyclerView.Adapter My_Menu_Adapter;
     RecyclerView.LayoutManager My_Menu_LayoutManager;
+    private int User_position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +76,8 @@ public class Mymenu_Activity extends AppCompatActivity {
         My_Menu_Icon_User = findViewById(R.id.My_Menu_Icon_User);
         My_Menu_Icon_Keyword_Allim = findViewById(R.id.My_Menu_Icon_Keyword_Allim);
         My_Menu_Icon_Heart = findViewById(R.id.My_Menu_Icon_Heart);
+        // 로그아웃 버튼 매칭
+        My_Menu_Logout = findViewById(R.id.My_Menu_Logout);
 
         My_Menu_Recycle = findViewById(R.id.My_Menu_Recycle);
         My_Menu_Recycle.setHasFixedSize(true);
@@ -100,15 +109,15 @@ public class Mymenu_Activity extends AppCompatActivity {
         });
         My_Menu_Recycle.setAdapter(My_Menu_Adapter);
 
-        // 이름 설정
-        if(My_Menu_Detail_Activity.User_Name != null){
-            My_Menu_User_Name.setText(My_Menu_Detail_Activity.User_Name);
-        }
-
-        //  이미지 설정
-        if(My_Menu_Detail_Activity.My_Menu_User_Icon != null){
-            My_Menu_Icon_User.setImageURI(Uri.parse(My_Menu_Detail_Activity.My_Menu_User_Icon));
-        }
+//        // 이름 설정
+//        if(My_Menu_Detail_Activity.User_Name != null){
+//            My_Menu_User_Name.setText(My_Menu_Detail_Activity.User_Name);
+//        }
+//
+//        //  이미지 설정
+//        if(My_Menu_Detail_Activity.My_Menu_User_Icon != null){
+//            My_Menu_Icon_User.setImageURI(Uri.parse(My_Menu_Detail_Activity.My_Menu_User_Icon));
+//        }
 
         // 알림 목록 클릭
         My_Menu_Icon_Allim.setOnClickListener(new View.OnClickListener() {
@@ -212,20 +221,35 @@ public class Mymenu_Activity extends AppCompatActivity {
                 finish();
             }
         });
+
+        // 로그아웃 버튼 - > 메인화면으로 전환
+        My_Menu_Logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 현재 화면에서 로그인 화면으로 전환
+                Intent intent = new Intent(getApplicationContext(), Login_Activity.class);
+                startActivity(intent);
+                My_Menu_Array.clear();
+                My_Menu_Number_Array.clear();
+                Main_Activity.activity.finish();
+                Toast.makeText(getApplicationContext(), "로그아웃 되었습니다." , Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-
-        if (requestCode == TEST_DATA) {
-            if(My_Menu_Detail_Activity.User_Name != null){
-                My_Menu_User_Name.setText(My_Menu_Detail_Activity.User_Name);
-            }
-            if(My_Menu_Detail_Activity.My_Menu_User_Icon != null){
-                My_Menu_Icon_User.setImageURI(Uri.parse(My_Menu_Detail_Activity.My_Menu_User_Icon));
-            }
-        }
-    }
+//    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+//        super.onActivityResult(requestCode, resultCode, intent);
+//
+//        if (requestCode == TEST_DATA) {
+//            if(My_Menu_Detail_Activity.User_Name != null){
+//                My_Menu_User_Name.setText(My_Menu_Detail_Activity.User_Name);
+//            }
+//            if(My_Menu_Detail_Activity.My_Menu_User_Icon != null){
+//                My_Menu_Icon_User.setImageURI(Uri.parse(My_Menu_Detail_Activity.My_Menu_User_Icon));
+//            }
+//        }
+//    }
 
     // 아이템 정보 쉐어드 get
     public void Item_getShared(){
@@ -252,10 +276,48 @@ public class Mymenu_Activity extends AppCompatActivity {
         }
     }
 
+    // 유저 정보 쉐어드 get
+    public void User_getShared(String Name, String Key, ArrayList<User_DB> User_Db_ArrayList) {
+        // 쉐어드 이름과 모드 설정
+        SharedPreferences sharedPreferences = getSharedPreferences(Name, 0);
+        // key를 통해 벨류값  (get ArrayList 전체 목록) 저장
+        String user_db_array = sharedPreferences.getString(Key, "");
+
+        // JsonArray를 파싱하여 User_DB형 어레이리스트에 담는과정
+        if (user_db_array != null) {
+            try {
+                JSONArray jsonArray_user_db = new JSONArray(user_db_array);
+                for (int i = 0; i < jsonArray_user_db.length(); i++) {
+                    String data = jsonArray_user_db.optString(i);
+                    Gson gson = new Gson();
+                    User_DB user_db = gson.fromJson(data, User_DB.class);
+                    User_Db_ArrayList.add(user_db);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
 
+        User_Db_ArrayList.clear();
+
+        // 유저 정보 가져오기
+        User_getShared("User", "Data", User_Db_ArrayList);
+
+        // 유저 정보에서 로그인 할때 아이디와 같은 유저정보 파악
+        for(int i = 0;  i< User_Db_ArrayList.size(); i++){
+            if(User_Db_ArrayList.get(i).getUser_id().equals(getIntent().getStringExtra("User_ID"))){
+                User_position = i;
+                break;
+            }
+        }
+
+        My_Menu_User_Name.setText(User_Db_ArrayList.get(User_position).getUser_name());
+        My_Menu_Icon_User.setImageURI(Uri.parse(User_Db_ArrayList.get(User_position).getUser_icon_img()));
 
         My_Menu_Array.clear();
         item_db_array.clear();

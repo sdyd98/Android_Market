@@ -15,8 +15,8 @@
         android:layout_width="150dp"
         android:layout_height="0dp"
         android:layout_gravity="center"
-        android:src="@drawable/market2"
-        android:layout_marginTop="80dp"
+        android:src="@drawable/market3"
+        android:layout_marginTop="70dp"
         />
 
     <TextView
@@ -27,8 +27,10 @@
         android:text="중부시장"
         android:layout_gravity="center"
         android:textColor="#232121"
-        android:textStyle="bold"
-        android:textSize="40dp"
+
+        android:textSize="45dp"
+        android:fontFamily="@font/leesun"
+        android:layout_marginTop="10dp"
         />
 
     <TextView

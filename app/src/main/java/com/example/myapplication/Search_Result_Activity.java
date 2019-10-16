@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -32,17 +33,46 @@ public class Search_Result_Activity extends AppCompatActivity {
     RecyclerView.Adapter Search_Result_Adapter;
     RecyclerView.LayoutManager Search_Result_LayoutManager;
 
+    ImageView Search_Result_Back;
+
+    // 검색창
+    TextView Search_Box;
+    TextView Search_Text_Result;
+
     // 생성
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_result);
 
+        // 전체 아이템 정보 가져오기
+        Item_getShared();
+
+        // 검색어 인텐트 받은걸로 아이템 전체 목록에 존제하는지 판단
+        for (int i = 0; i < item_db_array.size(); i++){
+            if(item_db_array.get(i).getItem_name().contains(getIntent().getStringExtra("Item_Name"))){
+                Search_Result_array.add(item_db_array.get(i));
+            }
+        }
+
+        // 만약 검색 결과가 없으면 검색결과 없음 액티비티로 전환
+        if(Search_Result_array.size() == 0){
+            finish();
+            Intent intent = new Intent(getApplicationContext(), Result_Noting_Activity.class);
+            intent.putExtra("Item_Name", getIntent().getStringExtra("Item_Name"));
+            startActivity(intent);
+        }
+
         // 리사이클러뷰 매칭
         Search_Result_Recycle = findViewById(R.id.Search_Result_Recycle);
         Search_Result_Recycle.setHasFixedSize(true);
         Search_Result_LayoutManager = new GridLayoutManager(getApplicationContext(), 3);
         Search_Result_Recycle.setLayoutManager(Search_Result_LayoutManager);
+
+        // 뷰 매칭
+        Search_Result_Back = findViewById(R.id.Search_Result_Back);
+        Search_Box = findViewById(R.id.Search_Box);
+        Search_Text_Result = findViewById(R.id.Search_Text_Result);
 
         // 검색결과 게시글 추가 어뎁터
         Search_Result_Adapter = new Search_Result_Adapter(Search_Result_array, new View.OnClickListener() {
@@ -66,6 +96,26 @@ public class Search_Result_Activity extends AppCompatActivity {
             }
         });
         Search_Result_Recycle.setAdapter(Search_Result_Adapter);
+
+        // 검색어 기반으로 검색 텍스트 변경
+        Search_Text_Result.setText("'"+getIntent().getStringExtra("Item_Name")+"' 에 대한 검색결과 "+Search_Result_array.size()+"개");
+        // 뒤로가기 버튼
+        Search_Result_Back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        // 검색창 클릭
+        Search_Box.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), Search_Activity.class);
+                finish();
+                startActivity(intent);
+            }
+        });
     }
 
     // 아이템 정보 쉐어드 get
