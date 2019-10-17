@@ -59,6 +59,27 @@ public class Login_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
+        getUser_Shared();
+
+        SharedPreferences sharedPreferences = getSharedPreferences("User",0);
+
+        String auto_login = sharedPreferences.getString("auto", "");
+
+        if(!auto_login.equals("")){
+            for(int i = 0; i < User_Db_ArrayList.size(); i++){
+                if(User_Db_ArrayList.get(i).getUser_id().equals(auto_login)){
+                    if(User_Db_ArrayList.get(i).isAuto_login()){
+                        Toast.makeText(getApplicationContext(), "자동 로그인 되었습니다.", Toast.LENGTH_SHORT).show();
+                        finish();
+                        Intent intent = new Intent(getApplicationContext(), Main_Activity.class);
+                        intent.putExtra("User_ID", auto_login);
+                        startActivity(intent);
+                    }
+                    break;
+                }
+            }
+        }
+
         // 뷰매칭
         id = findViewById(R.id.id);
         password = findViewById(R.id.password);
@@ -120,9 +141,17 @@ public class Login_Activity extends AppCompatActivity {
 //        });
     }
 
+
+
     @Override
     protected void onResume() {
         super.onResume();
+
+        getUser_Shared();
+
+    }
+
+    public void getUser_Shared(){
 
         // 쉐어드 파일이름과 모드 선언
         SharedPreferences sharedPreferences = getSharedPreferences("User",0);
@@ -144,7 +173,40 @@ public class Login_Activity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
 
+    //유저 정보 쉐어드 set
+    // 파일이름 , 키값, 저장할 데이터
+    public void User_setShared(String Name, String Key, ArrayList<User_DB> user_db_array) {
+        // 쉐어드 선언
+        SharedPreferences sharedPreferences = getSharedPreferences(Name, 0);
+        // 쉐어드 저장한다 선언
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        // 예비 어레이리스트 생성
+        // 예비 어레이리스트에 현재 user_db_array 스트링값으로 파싱하여 저장
+        ArrayList<String> setUser_Db_Array = new ArrayList<>();
+        for (int i = 0; i < user_db_array.size(); i++) {
+            Gson gson = new Gson();
+            String user_db = gson.toJson(User_Db_ArrayList.get(i));
+            setUser_Db_Array.add(user_db);
+        }
+
+        // Json 선언
+        JSONArray setJsonArray = new JSONArray();
+
+        // 예비 어레이리스트 값을 JsonArray에 모두 저장
+        for (int i = 0; i < setUser_Db_Array.size(); i++) {
+            setJsonArray.put(setUser_Db_Array.get(i));
+        }
+
+        // 키값에 데이터 저장
+        if (!user_db_array.isEmpty()) {
+            editor.putString(Key, setJsonArray.toString());
+        } else {
+            editor.putString(Key, null);
+        }
+        editor.commit();
     }
 
     // 로그인 버튼
@@ -162,6 +224,13 @@ public class Login_Activity extends AppCompatActivity {
                     intent.putExtra("User_ID", User_Id);
                     startActivity(intent);
                     Toast.makeText(getApplicationContext(), "로그인 성공!!", Toast.LENGTH_SHORT).show();
+                    // 자동로그인 쉐어드
+                    SharedPreferences sharedPreferences = getSharedPreferences("User", 0);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("auto", User_Id);
+                    editor.apply();
+                    User_Db_ArrayList.get(i).setAuto_login(true);
+                    User_setShared("User", "Data", User_Db_ArrayList);
                     finish();
                     break;
                 }

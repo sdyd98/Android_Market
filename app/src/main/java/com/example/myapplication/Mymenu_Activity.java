@@ -207,6 +207,7 @@ public class Mymenu_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Mymenu_Activity.this, My_Menu_Detail_Activity.class);
+                intent.putExtra("User_ID", getIntent().getStringExtra("User_ID"));
                 startActivityForResult(intent, TEST_DATA);
             }
         });
@@ -229,9 +230,11 @@ public class Mymenu_Activity extends AppCompatActivity {
                 // 현재 화면에서 로그인 화면으로 전환
                 Intent intent = new Intent(getApplicationContext(), Login_Activity.class);
                 startActivity(intent);
+                User_Db_ArrayList.get(User_position).setAuto_login(false);
                 My_Menu_Array.clear();
                 My_Menu_Number_Array.clear();
                 Main_Activity.activity.finish();
+                User_setShared("User", "Data", User_Db_ArrayList);
                 Toast.makeText(getApplicationContext(), "로그아웃 되었습니다." , Toast.LENGTH_SHORT).show();
                 finish();
             }
@@ -297,6 +300,40 @@ public class Mymenu_Activity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    //유저 정보 쉐어드 set
+    // 파일이름 , 키값, 저장할 데이터
+    public void User_setShared(String Name, String Key, ArrayList<User_DB> user_db_array) {
+        // 쉐어드 선언
+        SharedPreferences sharedPreferences = getSharedPreferences(Name, 0);
+        // 쉐어드 저장한다 선언
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        // 예비 어레이리스트 생성
+        // 예비 어레이리스트에 현재 user_db_array 스트링값으로 파싱하여 저장
+        ArrayList<String> setUser_Db_Array = new ArrayList<>();
+        for (int i = 0; i < user_db_array.size(); i++) {
+            Gson gson = new Gson();
+            String user_db = gson.toJson(User_Db_ArrayList.get(i));
+            setUser_Db_Array.add(user_db);
+        }
+
+        // Json 선언
+        JSONArray setJsonArray = new JSONArray();
+
+        // 예비 어레이리스트 값을 JsonArray에 모두 저장
+        for (int i = 0; i < setUser_Db_Array.size(); i++) {
+            setJsonArray.put(setUser_Db_Array.get(i));
+        }
+
+        // 키값에 데이터 저장
+        if (!user_db_array.isEmpty()) {
+            editor.putString(Key, setJsonArray.toString());
+        } else {
+            editor.putString(Key, null);
+        }
+        editor.commit();
     }
 
     @Override

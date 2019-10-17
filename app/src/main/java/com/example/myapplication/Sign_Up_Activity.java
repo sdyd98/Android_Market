@@ -29,7 +29,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.ByteArrayOutputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -192,7 +195,22 @@ public class Sign_Up_Activity extends AppCompatActivity {
             // 기존 박혀있는 Drawable 이미지 가져오기
             Bitmap bitmap = ((BitmapDrawable)Sign_up_User_Icon.getDrawable()).getBitmap();
 
-            User_DB user_db = new User_DB(getImageUri(this, bitmap).toString(), Sign_Up_Id.getText().toString(), Sign_Up_Pw.getText().toString(),Sign_Up_Name.getText().toString());
+            //현재시간 Date
+            Date curDate = new Date();
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmm");
+
+            //현재시간을 요청시간의 형태로 format 후 time 가져오기
+            try {
+                curDate = dateFormat.parse(dateFormat.format(curDate));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            // 아이디 생성 날짜 입력
+            String curDateTime = dateFormat.format(curDate.getTime());
+
+            User_DB user_db = new User_DB(getImageUri(this, bitmap).toString(), Sign_Up_Id.getText().toString(), Sign_Up_Pw.getText().toString(),Sign_Up_Name.getText().toString(), curDateTime, false);
             User_Db_ArrayList.add(user_db);
             User_setShared("User", "Data", User_Db_ArrayList);
             Intent intent = new Intent(getApplicationContext(), Login_Activity.class);

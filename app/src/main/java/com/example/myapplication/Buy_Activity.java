@@ -60,7 +60,7 @@ public class Buy_Activity extends AppCompatActivity {
 
     // 뷰 선언
     ImageView Buy_Image, back, user, Buy_Search_Icon, user_icon;
-    TextView price1, itemname, Buy_Call_Icon, item_text, Buy_Location_Icon, user_name, categori_name, timetext, looktext, heart_count;
+    TextView price1, itemname, Buy_Call_Icon, item_text, Buy_Location_Icon, user_name, categori_name, timetext, looktext, heart_count, open_days;
     Button del, fix, Comments_Btn;
     EditText Comments_Detail;
 
@@ -89,6 +89,8 @@ public class Buy_Activity extends AppCompatActivity {
         // 유저 전체 정보 가져옴
         User_getShared();
 
+//        User_Plus();
+
         // 게시물 고유번호로 포지션 확인
         for(int i = 0; i < item_db_array.size(); i++){
             if(item_db_array.get(i).getItem_number() == getIntent().getIntExtra("Item_Number", 0)){
@@ -98,8 +100,9 @@ public class Buy_Activity extends AppCompatActivity {
 
         // 글 작성자 유저 정보 찾기
         for(int i = 0; i < User_Db_ArrayList.size(); i++){
-            if(User_Db_ArrayList.get(i).getUser_id().equals(item_db_array.get(position).getItem_writer())){
+            if(User_Db_ArrayList.get(i).getUser_id().equals(item_db_array.get(position).getItem_id())){
                 User_Writer = i;
+                break;
             }
         }
 
@@ -123,6 +126,7 @@ public class Buy_Activity extends AppCompatActivity {
         user = findViewById(R.id.user);
         Comments_Btn = findViewById(R.id.Comments_Btn);
         Buy_Search_Icon = findViewById(R.id.Buy_Search_Icon);
+        open_days = findViewById(R.id.open_days);
 
         // 리사이클러뷰 매칭
         My_Sell_Item_Recycle = findViewById(R.id.Buy_My_Item_List_Recycle);
@@ -146,7 +150,17 @@ public class Buy_Activity extends AppCompatActivity {
         // 현재 접속 유저 아이디
         User_id_test = User_ID;
 
-        // ?
+        // 댓글 어뎁터 붙이기전 아이디 or 이미지 변경 됐으면 변경해주는 부분
+        for(int i = 0; i < item_db_array.get(position).getUser_comments().size(); i++){
+            for(int j = 0; j < User_Db_ArrayList.size(); j++) {
+                if (item_db_array.get(position).getUser_comments().get(i).getComment_user_id().equals(User_Db_ArrayList.get(j).getUser_id())) {
+                    item_db_array.get(position).getUser_comments().get(i).setComment_user_name(User_Db_ArrayList.get(j).getUser_name());
+                    item_db_array.get(position).getUser_comments().get(i).setComment_user_icon(User_Db_ArrayList.get(j).getUser_icon_img());
+                }
+            }
+        }
+
+        // 댓글 어뎁터 붙이기
         CmmAdapter = new CustomAdapter( this , item_db_array.get(position).getUser_comments());
         Comments_RecyclerView.setAdapter(CmmAdapter);
 //     public Buy_My_Item_List(String buy_Item_Name, String buy_Item_Price, String buy_Item_Img, String buy_Item_Detail, String buy_Categori_Name) {
@@ -163,7 +177,7 @@ public class Buy_Activity extends AppCompatActivity {
         }
 
         // 게시글 작성자와 로그인 유저 아이디가 다를때 게시물 저장
-        if(!item_db_array.get(position).getItem_writer().equals(getIntent().getStringExtra("User_ID"))){
+        if(!item_db_array.get(position).getItem_id().equals(getIntent().getStringExtra("User_ID"))){
             // 내가 본 게시물 번호 저장
             Mymenu_Activity.My_Menu_Number_Array.add(getIntent().getIntExtra("Item_Number", 0));
         }
@@ -188,7 +202,7 @@ public class Buy_Activity extends AppCompatActivity {
 
         // 내 판매목록 갱신
         for(int i = 0; i < item_db_array.size(); i++){
-            if(item_db_array.get(i).getItem_writer().equals(item_db_array.get(position).getItem_writer())){
+            if(item_db_array.get(i).getItem_id().equals(item_db_array.get(position).getItem_id())){
                 if(item_db_array.get(i).getItem_number() == getIntent().getIntExtra("Item_Number", 0)){
 
                 }
@@ -205,29 +219,129 @@ public class Buy_Activity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "에바아아아ㅏ아야아아아ㅏ", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
-        looktext.setText(String.valueOf(item_db_array.get(position).getItem_watch()));
+//        looktext.setText(String.valueOf(item_db_array.get(position).getItem_watch()));
+        looktext.setText(String.valueOf(See_Count()));
         heart_count.setText(String.valueOf(item_db_array.get(position).getItem_heart()));
         categori_name.setText(item_db_array.get(position).getCategory_name());
         price1.setText(item_db_array.get(position).getItem_price()+"원");
         itemname.setText(item_db_array.get(position).getItem_name());
         item_text.setText(item_db_array.get(position).getItem_detail());
         Buy_Image.setImageURI(Uri.parse(item_db_array.get(position).getitem_img()));
-        user_name.setText(item_db_array.get(position).getItem_writer());
+        user_name.setText(User_Db_ArrayList.get(User_Writer).getUser_name());
         user_icon.setImageURI(Uri.parse(User_Db_ArrayList.get(User_Writer).getUser_icon_img()));
+        try {
+            open_days.setText(user_open());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
-        // 유저 조회수 판단 부분
-        for(int i = 0; i < item_db_array.get(position).getUser_sees().size(); i++) {
-            // 만약 유저 조회 판단 어레이에 현재 접속 유저 아이디가 있다면
-            // 저장된 시간과 현재 시간을 대조해 24시간이 넘었는지 판단하고 넘었으면 조회수 추가 그리고 다시 현재시간 저장
-            // 안넘었으면 그냥 넘어감
-            if (item_db_array.get(position).getUser_sees().get(i).getSee_user_id().equals(User_ID)){
 
+        // 유저 게시글 체크 어레이에 사이즈가 0이 아니면 판별 시작
+        if(!item_db_array.get(position).getUser_sees().isEmpty()) {
+            boolean User_create = true;
+            // 유저 조회수 판단 부분
+            for (int i = 0; i < item_db_array.get(position).getUser_sees().size(); i++) {
+                // 만약 유저 조회 판단 어레이에 현재 접속 유저 아이디가 있다면
+                // 저장된 시간과 현재 시간을 대조해 24시간이 넘었는지 판단하고 넘었으면 조회수 추가 그리고 다시 현재시간 저장
+                // 안넘었으면 그냥 넘어감
+                if (item_db_array.get(position).getUser_sees().get(i).getSee_user_id().equals(User_ID)) {
+
+                    // 기존 조회 시간
+                    String reqDateStr =item_db_array.get(position).getUser_sees().get(i).getTime();
+
+                    //현재시간 Date
+                    Date curDate = new Date();
+
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmm");
+
+
+                    //요청시간을 Date로 parsing 후 time가져오기
+                    Date reqDate = null;
+                    try {
+                        reqDate = dateFormat.parse(reqDateStr);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    long reqDateTime = reqDate.getTime();
+
+                    //현재시간을 요청시간의 형태로 format 후 time 가져오기
+                    try {
+                        curDate = dateFormat.parse(dateFormat.format(curDate));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    long curDateTime = curDate.getTime();
+
+                    // 현재시간 - 마지막 조회시간 구하기
+                    long time = (curDateTime- reqDateTime) / (24 * 60 * 60 * 1000);
+
+//                    Toast.makeText(getApplicationContext(), " 시간 차이 = "+time, Toast.LENGTH_SHORT).show();
+
+                    User_create = false;
+
+                    // 24시간이 지났다면 시간 수정후 조회수 +1
+                    if(time > 1){
+                        // 현재 시간으로 set
+                        item_db_array.get(position).getUser_sees().get(i).setTime(dateFormat.format(curDateTime));
+                        // 조회수 + 1
+                        item_db_array.get(position).getUser_sees().get(i).setViews_count(item_db_array.get(position).getUser_sees().get(i).getViews_count()+1);
+                        break;
+                    }
+                    // 아니라면 그냥 지나감
+                    else{
+                        break;
+                    }
+                }
             }
             // 없다면 판단 어레이에 현재 시간과 유저 아이디 조회수 추가
-            else{
-                item_db_array.get(position).getUser_sees().get(i).setSee_user_id(User_ID);
-                break;
+            if(User_create == true) {
+//                Toast.makeText(getApplicationContext(), "새로운 유저 생성", Toast.LENGTH_SHORT).show();
+                //현재시간 Date
+                Date curDate = new Date();
+
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmm");
+
+                //현재시간을 요청시간의 형태로 format 후 time 가져오기
+                try {
+                    curDate = dateFormat.parse(dateFormat.format(curDate));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+//                long curDateTime = curDate.getTime();
+
+                // 현재 시간을 String 화
+                String now_time = dateFormat.format(curDate.getTime());
+
+                // 유저 판별 객체 생성
+                User_See user_see = new User_See(now_time, 1, User_ID);
+
+                // 유저 추가
+                item_db_array.get(position).getUser_sees().add(user_see);
             }
+        }
+        // 유저 어레이가 0 이면 유저 추가
+        else{
+            //현재시간 Date
+            Date curDate = new Date();
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmm");
+
+            //현재시간을 요청시간의 형태로 format 후 time 가져오기
+            try {
+                curDate = dateFormat.parse(dateFormat.format(curDate));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+//                long curDateTime = curDate.getTime();
+
+            // 현재 시간을 String 화
+            String now_time = dateFormat.format(curDate.getTime());
+
+            // 유저 판별 객체 생성
+            User_See user_see = new User_See(now_time, 1, User_ID);
+
+            // 유저 추가
+            item_db_array.get(position).getUser_sees().add(user_see);
         }
 
         // 나의 판매 목록 어뎁터
@@ -526,6 +640,31 @@ public class Buy_Activity extends AppCompatActivity {
         }
     }
 
+    // 오픈일 구하기
+    public String user_open() throws ParseException {
+        // 작성 시간
+        String reqDateStr = User_Db_ArrayList.get(User_Writer).getUser_open();
+
+        //현재시간 Date
+        Date curDate = new Date();
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmm");
+
+        //요청시간을 Date로 parsing 후 time가져오기
+        Date reqDate = dateFormat.parse(reqDateStr);
+        long reqDateTime = reqDate.getTime();
+
+        //현재시간을 요청시간의 형태로 format 후 time 가져오기
+        curDate = dateFormat.parse(dateFormat.format(curDate));
+        long curDateTime = curDate.getTime();
+
+        long realtime = (curDateTime - reqDateTime) / (24 * 60 * 60 * 1000)+1;
+
+        String fixdata = " +"+realtime;
+
+        return fixdata;
+    }
+
     // 게시물 시간 구하기
     public String time() throws ParseException {
 
@@ -595,7 +734,47 @@ public class Buy_Activity extends AppCompatActivity {
 
         return time;
     }
-    
+
+    // 조회수
+    public int See_Count(){
+
+        int count = 0;
+
+        if(!item_db_array.get(position).getUser_sees().isEmpty()) {
+            for (int i = 0; i < item_db_array.get(position).getUser_sees().size(); i++) {
+                count = count + item_db_array.get(position).getUser_sees().get(i).getViews_count();
+            }
+        }
+        else{
+            count = 0;
+        }
+        return count;
+    }
+
+//    public void User_Plus(){
+//        //현재시간 Date
+//        Date curDate = new Date();
+//
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmm");
+//
+//        //현재시간을 요청시간의 형태로 format 후 time 가져오기
+//        try {
+//            curDate = dateFormat.parse(dateFormat.format(curDate));
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+////                long curDateTime = curDate.getTime();
+//
+//        // 현재 시간을 String 화
+//        String now_time = dateFormat.format(curDate.getTime());
+//
+//        // 유저 판별 객체 생성
+//        User_See user_see = new User_See(now_time, 1, User_ID);
+//
+//        // 유저 추가
+//        item_db_array.get(position).getUser_sees().add(user_see);
+//    }
+
     @Override
     public void onResume(){
         super.onResume();
@@ -604,6 +783,7 @@ public class Buy_Activity extends AppCompatActivity {
 
         // 유저 전체 정보 가져옴
         User_getShared();
+
 
         // 판매항목 추가 하는 부분
         // 기존 판매 항복 초기화

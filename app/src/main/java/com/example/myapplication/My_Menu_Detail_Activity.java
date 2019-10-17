@@ -82,6 +82,7 @@ public class My_Menu_Detail_Activity extends AppCompatActivity {
                         String username = name.getText().toString();
                         My_Menu_Detail_User_Name.setText(username);
                         User_Db_ArrayList.get(User_position).setUser_name(username);
+                        User_setShared("User", "Data", User_Db_ArrayList);
 //                        My_Menu_Detail_User_Icon.setImageDrawable();
                     }
                 });

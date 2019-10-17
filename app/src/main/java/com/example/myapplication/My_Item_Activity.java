@@ -122,7 +122,7 @@ public class My_Item_Activity extends AppCompatActivity {
 
         // 내상품 판별
         for(int i = 0; i < item_db_array.size(); i++){
-            if(item_db_array.get(i).getItem_writer().equals(getIntent().getStringExtra("User_ID"))){
+            if(item_db_array.get(i).getItem_id().equals(getIntent().getStringExtra("User_ID"))){
                 my_item_db_array.add(item_db_array.get(i));
             }
         }
