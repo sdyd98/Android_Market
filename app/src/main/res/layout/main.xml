@@ -17,11 +17,11 @@
 
         //카테고리 아이콘
         <ImageView
-            android:id="@+id/Main_Category_btn"
+            android:id="@+id/Main_Allim_btn"
             android:clickable="true"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:src="@drawable/menu"
+            android:src="@drawable/bell"
             />
 
         // 채팅 아이콘
@@ -138,25 +138,66 @@
 
                 <ImageView
                     android:id="@+id/Main_Icon_Sell"
-                    android:clickable="true"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
-                    android:src="@drawable/sell2" />
+                    android:src="@drawable/sell2"
+                    android:background="@drawable/rounding"
+                    />
 
                 <ImageView
                     android:layout_marginLeft="5dp"
-                    android:id="@+id/Main_My_Item"
+                    android:id="@+id/Main_My_Select"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
-
                     android:src="@drawable/heart" />
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/Main_User_Sell_List"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    >
+                <ImageView
+                    android:scaleType="centerCrop"
+                    android:id="@+id/Main_My_Item"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:src="@drawable/user_icon"
+                    android:background="@drawable/rounding"
+                    />
+
+                    <ImageView
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        android:layout_margin="15dp"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:src="@drawable/eyes"
+                        />
+
+                    <TextView
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="115dp"
+                        app:layout_constraintTop_toTopOf="@id/Main_My_Item"
+                        app:layout_constraintLeft_toLeftOf="@id/Main_My_Item"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="#판매중인 상품"
+                        android:textColor="#ffffff"
+                        android:textSize="18dp"
+                        android:textStyle="bold"
+                        />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <ImageView
                     android:layout_marginLeft="5dp"
                     android:id="@+id/Main_ad"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
-
                     android:src="@drawable/ad" />
 
                 <ImageView
@@ -164,7 +205,6 @@
                     android:id="@+id/Main_app"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
-
                     android:src="@drawable/danawa" />
 
 

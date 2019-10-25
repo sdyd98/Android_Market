@@ -19,7 +19,7 @@ public class BackPressCloseHandler {
         { backKeyPressedTime = System.currentTimeMillis(); showGuide(); return; }
 
         if (System.currentTimeMillis() <= backKeyPressedTime + 2000)
-        { activity.finish(); toast.cancel(); }
+        { activity.finish();  toast.cancel(); }
 
     }
 

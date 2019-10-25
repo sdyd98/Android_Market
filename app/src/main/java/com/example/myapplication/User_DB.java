@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import java.util.ArrayList;
+
 class User_DB {
     private String user_icon_img;
     private String user_id;
@@ -7,6 +9,10 @@ class User_DB {
     private String user_name;
     private String user_open;
     private boolean auto_login;
+    private ArrayList<Integer> User_Select = new ArrayList<>();
+    private ArrayList<String> User_Follower = new ArrayList<>();
+    private ArrayList<String> User_Following = new ArrayList<>();
+    private ArrayList<Allim_Db> allim_db = new ArrayList<>();
 
 
     public User_DB(String user_icon_img, String user_id, String user_pw, String user_name, String user_open, boolean auto_login) {
@@ -16,6 +22,38 @@ class User_DB {
         this.user_name = user_name;
         this.user_open = user_open;
         this.auto_login = auto_login;
+    }
+
+    public ArrayList<Allim_Db> getAllim_db() {
+        return allim_db;
+    }
+
+    public void setAllim_db(ArrayList<Allim_Db> allim_db) {
+        this.allim_db = allim_db;
+    }
+
+    public ArrayList<String> getUser_Follower() {
+        return User_Follower;
+    }
+
+    public void setUser_Follower(ArrayList<String> user_Follower) {
+        User_Follower = user_Follower;
+    }
+
+    public ArrayList<String> getUser_Following() {
+        return User_Following;
+    }
+
+    public void setUser_Following(ArrayList<String> user_Following) {
+        User_Following = user_Following;
+    }
+
+    public ArrayList<Integer> getUser_Select() {
+        return User_Select;
+    }
+
+    public void setUser_Select(ArrayList<Integer> user_Select) {
+        User_Select = user_Select;
     }
 
     public boolean isAuto_login() {

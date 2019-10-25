@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -41,7 +40,6 @@ public class My_Menu_Detail_Activity extends AppCompatActivity {
 //    String My_Menu_User_Icon;
     CircleImageView My_Menu_Detail_User_Icon;
     ImageView My_Menu_Detail_Icon_Back;
-    LinearLayout My_Menu_Detail_Icon_Item, My_Menu_Detail_Icon_Comments, My_Menu_Detail_Icon_Heart, My_Menu_Detail_Icon_Following, My_Menu_Detail_Icon_Followers, My_Menu_Detail_Icon_Certification;
     TextView My_Menu_Detail_User_Name;
     private int User_position;
 
@@ -53,13 +51,7 @@ public class My_Menu_Detail_Activity extends AppCompatActivity {
 
         My_Menu_Detail_User_Name = findViewById(R.id.My_Menu_Detail_User_Name);
         My_Menu_Detail_User_Icon = findViewById(R.id.My_Menu_Detail_User_Icon);
-        My_Menu_Detail_Icon_Certification = findViewById(R.id.My_Menu_Detail_Icon_Certification);
-        My_Menu_Detail_Icon_Item = findViewById(R.id.My_Menu_Detail_Icon_Item);
-        My_Menu_Detail_Icon_Comments = findViewById(R.id.My_Menu_Detail_Icon_Comments);
         My_Menu_Detail_Icon_Back = findViewById(R.id.My_Menu_Detail_Icon_Back);
-        My_Menu_Detail_Icon_Heart = findViewById(R.id.My_Menu_Detail_Icon_Heart);
-        My_Menu_Detail_Icon_Following = findViewById(R.id.My_Menu_Detail_Icon_Following);
-        My_Menu_Detail_Icon_Followers = findViewById(R.id.My_Menu_Detail_Icon_Followers);
 
 //        if(User_Name != null){
 //            My_Menu_Detail_User_Name.setText(User_Name);
@@ -68,6 +60,20 @@ public class My_Menu_Detail_Activity extends AppCompatActivity {
 //        if(My_Menu_User_Icon != null){
 //            My_Menu_Detail_User_Icon.setImageURI(Uri.parse(My_Menu_User_Icon));
 //        }
+        User_getShared("User", "Data", User_Db_ArrayList);
+
+
+        // 유저 정보에서 로그인 할때 아이디와 같은 유저정보 파악
+        for(int i = 0;  i< User_Db_ArrayList.size(); i++){
+            if(User_Db_ArrayList.get(i).getUser_id().equals(getIntent().getStringExtra("User_ID"))){
+                User_position = i;
+                break;
+            }
+        }
+
+        My_Menu_Detail_User_Icon.setImageURI(Uri.parse(User_Db_ArrayList.get(User_position).getUser_icon_img()));
+        My_Menu_Detail_User_Name.setText(User_Db_ArrayList.get(User_position).getUser_name());
+
 
         My_Menu_Detail_User_Name.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,55 +110,6 @@ public class My_Menu_Detail_Activity extends AppCompatActivity {
 //                startActivityForResult(intent, My_Menu_GET_GALLERY_IMAGE);
 //            }
 //        });
-
-        My_Menu_Detail_Icon_Item.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(My_Menu_Detail_Activity.this, My_Item_Activity.class);
-                startActivity(intent);
-            }
-        });
-
-        My_Menu_Detail_Icon_Comments.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(My_Menu_Detail_Activity.this, Comments_Activity.class);
-                startActivity(intent);
-            }
-        });
-
-        My_Menu_Detail_Icon_Heart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(My_Menu_Detail_Activity.this, Heart_Activity.class);
-                startActivity(intent);
-            }
-        });
-
-        My_Menu_Detail_Icon_Following.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(My_Menu_Detail_Activity.this, Following_Activity.class);
-                startActivity(intent);
-            }
-        });
-
-        My_Menu_Detail_Icon_Followers.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(My_Menu_Detail_Activity.this, Followers_Activity.class);
-                startActivity(intent);
-            }
-        });
-
-        My_Menu_Detail_Icon_Certification.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(My_Menu_Detail_Activity.this, Certification_Activity.class);
-                startActivity(intent);
-            }
-        });
-
 
         My_Menu_Detail_Icon_Back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -280,27 +237,13 @@ public class My_Menu_Detail_Activity extends AppCompatActivity {
         } else {
             editor.putString(Key, null);
         }
-        editor.commit();
+        editor.apply();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        User_Db_ArrayList.clear();
 
-        // 유저 정보 가져오기
-        User_getShared("User", "Data", User_Db_ArrayList);
-
-        // 유저 정보에서 로그인 할때 아이디와 같은 유저정보 파악
-        for(int i = 0;  i< User_Db_ArrayList.size(); i++){
-            if(User_Db_ArrayList.get(i).getUser_id().equals(getIntent().getStringExtra("User_ID"))){
-                User_position = i;
-                break;
-            }
-        }
-
-        My_Menu_Detail_User_Icon.setImageURI(Uri.parse(User_Db_ArrayList.get(User_position).getUser_icon_img()));
-        My_Menu_Detail_User_Name.setText(User_Db_ArrayList.get(User_position).getUser_name());
     }
 
     @Override

@@ -308,6 +308,7 @@ public class Sell_Activity extends AppCompatActivity implements AdapterView.OnIt
 
         // 카메라 사진일때
         if(resultCode == RESULT_OK  && requestCode == CAPTURE_IMAGE){
+
             Bitmap bitmap = (Bitmap) intent.getExtras().get("data");
             if(bitmap != null){
             Sell_Image_Btn.setImageURI(getImageUri(getApplicationContext(), bitmap));

@@ -10,6 +10,7 @@
         android:required="true" />
 
 
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/icon"
@@ -85,7 +86,7 @@
 
         </activity>
 
-        <activity android:name=".Heart_Activity">
+        <activity android:name=".Select_Activity">
 
         </activity>
 
@@ -117,7 +118,9 @@
 
         </activity>
 
-        <activity android:name=".Chat_Message_Activity">
+        <activity android:name=".Chat_Message_Activity"
+            android:windowSoftInputMode="adjustResize"
+            >
 
         </activity>
 
@@ -126,6 +129,10 @@
         </activity>
 
         <activity android:name=".Result_Noting_Activity">
+
+        </activity>
+
+        <activity android:name=".Profile_Activity">
 
         </activity>
 

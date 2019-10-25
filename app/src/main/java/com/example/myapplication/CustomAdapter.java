@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +30,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
     // List 받을곳
     private ArrayList<User_Comments> mList;
     private Context mContext;
+    private String Login_User_ID;
 
     public class CustomViewHolder extends RecyclerView.ViewHolder
             implements View.OnCreateContextMenuListener { // 1. 리스너 추가
@@ -35,6 +38,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
         protected TextView User_id;
         protected TextView User_Comments;
         protected CircleImageView User_Img;
+        protected LinearLayout Comments_touch;
 
 
         public CustomViewHolder(View view) {
@@ -43,9 +47,10 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
             this.User_id = (TextView) view.findViewById(R.id.User_Id);
             this.User_Comments = (TextView) view.findViewById(R.id.User_Comments);
             this.User_Img = view.findViewById(R.id.User_Img);
+            this.Comments_touch = view.findViewById(R.id.Comments_touch);
 
             //2. 리스너 등록
-            view.setOnCreateContextMenuListener(this);
+            Comments_touch.setOnCreateContextMenuListener(this);
         }
 
 
@@ -138,9 +143,10 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
 //        this.mList = list;
 //    }
 
-    public CustomAdapter(Context context, ArrayList<User_Comments> list) {
+    public CustomAdapter(Context context, ArrayList<User_Comments> list, String login_User_ID) {
         mList = list;
         mContext = context;
+        Login_User_ID = login_User_ID;
     }
 
 
@@ -161,11 +167,22 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
 
 
     @Override
-    public void onBindViewHolder(@NonNull CustomViewHolder viewholder, int position) {
+    public void onBindViewHolder(@NonNull CustomViewHolder viewholder, final int position) {
         viewholder.User_Img.setImageURI(Uri.parse(mList.get(position).getComment_user_icon()));
         viewholder.User_id.setText(mList.get(position).getComment_user_name());
         viewholder.User_Comments.setText(mList.get(position).getComment_user_comments());
         //viewholder.User_Img.setText(mList.get(position).getKorean());
+
+        viewholder.User_Img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), Profile_Activity.class);
+                intent.putExtra("User_ID", Login_User_ID);
+                intent.putExtra("Profile_Id", mList.get(position).getComment_user_id());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                v.getContext().startActivity(intent);
+            }
+        });
     }
 
     @Override

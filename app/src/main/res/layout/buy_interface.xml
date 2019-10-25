@@ -31,6 +31,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_margin="10dp"
                 />
+
             <TextView
                 android:id="@+id/t1"
                 android:layout_width="wrap_content"
@@ -44,36 +45,13 @@
                 android:textColor="#1f1f1f"
                 android:textStyle="bold"
                 />
-
-            <ImageView
-                android:id="@+id/user"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/user_icon2"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@id/Search_Result_Back"
-                app:layout_constraintBottom_toBottomOf="@id/Search_Result_Back"
-                android:layout_marginRight="10dp"
-                />
-
-            <ImageView
-                android:id="@+id/Buy_Search_Icon"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/search3"
-                app:layout_constraintRight_toLeftOf="@id/user"
-                app:layout_constraintTop_toTopOf="@id/Search_Result_Back"
-                app:layout_constraintBottom_toBottomOf="@id/Search_Result_Back"
-                android:layout_marginRight="15dp"
-                />
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/weight_fix"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_weight="8"
         >
@@ -192,13 +170,26 @@
 
                     <CheckBox
                         android:id="@+id/heart"
-                        android:layout_width="wrap_content"
-                        android:layout_height="20dp"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
                         android:layout_marginLeft="30dp"
                         android:enabled="true"
+                        android:background="@drawable/heart_check_box"
+                        android:button="@null"
                         app:layout_constraintBottom_toBottomOf="@id/looktext"
                         app:layout_constraintLeft_toRightOf="@id/looktext"
                         app:layout_constraintTop_toTopOf="@id/looktext" />
+
+                    <ImageView
+                        android:id="@+id/User_heart"
+                        app:layout_constraintTop_toTopOf="@id/heart"
+                        app:layout_constraintRight_toRightOf="@id/heart"
+                        app:layout_constraintLeft_toLeftOf="@id/heart"
+                        app:layout_constraintBottom_toBottomOf="@id/heart"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/heart_icon1"
+                        />
 
                     <TextView
                         android:id="@+id/heart_count"
@@ -369,6 +360,7 @@
                         app:layout_constraintTop_toTopOf="@id/open_days" />
 
                     <TextView
+                        android:id="@+id/User_Follower_Count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="1dp"
@@ -379,11 +371,13 @@
                         app:layout_constraintLeft_toRightOf="@id/follower"
                         app:layout_constraintTop_toTopOf="@id/follower" />
 
-                    <ImageView
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
+                    <CheckBox
+                        android:id="@+id/Following_Check_Box"
+                        android:layout_width="75dp"
+                        android:layout_height="32dp"
                         android:layout_marginRight="15dp"
-                        android:src="@drawable/followe"
+                        android:button="@null"
+                        android:background="@drawable/following_check_box"
                         app:layout_constraintBottom_toBottomOf="@id/user_icon"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="@id/user_icon" />
@@ -461,9 +455,10 @@
                     android:id="@+id/Comments_Detail"
                     android:layout_marginLeft="20dp"
                     android:layout_width="300dp"
-                    android:layout_height="40dp"
+                    android:layout_height="wrap_content"
                     android:background="@null"
                     android:hint="댓글 쓰기"
+                    android:paddingBottom="30dp"
                     />
                     <Button
                         android:id="@+id/Comments_Btn"
@@ -482,6 +477,7 @@
 
 
     <LinearLayout
+        android:id="@+id/User_hide"
         android:layout_width="match_parent"
         android:layout_height="90dp"
         android:background="#ffffff"
@@ -500,12 +496,14 @@
 
             <CheckBox
                 android:id="@+id/heart2"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_marginLeft="15dp"
+                android:background="@drawable/heart_check_box"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
+                android:button="@null"
                 />
 
             <TextView

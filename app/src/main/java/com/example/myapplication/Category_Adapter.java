@@ -14,6 +14,8 @@ import java.util.ArrayList;
 
 public class Category_Adapter extends RecyclerView.Adapter<Category_Adapter.MyViewHolder> {
 
+    // 카테고리 속 어뎁터 임 ....
+
     // 아이템 정보 객체 어레이를 받는다
     private ArrayList<Item_DB> mDataset;
     // 클릭 리스너 선언
@@ -30,12 +32,16 @@ public class Category_Adapter extends RecyclerView.Adapter<Category_Adapter.MyVi
         public TextView TextView_titile;
         public TextView TextView_content;
         public ImageView ImageView_title;
+        public LinearLayout Category_Icon;
+
         public View rootView;
         public MyViewHolder(View v) {
             super(v);
+
             TextView_titile = v.findViewById(R.id.TextView_title);
             TextView_content = v.findViewById(R.id.TextView_content);
             ImageView_title = v.findViewById(R.id.ImageView_title);
+            Category_Icon = v.findViewById(R.id.Category_Icon);
 
             rootView = v;
 

@@ -1,8 +1,11 @@
 package com.example.myapplication;
 
+import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -10,74 +13,63 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class Chat_Inside_Adapter extends RecyclerView.Adapter<Chat_Inside_Adapter.MyViewHolder> {
-    private ArrayList<Chat_Inside_User_Data> mDataset;
-    private static View.OnClickListener onClickListener;
+import de.hdodenhof.circleimageview.CircleImageView;
 
+public class Chat_Inside_Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private final String Login_User_Id;
+    // 채팅 유저 데이터 어레이
+    private ArrayList<Chat_Inside_User_Data> mDataset = null;
 
-    // Provide a reference to the views for each data item
-    // Complex data items may need more than one view per item, and
-    // you provide access to all the views for a data item in a view holder
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
-        public TextView Chat_Inside_User_Message;
-        public TextView Chat_Inside_Another_Message;
-        public TextView Chat_Inside_User_id;
-        public View rootView;
-
-        public MyViewHolder(View v) {
-            super(v);
-            Chat_Inside_User_Message = v.findViewById(R.id.Chat_Inside_Me_Message);
-            Chat_Inside_Another_Message = v.findViewById(R.id.Chat_Another_Message);
-            Chat_Inside_User_id = v.findViewById(R.id.Chat_Inside_User_Id);
-            rootView = v;
-            v.setClickable(true);
-            v.setEnabled(true);
-            v.setOnClickListener(onClickListener);
-        }
+    Chat_Inside_Adapter(ArrayList<Chat_Inside_User_Data> dataList, String Login_User_Id)
+    {
+        this.Login_User_Id = Login_User_Id;
+        mDataset = dataList;
     }
 
-
-    // Provide a suitable constructor (depends on the kind of dataset)
-    // 어뎁터 생성 부분
-    public Chat_Inside_Adapter(ArrayList<Chat_Inside_User_Data> myDataset, View.OnClickListener onClick) {
-        // 들어온 데이터 저장
-        mDataset = myDataset;
-        onClickListener = onClick;
-    }
-
-    // Create new views (invoked by the layout manager)
     // 레이아웃 매칭하는 부분 (레이아웃 전체를 찍어낸다)
     @Override
-    public Chat_Inside_Adapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
-                                                               int viewType) {
-        // create a new view
-            LinearLayout v = (LinearLayout) LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.chat_inside_another, parent, false);
-            MyViewHolder vh = new MyViewHolder(v);
-            return vh;
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        // 뷰 선언
+        View view;
+
+        // context 생성
+        Context context = parent.getContext();
+
+        // 일플레이터 생성
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        // 뷰 타입에 따라서 달라짐
+
+        // 로그인한 유저와 viewType이 같다면
+        if(viewType == 1){
+            view = inflater.inflate(R.layout.chat_inside_me, parent, false);
+            return new RightViewHolder(view);
         }
+
+        else{
+            view = inflater.inflate(R.layout.chat_inside_another, parent, false);
+            return new LeftViewHolder(view);
+        }
+    }
+
     // Replace the contents of a view (invoked by the layout manager)
     // 어느 뷰에 데이터를 넣을지 설정
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.Chat_Inside_Another_Message.setText(mDataset.get(position).getChat_Inside_User_Message());
 
-        if(Chat_Activity.User_Check == true) {
-            holder.Chat_Inside_User_id.setText("나");
-            holder.Chat_Inside_User_id.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
-            holder.Chat_Inside_Another_Message.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
+        if(viewHolder instanceof LeftViewHolder){
+            ((LeftViewHolder) viewHolder).image.setImageURI(Uri.parse(mDataset.get(position).getChat_Inside_User_Img()));
+            ((LeftViewHolder) viewHolder).content.setText(mDataset.get(position).getChat_Inside_User_Message());
+            ((LeftViewHolder) viewHolder).name.setText(mDataset.get(position).getChat_Inside_User_Id());
         }
         else{
-            holder.Chat_Inside_User_id.setText("상대방");
-            holder.Chat_Inside_User_id.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-            holder.Chat_Inside_Another_Message.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-//            holder.Chat_Inside_Another_Message.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+            ((RightViewHolder) viewHolder).content.setText(mDataset.get(position).getChat_Inside_User_Message());
         }
-        holder.rootView.setTag(position);
+
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -86,12 +78,41 @@ public class Chat_Inside_Adapter extends RecyclerView.Adapter<Chat_Inside_Adapte
         return mDataset.size();
     }
 
-    public Chat_Inside_User_Data getData(int position){
-        return mDataset.get(position) != null ? mDataset.get(position) : null;
+    // 여기서 반환 하는 타입에 따라서 if문 달라짐
+    @Override
+    public int getItemViewType(int position) {
+        int check = 0;
+        if(mDataset.get(position).getChat_Inside_User_Id().equals(Login_User_Id)){
+            check = 1;
+        }
+        return check;
     }
 
-    public void addChat(Chat_Inside_User_Data chat_inside_user_data ) {
-        mDataset.add(chat_inside_user_data);
-        notifyItemInserted(mDataset.size()-1);
+    public class LeftViewHolder extends RecyclerView.ViewHolder{
+        TextView content;
+        TextView name;
+        CircleImageView image;
+
+        LeftViewHolder(View itemView)
+        {
+            super(itemView);
+
+            name = itemView.findViewById(R.id.Another_Name);
+            content = itemView.findViewById(R.id.Chat_Inside_Another_Message);
+            image = itemView.findViewById(R.id.Chat_Inside_Another_Icon);
+        }
+    }
+
+    public class RightViewHolder extends RecyclerView.ViewHolder{
+        TextView content;
+        TextView name;
+        CircleImageView image;
+
+        RightViewHolder(View itemView)
+        {
+            super(itemView);
+
+            content = itemView.findViewById(R.id.Chat_Inside_Me_Message);
+        }
     }
 }

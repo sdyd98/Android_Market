@@ -23,13 +23,15 @@
 
         <TextView
             android:id="@+id/Buy_My_Item_List_Price"
-            android:layout_width="wrap_content"
+            android:gravity="center"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="가격"
             app:layout_constraintLeft_toLeftOf="@id/Buy_My_Item_List_Img"
             app:layout_constraintRight_toRightOf="@id/Buy_My_Item_List_Img"
             app:layout_constraintBottom_toBottomOf="@id/Buy_My_Item_List_Img"
             android:textColor="#ffffff"
+            android:background="#40000000"
             android:textStyle="bold"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>

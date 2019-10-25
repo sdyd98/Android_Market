@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="e005e222-470c-4629-9204-d3b70eef8491" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../../../../libs/snakeyaml-1.25-android.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../java/com/example/myapplication/Allim_Db.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../java/com/example/myapplication/Chat_List.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../java/com/example/myapplication/Code.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../java/com/example/myapplication/Follower_Adapter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../java/com/example/myapplication/Following_Adapter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../java/com/example/myapplication/Profile_Activity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../java/com/example/myapplication/Profile_Adapter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../java/com/example/myapplication/Select_Adapter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../java/com/example/myapplication/User_Select.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bell_call.PNG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/chat_call.PNG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/chat_text.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/chat_text2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/eyes.PNG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/following.PNG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/following_check_box.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/heart_check_box.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/heart_icon1.PNG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/heart_icon1_null.PNG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/nomal_rounding.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/rounding.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../layout/follwer_view.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../layout/profile.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../layout/select_view.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../../../lib/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../../../lib/build.gradle" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../../../lib/src/main/java/com/example/lib/MyClass.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/myapplication/BackPressCloseHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/myapplication/BackPressCloseHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/myapplication/Buy_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/myapplication/Buy_Activity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/myapplication/Category_Adapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/myapplication/Category_Adapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/myapplication/Category_MyAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/myapplication/Category_MyAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/myapplication/Chat_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/myapplication/Chat_Activity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/myapplication/Chat_Adapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/myapplication/Chat_Adapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/myapplication/Chat_Inside_Adapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/myapplication/Chat_Inside_Adapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/myapplication/Chat_Inside_User_Data.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/myapplication/Chat_Inside_User_Data.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/myapplication/Chat_Message_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/myapplication/Chat_Message_Activity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/myapplication/CustomAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/myapplication/CustomAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/myapplication/Followers_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/myapplication/Followers_Activity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/myapplication/Following_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/myapplication/Following_Activity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/myapplication/Heart_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/myapplication/Select_Activity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/myapplication/Item_DB.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/myapplication/Item_DB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/myapplication/Login_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/myapplication/Login_Activity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/myapplication/Main_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/myapplication/Main_Activity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/myapplication/My_Menu_Detail_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/myapplication/My_Menu_Detail_Activity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/myapplication/Mymenu_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/myapplication/Mymenu_Activity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/myapplication/Sell_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/myapplication/Sell_Activity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/myapplication/Sign_Up_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/myapplication/Sign_Up_Activity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/myapplication/User_DB.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/myapplication/User_DB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/myapplication/allim_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/myapplication/allim_Activity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/myapplication/allim_Adapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/myapplication/allim_Adapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bell.png" beforeDir="false" afterPath="$PROJECT_DIR$/bell.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/allim.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/allim.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/allim_veiw.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/allim_veiw.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/buy_interface.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/buy_interface.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/buy_my_item_list.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/buy_my_item_list.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/categori_icon.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/categori_icon.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/chat_inside.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/chat_inside.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/chat_inside_another.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/chat_inside_another.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/chat_inside_me.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/chat_inside_me.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/chat_item_view.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/chat_item_view.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/comments_view.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/comments_view.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/main.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/my_follower.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/my_follower.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/my_following.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/my_following.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/my_selet.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/my_selet.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/mymenu.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/mymenu.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/myprofile.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/myprofile.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/sell_fix.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/sell_fix.xml" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../../../.." />
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="1361" />
+    <option name="y" value="302" />
+    <option name="width" value="1936" />
+    <option name="height" value="1056" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="drawable" type="b2602c69:ProjectViewProjectNode" />
+              <item name="drawable" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../../../MyApplication3" />
+    <property name="settings.editor.selected.configurable" value="AndroidSdkUpdater" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e005e222-470c-4629-9204-d3b70eef8491" name="Default Changelist" comment="" />
+      <created>1571590197787</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1571590197787</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="1361" y="302" width="1936" height="1056" extended-state="0" />
+    <layout>
+      <window_info id="Captures" order="0" weight="0.25" />
+      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.32998413" />
+      <window_info id="Structure" order="2" side_tool="true" />
+      <window_info id="Image Layers" order="3" />
+      <window_info id="Designer" order="4" />
+      <window_info id="Resources Explorer" order="5" />
+      <window_info id="Capture Tool" order="6" />
+      <window_info id="Favorites" order="7" side_tool="true" />
+      <window_info anchor="bottom" id="Version Control" order="0" />
+      <window_info anchor="bottom" id="TODO" order="1" />
+      <window_info anchor="bottom" id="Terminal" order="2" />
+      <window_info anchor="bottom" id="Event Log" order="3" side_tool="true" />
+      <window_info anchor="right" id="Capture Analysis" order="0" />
+      <window_info anchor="right" id="Theme Preview" order="1" />
+      <window_info anchor="right" id="Palette&#9;" order="2" />
+    </layout>
+  </component>
+</project>

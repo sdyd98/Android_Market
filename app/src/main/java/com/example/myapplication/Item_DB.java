@@ -25,6 +25,8 @@ class Item_DB {
     ArrayList<User_Comments>  user_comments = new ArrayList<>();
     //게시글 조회 판단
     ArrayList<User_See> user_sees = new ArrayList<>();
+    //게시글 찜 유저 목록
+    ArrayList<User_Select> user_selects = new ArrayList<>();
     //작성자 오픈일
     int item_user_open;
     //작성자 팔로워
@@ -53,6 +55,14 @@ class Item_DB {
         this.seller_img = seller_img;
         this.category_name = category_name;
         this.item_id = item_id;
+    }
+
+    public ArrayList<User_Select> getUser_selects() {
+        return user_selects;
+    }
+
+    public void setUser_selects(ArrayList<User_Select> user_selects) {
+        this.user_selects = user_selects;
     }
 
     public ArrayList<User_See> getUser_sees() {

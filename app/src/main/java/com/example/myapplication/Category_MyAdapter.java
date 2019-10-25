@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -26,19 +28,25 @@ public class Category_MyAdapter extends RecyclerView.Adapter<Category_MyAdapter.
         // each data item is just a string in this case
         public TextView Category_titile;
         public ImageView Category_img;
-        public View rootView2;
+        public LinearLayout Category_Icon;
+        public ConstraintLayout Tlqkf2;
+        public View rootView;
+
 
         // 아이템뷰 뷰 매칭
         public MyViewHolder(View v) {
             super(v);
-            Category_titile = v.findViewById(R.id.Text_Cpu);;
-            Category_img = v.findViewById(R.id.Icon_Cpu);
 
-            rootView2 = v;
+            Category_img = v.findViewById(R.id.Icon_Cpu);
+            Category_titile = v.findViewById(R.id.Text_Cpu);
+            Category_Icon = v.findViewById(R.id.Category_Icon);
+
+            rootView = v;
 
             v.setClickable(true);
             v.setEnabled(true);
             v.setOnClickListener(onClickListener);
+
         }
     }
 
@@ -65,12 +73,12 @@ public class Category_MyAdapter extends RecyclerView.Adapter<Category_MyAdapter.
     // Replace the contents of a view (invoked by the layout manager)
     // 어느 뷰에 데이터를 넣을지 설정
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         holder.Category_titile.setText(mDataset.get(position).getItem_Name());
         holder.Category_img.setImageURI(Uri.parse(mDataset.get(position).getItem_Img()));
-        holder.rootView2.setTag(position);
+        holder.rootView.setTag(position);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
