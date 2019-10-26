@@ -9,12 +9,18 @@ import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -29,6 +35,8 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import static android.R.*;
 
 public class Main_Activity extends AppCompatActivity {
 
@@ -47,6 +55,12 @@ public class Main_Activity extends AppCompatActivity {
     // 유저의 채팅방 데이터
     ArrayList<Chat_List> Chat_User_List = new ArrayList<>();
 
+    // 검색어 저장 어레이 생성
+    ArrayList<Search_Text_DB> Search_Text_Save_Array = new ArrayList<>();
+
+    // 검색어 랭킹 어레이 생성
+    ArrayList<String> Rank_Search_Text = new ArrayList<>();
+
     // 뒤로가기 2번 종료 클래스
     BackPressCloseHandler backPressCloseHandler;
 
@@ -59,13 +73,19 @@ public class Main_Activity extends AppCompatActivity {
     // 로그 아웃 체크
     public static Activity Main_activity;
 
+    // 실시간 검색어 포지션 초기값
+    int test = -1;
+
+    // 뷰 플리퍼
+    ViewFlipper viewFlipper;
+
     //위치 확인 변수
     //static int position_number;
 
     // 리사이클러뷰 구성 선언
-    private RecyclerView recyclerView, Category_recycle;
-    private RecyclerView.Adapter mAdapter,cAdapter;
-    private RecyclerView.LayoutManager layoutManager, LayoutManager_Category_recycle;
+    private RecyclerView recyclerView, Category_recycle, Rank_Recycle;
+    private RecyclerView.Adapter mAdapter,cAdapter,rAdapter;
+    private RecyclerView.LayoutManager layoutManager, LayoutManager_Category_recycle, Rank_Layout_Manager;
 
     // 넘겨줄 데이터 셋팅
 //    static ArrayList<Item_Profile> test1 = new ArrayList<>();
@@ -88,8 +108,8 @@ public class Main_Activity extends AppCompatActivity {
     LinearLayout Main_Icon_Search_Btn;
     ConstraintLayout Main_User_Sell_List;
     ImageView Icon_Cpu, Main_Icon_Sell,Main_Icon_Chat,Main_My_Menu, Main_My_Item;
-    ImageView Main_Allim_btn, Main_ad, Main_app, Main_My_Select;
-    TextView Main_User_Name;
+    ImageView Main_Allim_btn, Main_ad, Main_app, Main_My_Select, Main_Real_Time_Menu, Main_Real_Time;
+    TextView Main_User_Name, Main_Real_Time_Number, Main_Real_Time_Text, Real_Time_Text_2;
 
     // 액티비티 생성
     @Override
@@ -97,17 +117,29 @@ public class Main_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        Count count = new Count();
+
+        count.start();
+
         // 유저 정보 가져오기
         User_getShared();
 
         // 아이템 쉐어드 불러옴
         Item_getShared();
 
+        // 검색결과 쉐어드 불러옴
+        getSearch_Text_Save();
+
+        // 검색 쉐어드 가지고 랭킹 매기기
+        Rank_Search_Text();
+
+        Log.e("True_Check", Rank_Search_Text.toString());
+
         // 뷰 매칭
         Main_User_Name = findViewById(R.id.Main_User_Name);
         Main_app = findViewById(R.id.Main_app);
         Main_ad = findViewById(R.id.Main_ad);
-        Main_My_Item = findViewById(R.id.Main_My_Item);
+        //Main_My_Item = findViewById(R.id.Main_My_Item);
         Main_Icon_Search_Btn = findViewById(R.id.Main_Icon_Search_Btn);
         Icon_Cpu = findViewById(R.id.Icon_Cpu);
         Main_Icon_Sell = findViewById(R.id.Main_Icon_Sell);
@@ -116,24 +148,34 @@ public class Main_Activity extends AppCompatActivity {
         Main_Allim_btn = findViewById(R.id.Main_Allim_btn);
         Main_My_Select = findViewById(R.id.Main_My_Select);
         Main_User_Sell_List = findViewById(R.id.Main_User_Sell_List);
+        Main_Real_Time_Menu = findViewById(R.id.Main_Real_Time_Menu);
+        Main_Real_Time = findViewById(R.id.Main_Real_Time);
+        Main_Real_Time_Number = findViewById(R.id.Main_Real_Time_Number);
+        Main_Real_Time_Text = findViewById(R.id.Main_Real_Time_Text);
+        Real_Time_Text_2 = findViewById(R.id.Real_Time_Text_2);
+        viewFlipper = findViewById(R.id.Main_My_Item);
 
         // 리사이클러뷰 매칭
         recyclerView =  findViewById(R.id.My_TestRe);
         Category_recycle = findViewById(R.id.Category_Recycle);
+        Rank_Recycle = findViewById(R.id.Rank_Recycle);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         // ??
         recyclerView.setHasFixedSize(true);
         Category_recycle.setHasFixedSize(true);
+        Rank_Recycle.setHasFixedSize(true);
 
         // 레이아웃 매니저 출력방식 설정
         // use a linear layout manager
         layoutManager = new GridLayoutManager(getApplicationContext(), 3);
         LayoutManager_Category_recycle = new LinearLayoutManager(Main_Activity.this, LinearLayoutManager.HORIZONTAL, false);
+        Rank_Layout_Manager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
 
         Category_recycle.setLayoutManager(LayoutManager_Category_recycle);
         recyclerView.setLayoutManager(layoutManager);
+        Rank_Recycle.setLayoutManager(Rank_Layout_Manager);
 
         // 로그인 아이디 받기
         Login_User_Id = getIntent().getStringExtra("User_ID");
@@ -144,8 +186,9 @@ public class Main_Activity extends AppCompatActivity {
         // 게시물 기본 정보 셋팅
         Main_User_Name.setText(User_Db_ArrayList.get(User_position).getUser_name());
         Allim_Check();
-        Drawable alpha = ((ImageView)findViewById(R.id.Main_My_Item)).getDrawable();
-        alpha.setAlpha(50);
+
+        //Drawable alpha = ((ImageView)findViewById(R.id.Main_My_Item)).getDrawable();
+        //alpha.setAlpha(50);
 
         // 판매 어레이 set
         setUser_Item_Sell_List();
@@ -159,8 +202,20 @@ public class Main_Activity extends AppCompatActivity {
         // 유저 채팅방 데이터 set
         setUser_Chat_List();
 
-        // 채팅왔는지 체크
-        //getChat_Check();
+        // 븊플리퍼 이미지 셋팅
+        setImage_ViewFlipper();
+
+        // 랭킹 어뎁터 생성
+        rAdapter = new Rank_Adapter(Rank_Search_Text, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        // 어뎁터 셋팅
+        Rank_Recycle.setAdapter(rAdapter);
+
 
         // 모든 게시글 어뎁터 생성
         mAdapter = new MyAdapter(item_db_array, new View.OnClickListener() {
@@ -202,6 +257,7 @@ public class Main_Activity extends AppCompatActivity {
                 }
             }
         });
+
         // 게시글 어뎁터 set
         recyclerView.setAdapter(mAdapter);
 
@@ -298,7 +354,7 @@ public class Main_Activity extends AppCompatActivity {
         });
 
         // 내상품
-        Main_My_Item.setOnClickListener(new View.OnClickListener() {
+        Main_User_Sell_List.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -378,7 +434,7 @@ public class Main_Activity extends AppCompatActivity {
             }
         });
 
-        //카테고리 버튼 (삭제 예정)
+        //알림 버튼
         Main_Allim_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -393,6 +449,34 @@ public class Main_Activity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        // 실시간 검색어 메뉴
+        Main_Real_Time_Menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(Rank_Recycle.getVisibility() == View.VISIBLE){
+                    Rank_Recycle.setVisibility(View.GONE);
+                    Main_Real_Time_Number.setVisibility(View.VISIBLE);
+                    Main_Real_Time_Text.setVisibility(View.VISIBLE);
+                    Main_Real_Time.setVisibility(View.VISIBLE);
+                    Real_Time_Text_2.setVisibility(View.INVISIBLE);
+                    Drawable drawable = getResources().getDrawable(R.drawable.main_menu);
+                    Main_Real_Time_Menu.setImageDrawable(drawable);
+                }
+                else{
+                    Drawable drawable = getResources().getDrawable(R.drawable.main_menu_up);
+                    Main_Real_Time_Menu.setImageDrawable(drawable);
+                    Real_Time_Text_2.setVisibility(View.VISIBLE);
+                    Main_Real_Time_Number.setVisibility(View.INVISIBLE);
+                    Main_Real_Time_Text.setVisibility(View.INVISIBLE);
+                    Main_Real_Time.setVisibility(View.INVISIBLE);
+                    Rank_Recycle.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+
+
     }
 
 //    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -437,6 +521,15 @@ public class Main_Activity extends AppCompatActivity {
         // 아이템 어레이 초기화
         item_db_array.clear();
 
+        //검색어 쉐어드 초기화
+        Search_Text_Save_Array.clear();
+
+        //검색어 결과 랭킹 초기화
+        Rank_Search_Text.clear();
+
+        // 판매 상품 뷰플리퍼 이미지 초기화
+        viewFlipper.removeAllViews();
+
         // 아이템 쉐어드 불러옴
         Item_getShared();
 
@@ -454,11 +547,22 @@ public class Main_Activity extends AppCompatActivity {
         // 유저 채팅방 데이터 set
         setUser_Chat_List();
 
+        // 검색결과 쉐어드 불러옴
+        getSearch_Text_Save();
+
+        // 검색 쉐어드 가지고 랭킹 매기기
+        Rank_Search_Text();
+
+        // 븊플리퍼 이미지 셋팅
+        setImage_ViewFlipper();
+
         // 채팅왔는지 체크
         //getChat_Check();
 
         // 어뎁터 새로고침
         mAdapter.notifyDataSetChanged();
+
+        rAdapter.notifyDataSetChanged();
 
     }
 
@@ -600,7 +704,7 @@ public class Main_Activity extends AppCompatActivity {
         if(User_Sell_Item_ArrayList.size() > 0){
             Random random = new Random();
             Main_User_Sell_List.setVisibility(View.VISIBLE);
-            Main_My_Item.setImageURI(Uri.parse(User_Sell_Item_ArrayList.get(random.nextInt(User_Sell_Item_ArrayList.size())).getitem_img()));
+           // Main_My_Item.setImageURI(Uri.parse(User_Sell_Item_ArrayList.get(random.nextInt(User_Sell_Item_ArrayList.size())).getitem_img()));
         }
         else{
             Main_User_Sell_List.setVisibility(View.GONE);
@@ -612,7 +716,8 @@ public class Main_Activity extends AppCompatActivity {
         // 아이템 전체 갯수 만큼 반복
         for(int i = 0; i < item_db_array.size(); i++){
             // 아이템 작성자 아이디와 로그인 유저 아이디가 같으면
-            if(item_db_array.get(i).getItem_id().equals(Login_User_Id)){
+            if(item_db_array.get(i).getItem_id().equals(Login_User_Id))
+            {
                 // 그아이템 객체 판매 어레이에 추가
                 User_Sell_Item_ArrayList.add(item_db_array.get(i));
             }
@@ -669,13 +774,147 @@ public class Main_Activity extends AppCompatActivity {
         }
     }
 
-    // 채팅 왔는지 확인
-    public void getChat_Check(){
-        for (int i = 0; i < Chat_User_List.size(); i++){
-            if(Chat_User_List.get(i).isChat_Check() == false){
-                Drawable drawable = getResources().getDrawable(R.drawable.chat_call);
-                Main_Icon_Chat.setImageDrawable(drawable);
+    // 검색어 저장 쉐어드 get
+    public void getSearch_Text_Save(){
+
+        // 쉐어드 파일이름과 모드 선언
+        SharedPreferences sharedPreferences = getSharedPreferences("Item",0);
+
+        // key를 통해 벨류값  (get ArrayList 전체 목록) 저장
+        String Search_DB_Array = sharedPreferences.getString("Search_Text", "");
+
+        // JsonArray를 파싱하여 Search_DB형 어레이리스트에 담는과정
+        if(Search_DB_Array !=  null) {
+            try {
+
+                JSONArray jsonArray_user_db = new JSONArray(Search_DB_Array);
+
+                for (int i = 0; i < jsonArray_user_db.length(); i++) {
+
+                    String data = jsonArray_user_db.optString(i);
+
+                    Gson gson = new Gson();
+
+                    Search_Text_DB search_text_db = gson.fromJson(data, Search_Text_DB.class);
+
+                    Search_Text_Save_Array.add(search_text_db);
+
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // 검색어 순위 매기기
+    public void Rank_Search_Text(){
+
+        // 예비 검색 정보 어레이 리스트 선언
+        ArrayList<Search_Text_DB> Rank_Check_Array = new ArrayList<>();
+
+        // 모든 검색 정보 복사
+        Rank_Check_Array.addAll(Search_Text_Save_Array);
+
+
+        // 검색어 순위 5개 만들때까지 반복
+        while(true){
+
+            String Search_Text = null;
+
+            int MaxCount = 0;
+
+            int Search_Text_Position = 0;
+
+            // 총 검색어 정보 만큼 반복
+            for (int i = 0; i < Rank_Check_Array.size(); i++) {
+
+                // 만약 MaxCount보다 더 높다면
+                if (Rank_Check_Array.get(i).getSearch_Count() > MaxCount) {
+
+                    // MaxCount에 현재 값 저장
+                    MaxCount = Rank_Check_Array.get(i).getSearch_Count();
+
+                    // Search_Text 에도 그 검색어 저장
+                    Search_Text = Rank_Check_Array.get(i).getSearch_Text();
+
+                    // 포지션 값 저장
+                    Search_Text_Position = i;
+                }
+
+            }
+
+            // 가장 많이 검색된 검색어 포지션 삭제
+            Rank_Check_Array.remove(Search_Text_Position);
+
+            // 검색 가장 많이된 검색어 저장
+            Rank_Search_Text.add(Search_Text);
+
+            // 검색어 셋팅 2되면 반복 탈출
+            if(Rank_Search_Text.size() > 4 || Rank_Check_Array.size() == 0){
+                Toast.makeText(getApplicationContext(), String.valueOf(Search_Text_Save_Array.size()), Toast.LENGTH_SHORT).show();
                 break;
+            }
+        }
+    }
+
+    // 뷰 플리퍼 판매 이미지 셋팅
+    public void setImage_ViewFlipper(){
+        for(int i = 0; i < User_Sell_Item_ArrayList.size(); i++){
+            Image_Change(User_Sell_Item_ArrayList.get(i).getitem_img());
+        }
+    }
+
+    // 이미지 슬라이더
+    public void Image_Change(String Image){
+        ImageView imageView = new ImageView(this);
+        imageView.setImageURI(Uri.parse(Image));
+
+        viewFlipper.addView(imageView);
+        viewFlipper.setFlipInterval(1000);
+        viewFlipper.setAutoStart(true);
+
+        // animation
+        viewFlipper.setInAnimation(this,android.R.anim.slide_in_left);
+        viewFlipper.setOutAnimation(this,android.R.anim.slide_out_right);
+
+
+    }
+
+    // 핸들러 선언
+    Handler handler = new Handler(){
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+
+            // 만약 날라온 메세지가 0 이라면
+            if(msg.what == 0){
+
+                // 순위
+                Main_Real_Time_Number.setText(String.valueOf(test+1));
+
+                // 검색어
+                Main_Real_Time_Text.setText(Rank_Search_Text.get(test));
+            }
+        }
+    };
+
+    class Count extends Thread{
+        @Override
+        public void run() {
+            super.run();
+
+            while(true){
+                test++;
+                handler.sendEmptyMessage(0);
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                if(test == Rank_Search_Text.size()-1){
+                    test = -1;
+                }
             }
         }
     }
