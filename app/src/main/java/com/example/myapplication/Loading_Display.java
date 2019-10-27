@@ -43,7 +43,7 @@ public class Loading_Display extends AppCompatActivity {
             super.run();
 
             try {
-                Thread.sleep(3000);
+                Thread.sleep(1500);
             } catch (InterruptedException e) {
 
             }

@@ -1,19 +1,25 @@
 package com.example.myapplication;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ComponentName;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
+import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -23,6 +29,7 @@ import android.widget.ViewFlipper;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -109,7 +116,7 @@ public class Main_Activity extends AppCompatActivity {
     ConstraintLayout Main_User_Sell_List;
     ImageView Icon_Cpu, Main_Icon_Sell,Main_Icon_Chat,Main_My_Menu, Main_My_Item;
     ImageView Main_Allim_btn, Main_ad, Main_app, Main_My_Select, Main_Real_Time_Menu, Main_Real_Time;
-    TextView Main_User_Name, Main_Real_Time_Number, Main_Real_Time_Text, Real_Time_Text_2;
+    TextView Main_User_Name, Main_Real_Time_Number, Main_Real_Time_Text, Real_Time_Text_2, test_mp3;
 
     // 액티비티 생성
     @Override
@@ -154,6 +161,7 @@ public class Main_Activity extends AppCompatActivity {
         Main_Real_Time_Text = findViewById(R.id.Main_Real_Time_Text);
         Real_Time_Text_2 = findViewById(R.id.Real_Time_Text_2);
         viewFlipper = findViewById(R.id.Main_My_Item);
+        test_mp3 = findViewById(R.id.test_mp3);
 
         // 리사이클러뷰 매칭
         recyclerView =  findViewById(R.id.My_TestRe);
@@ -475,6 +483,16 @@ public class Main_Activity extends AppCompatActivity {
             }
         });
 
+        // 테스트
+        test_mp3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(getApplicationContext(), MusicServiceActivity.class);
+                startActivity(intent);
+
+            }
+        });
 
 
     }
@@ -880,45 +898,48 @@ public class Main_Activity extends AppCompatActivity {
 
     }
 
-    // 핸들러 선언
-    Handler handler = new Handler(){
-        @Override
-        public void handleMessage(@NonNull Message msg) {
-            super.handleMessage(msg);
 
-            // 만약 날라온 메세지가 0 이라면
-            if(msg.what == 0){
+                // 핸들러 선언
+                Handler handler = new Handler(){
+                    @Override
+                    public void handleMessage(@NonNull Message msg) {
+                        super.handleMessage(msg);
 
-                // 순위
-                Main_Real_Time_Number.setText(String.valueOf(test+1));
+                        // 만약 날라온 메세지가 0 이라면
+                        if(msg.what == 0){
 
-                // 검색어
-                Main_Real_Time_Text.setText(Rank_Search_Text.get(test));
-            }
-        }
-    };
+                            // 순위
+                            Main_Real_Time_Number.setText(String.valueOf(test+1));
 
-    class Count extends Thread{
-        @Override
-        public void run() {
-            super.run();
+                            // 검색어
+                            Main_Real_Time_Text.setText(Rank_Search_Text.get(test));
+                        }
+                    }
+                };
 
-            while(true){
-                test++;
-                handler.sendEmptyMessage(0);
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                class Count extends Thread{
+                    @Override
+                    public void run() {
+                        super.run();
+
+                        while(true){
+                            test++;
+                            handler.sendEmptyMessage(0);
+                            try {
+                                Thread.sleep(3000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+
+                            if(test == Rank_Search_Text.size()-1){
+                                test = -1;
+                            }
+                        }
+                    }
                 }
-
-                if(test == Rank_Search_Text.size()-1){
-                    test = -1;
-                }
             }
-        }
-    }
-}
+
+
 
 
 
