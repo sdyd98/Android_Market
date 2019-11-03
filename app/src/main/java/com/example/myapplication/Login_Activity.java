@@ -2,11 +2,20 @@ package com.example.myapplication;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,13 +27,30 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
+import com.kakao.auth.ApiErrorCode;
+import com.kakao.auth.ISessionCallback;
+import com.kakao.auth.Session;
+import com.kakao.network.ErrorResult;
+import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.MeV2ResponseCallback;
+import com.kakao.usermgmt.response.MeV2Response;
+import com.kakao.util.exception.KakaoException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.ByteArrayOutputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Login_Activity extends AppCompatActivity {
+
+    // 세션 콜백 선언
+    private SessionCallback sessionCallback;
 
     // 뷰 선언
     TextInputEditText id, password;
@@ -36,6 +62,10 @@ public class Login_Activity extends AppCompatActivity {
     // 생성
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        sessionCallback = new SessionCallback();
+        Session.getCurrentSession().addCallback(sessionCallback);
+        Session.getCurrentSession().checkAndImplicitOpen();
 
         // 카메라 접근 권한
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -121,6 +151,22 @@ public class Login_Activity extends AppCompatActivity {
 //                }
 //            }
 //        });
+    }
+
+    // 액티비티 결과
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
+            super.onActivityResult(requestCode, resultCode, data);
+            return;
+        }
+    }
+
+    // 액티비티 종료
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Session.getCurrentSession().removeCallback(sessionCallback);
     }
 
     // 액티비티 재시작
@@ -313,6 +359,8 @@ public class Login_Activity extends AppCompatActivity {
                         // 아이디값 인텐트
                         intent.putExtra("User_ID", auto_login);
 
+                        System.out.println("한번더 지나감1");
+
                         // 인텐트 전송
                         startActivity(intent);
 
@@ -343,5 +391,115 @@ public class Login_Activity extends AppCompatActivity {
         // 유저 정보 저장
         User_Save_Shared();
 
+    }
+
+    // 콜백 클래스
+    private class SessionCallback implements ISessionCallback {
+        // 세션 열림
+        @Override
+        public void onSessionOpened() {
+            UserManagement.getInstance().me(new MeV2ResponseCallback() {
+                @Override
+                public void onFailure(ErrorResult errorResult) {
+                    int result = errorResult.getErrorCode();
+
+                    if (result == ApiErrorCode.CLIENT_ERROR_CODE) {
+                        Toast.makeText(getApplicationContext(), "네트워크 연결이 불안정합니다. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
+                        finish();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "로그인 도중 오류가 발생했습니다: " + errorResult.getErrorMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onSessionClosed(ErrorResult errorResult) {
+                    Toast.makeText(getApplicationContext(), "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
+                }
+
+                // 로그인 성공했을때
+                @Override
+                public void onSuccess(MeV2Response result) {
+                    Intent intent = new Intent(getApplicationContext(), Main_Activity.class);
+
+                    if(Kakao_ID_Check(String.valueOf(result.getId()))){
+
+                    }
+                    else{
+
+                        //현재시간 Date
+                        Date curDate = new Date();
+
+                        // 포멧팅 형태
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmm");
+
+                        //현재시간을 요청시간의 형태로 format 후 time 가져오기
+                        try {
+                            curDate = dateFormat.parse(dateFormat.format(curDate));
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+                        // 아이디 생성 날짜 입력
+                        String curDateTime = dateFormat.format(curDate.getTime());
+
+                        // 첫작성시 기본 이미지 drawable 가져오기
+                        Drawable drawable = getResources().getDrawable(R.drawable.user_icon_3);
+
+                        // 기본 이미지 drawalbe 을 bitmap으로 파싱
+                        Bitmap bitmap2 = ((BitmapDrawable)drawable).getBitmap();
+
+                        // 유저 객체 생성
+                        User_DB user_db = new User_DB(getImageUri(getApplicationContext(), bitmap2).toString(), String.valueOf(result.getId()), "",result.getKakaoAccount().getProfile().getNickname(), curDateTime, false);
+
+                        // 생성된 객체 어레이에 추가
+                        User_Db_ArrayList.add(user_db);
+
+                    }
+
+                    int user_position = 0;
+                    for(int i = 0; i < User_Db_ArrayList.size(); i++){
+                        if(User_Db_ArrayList.get(i).getUser_id().equals(String.valueOf(result.getId()))){
+                            user_position = i;
+                            break;
+                        }
+                    }
+
+                    // auto 로그인이 false면 실행
+                    if(!User_Db_ArrayList.get(user_position).isAuto_login()){
+                        // 자동로그인 쉐어드
+                        setAuto_Login(String.valueOf(result.getId()), user_position);
+
+                        // 로그인 아이디 전달
+                        intent.putExtra("User_ID", String.valueOf(result.getId()));
+
+                        startActivity(intent);
+                        finish();
+                    }
+                }
+            });
+        }
+
+        @Override
+        public void onSessionOpenFailed(KakaoException exception) {
+            Toast.makeText(getApplicationContext(), "문제 발생 발생", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // bitmap 이미지 uri 변환
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    // 카카오 계정 확인
+    public boolean Kakao_ID_Check(String kakao_id){
+        for(int i = 0; i < User_Db_ArrayList.size(); i++){
+            if(User_Db_ArrayList.get(i).getUser_id().equals(kakao_id)){
+                return true;
+            }
+        }
+        return false;
     }
 }

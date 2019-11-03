@@ -1,6 +1,8 @@
 package com.example.myapplication;
 
+import android.app.NotificationManager;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -36,6 +38,9 @@ import java.util.Date;
 import java.util.List;
 
 public class Buy_Activity extends AppCompatActivity {
+
+    // 재고
+    private int stuck = 10;
 
     // 유저 아이디 어뎁터에 넘길려고 static
     static String User_id_test;
@@ -75,7 +80,7 @@ public class Buy_Activity extends AppCompatActivity {
     LinearLayout weight_fix, User_hide, Chat_Btn;
     ImageView Buy_Image, back, user, user_icon, User_heart;
     TextView price1, itemname, Buy_Call_Icon, item_text, Buy_Location_Icon, user_name, categori_name, timetext, looktext, heart_count, open_days, User_Follower_Count;
-    Button del, fix, Comments_Btn;
+    Button del, fix, Comments_Btn,Buy_Item;
     EditText Comments_Detail;
     CheckBox heart, heart2, Following_Check_Box;
 
@@ -99,6 +104,7 @@ public class Buy_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.buy_interface);
+
         // 아이템 전체 정보 가져옴
         Item_getShared();
 
@@ -139,6 +145,7 @@ public class Buy_Activity extends AppCompatActivity {
         Following_Check_Box = findViewById(R.id.Following_Check_Box);
         User_Follower_Count = findViewById(R.id.User_Follower_Count);
         Chat_Btn = findViewById(R.id.layout1);
+        Buy_Item = findViewById(R.id.Buy_Item);
 
         // 리사이클러뷰 매칭
         My_Sell_Item_Recycle = findViewById(R.id.Buy_My_Item_List_Recycle);
@@ -189,6 +196,13 @@ public class Buy_Activity extends AppCompatActivity {
 
         // 조회수 판단
         See_Count_Check();
+
+        // 알림 창을 타고 들어왔을때만 동작
+        if(getIntent().getBooleanExtra("Check_noti", false)) {
+            Toast.makeText(getApplicationContext(), "하이하이", Toast.LENGTH_SHORT).show();
+            // 알림 창 타고 들어온거 제거
+            notificationDel();
+        }
 
         // 게시물 정보 세팅
         try {
@@ -322,7 +336,6 @@ public class Buy_Activity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
 
         // 팔로우 체크 박스
         Following_Check_Box.setOnClickListener(new View.OnClickListener() {
@@ -573,18 +586,9 @@ public class Buy_Activity extends AppCompatActivity {
         Buy_Location_Icon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(getPackageList()) {
-                    ComponentName compName = new ComponentName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
-                    Intent intent23 = new Intent(Intent.ACTION_MAIN);
-                    intent23.addCategory(Intent.CATEGORY_LAUNCHER);
-                    intent23.setComponent(compName);
-                    startActivity(intent23);
-                }
-                else{
-                    String url = "market://details?id=" + "com.danawa.estimate";
-                    Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    startActivity(i);
-                }
+                Intent intent = new Intent(getApplicationContext(), Trade_Map_Activity.class);
+                intent.putExtra("Item_Number", item_db_array.get(Item_position).getItem_number());
+                startActivity(intent);
             }
         });
 
@@ -656,6 +660,9 @@ public class Buy_Activity extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), Main_Activity.class);
+                intent.putExtra("User_ID", Login_User_ID);
+                startActivity(intent);
                 finish();
             }
         });
@@ -1353,6 +1360,24 @@ public class Buy_Activity extends AppCompatActivity {
         // 저장완료
         editor.commit();
     }
+
+    // 알림 정보 제거
+    public void notificationDel(){
+
+        Bundle extras = getIntent().getExtras();
+
+        int id = extras.getInt("notificationId");
+
+        NotificationManager notificationManager =  (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        //노티피케이션 제거
+        notificationManager.cancel(id);
+
+        User_Db_ArrayList.get(Login_User_Position).getAllim_db().remove(User_Db_ArrayList.get(Login_User_Position).getAllim_db().size()-1);
+
+        User_Save_Shared();
+    }
+
 
 
 }

@@ -297,14 +297,24 @@
                         app:layout_constraintLeft_toRightOf="@id/Buy_Call_Icon"
                         app:layout_constraintTop_toTopOf="@id/Buy_Call_Icon" />
 
+                    <Button
+                        android:layout_marginTop="20dp"
+                        android:id="@+id/Buy_Item"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/Buy_Call_Icon"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="상품 구매하기"
+                        />
+
 
                     <View
                         android:id="@+id/bar"
                         android:layout_width="match_parent"
                         android:layout_height="5dp"
-                        android:layout_marginTop="50dp"
+                        android:layout_marginTop="20dp"
                         android:background="#dedede"
-                        app:layout_constraintTop_toBottomOf="@id/categori_name" />
+                        app:layout_constraintTop_toBottomOf="@id/Buy_Item" />
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/user_icon"

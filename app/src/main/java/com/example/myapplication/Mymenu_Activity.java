@@ -18,6 +18,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
+import com.kakao.auth.Session;
+import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.LogoutResponseCallback;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -237,16 +240,61 @@ public class Mymenu_Activity extends AppCompatActivity {
         My_Menu_Logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 현재 화면에서 로그인 화면으로 전환
-                Intent intent = new Intent(getApplicationContext(), Login_Activity.class);
-                startActivity(intent);
-                User_Db_ArrayList.get(User_position).setAuto_login(false);
-                My_Menu_Array.clear();
-                My_Menu_Number_Array.clear();
-                Main_Activity.Main_activity.finish();
-                User_Save_Shared();
-                Toast.makeText(getApplicationContext(), "로그아웃 되었습니다." , Toast.LENGTH_SHORT).show();
-                finish();
+
+                // 만약 카카오 세션이 true 라면
+                if(Session.getCurrentSession().isOpened()){
+
+                    // 카카오톡 세션 종료
+                    UserManagement.getInstance().requestLogout(new LogoutResponseCallback() { //로그아웃 실행
+                        @Override
+                        public void onCompleteLogout() {
+                            //로그아웃 성공 시 로그인 화면(LoginActivity)로 이동
+                            Intent intent = new Intent(getApplicationContext(), Login_Activity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+
+                            // 유저 오토 로그인 false
+                            User_Db_ArrayList.get(User_position).setAuto_login(false);
+
+                            // 초기화
+                            My_Menu_Array.clear();
+
+                            // 초기화
+                            My_Menu_Number_Array.clear();
+
+                            // 메인화면 종료
+                            Main_Activity.Main_activity.finish();
+
+                            // 쉐어드에 저장
+                            User_Save_Shared();
+
+                            Toast.makeText(getApplicationContext(), "로그아웃 되었습니다." , Toast.LENGTH_SHORT).show();
+
+                            finish();
+                        }
+                    });
+
+                }
+                else{
+                    // 현재 화면에서 로그인 화면으로 전환
+                    Intent intent = new Intent(getApplicationContext(), Login_Activity.class);
+                    startActivity(intent);
+
+                    // 유저 오토 로그인 false
+                    User_Db_ArrayList.get(User_position).setAuto_login(false);
+
+                    // 초기화
+                    My_Menu_Array.clear();
+                    // 초기화
+                    My_Menu_Number_Array.clear();
+                    // 메인화면 종료
+                    Main_Activity.Main_activity.finish();
+                    // 쉐어드에 저장
+                    User_Save_Shared();
+                    Toast.makeText(getApplicationContext(), "로그아웃 되었습니다." , Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+
             }
         });
     }

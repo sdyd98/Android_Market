@@ -69,6 +69,9 @@ public class Sell_Activity extends AppCompatActivity implements AdapterView.OnIt
     private final int GET_GALLERY_IMAGE = 200;
     private final int CAPTURE_IMAGE = 300;
 
+    static double Hardness;
+    static double Latitude;
+
     // 선언
     ImageView Sell_Back_Btn, Sell_Image_Btn;
     Button Sell_Finish_Btn;
@@ -134,22 +137,12 @@ public class Sell_Activity extends AppCompatActivity implements AdapterView.OnIt
         Sell_Item_Name = findViewById(R.id.Sell_Item_Name);
         Sell_Item_Price = findViewById(R.id.Sell_Item_Price);
 
-        // 구글맵 위치 따오는 부분 (수정해야함)
+        // 거래위치
         Sell_Location_Icon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(getPackageList()) {
-                    ComponentName compName = new ComponentName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
-                    Intent intent23 = new Intent(Intent.ACTION_MAIN);
-                    intent23.addCategory(Intent.CATEGORY_LAUNCHER);
-                    intent23.setComponent(compName);
-                    startActivity(intent23);
-                }
-                else{
-                    String url = "market://details?id=" + "com.danawa.estimate";
-                    Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    startActivity(i);
-                }
+                Intent intent = new Intent(getApplicationContext(), Map_Activity.class);
+                startActivity(intent);
             }
         });
 
@@ -169,6 +162,7 @@ public class Sell_Activity extends AppCompatActivity implements AdapterView.OnIt
 
                 // 첫작성시 기본 이미지 drawable 가져오기
                 Drawable drawable = getResources().getDrawable(R.drawable.sell3);
+
                 // 기본 이미지 drawalbe 을 bitmap으로 파싱
                 Bitmap bitmap2 = ((BitmapDrawable)drawable).getBitmap();
 
@@ -420,7 +414,7 @@ public class Sell_Activity extends AppCompatActivity implements AdapterView.OnIt
         //기존 어레이에 추가후  -> 하나씩 꺼내어 객체 문자화 - > 예비 어레이에 담고 - > 예비 어레이 문자화 - > 쉐어드 저장
 
         // 아이템 객체 생성
-        Item_DB item_db = new Item_DB(count, User_Db_ArrayList.get(User_Position).getUser_name() , Sell_Item_Price.getText().toString(), Sell_Item_Name.getText().toString(), time(), 0, 0, Sell_Item_Detail.getText().toString(), 0, 0, Image_save, user_img, Categori_Name, user_id);
+        Item_DB item_db = new Item_DB(count, User_Db_ArrayList.get(User_Position).getUser_name() , Sell_Item_Price.getText().toString(), Sell_Item_Name.getText().toString(), time(), 0, 0, Sell_Item_Detail.getText().toString(), 0, 0, Image_save, user_img, Categori_Name, user_id, Hardness, Latitude);
         // 기존 아이템 정보 어레이에 데이터 추가
         item_db_array.add(item_db);
 

@@ -2,20 +2,29 @@ package com.example.myapplication;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -29,16 +38,27 @@ import android.widget.ViewFlipper;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.Gson;
+import com.kakao.auth.Session;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -70,6 +90,9 @@ public class Main_Activity extends AppCompatActivity {
 
     // 뒤로가기 2번 종료 클래스
     BackPressCloseHandler backPressCloseHandler;
+
+    // 채널 아이디
+    public static final String NOTIFICATION_CHANNEL_ID = "10001";
 
     // 로그인한 유저 아이디
     private String Login_User_Id;
@@ -123,6 +146,19 @@ public class Main_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if(!task.isSuccessful()){
+                            return;
+                        }
+                        String token = task.getResult().getToken();
+                        Toast.makeText(getApplicationContext(), token, Toast.LENGTH_LONG).show();
+                    }
+
+                });
 
         Count count = new Count();
 
@@ -188,6 +224,8 @@ public class Main_Activity extends AppCompatActivity {
         // 로그인 아이디 받기
         Login_User_Id = getIntent().getStringExtra("User_ID");
 
+        System.out.println("로그인 아이디"+Login_User_Id);
+
         // 로그인한 유저 포지션 확인
         User_Position_Check();
 
@@ -210,8 +248,14 @@ public class Main_Activity extends AppCompatActivity {
         // 유저 채팅방 데이터 set
         setUser_Chat_List();
 
-        // 븊플리퍼 이미지 셋팅
+        // 뷰플리퍼 이미지 셋팅
         setImage_ViewFlipper();
+
+        // 알림창 띄우기
+        if(User_Db_ArrayList.get(User_position).getAllim_db().size() > 0){
+            NotificationSomethings();
+        }
+
 
         // 랭킹 어뎁터 생성
         rAdapter = new Rank_Adapter(Rank_Search_Text, new View.OnClickListener() {
@@ -862,7 +906,9 @@ public class Main_Activity extends AppCompatActivity {
             }
 
             // 가장 많이 검색된 검색어 포지션 삭제
-            Rank_Check_Array.remove(Search_Text_Position);
+            if(Rank_Check_Array.size() != 0) {
+                Rank_Check_Array.remove(Search_Text_Position);
+            }
 
             // 검색 가장 많이된 검색어 저장
             Rank_Search_Text.add(Search_Text);
@@ -896,6 +942,116 @@ public class Main_Activity extends AppCompatActivity {
         viewFlipper.setOutAnimation(this,android.R.anim.slide_out_right);
 
 
+    }
+
+    // 알림 발생 메서드
+    public void NotificationSomethings() {
+
+        boolean Check = true;
+
+        //SystemService ??
+        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // 알림창 터치시 해당 게시글로 이동
+        Intent notificationIntent = new Intent(this, Buy_Activity.class);
+
+        // 전달할 인텐트
+        notificationIntent.putExtra("User_ID", Login_User_Id);
+
+        // 알림 타고 들어갔는지 판단
+        notificationIntent.putExtra("Check_noti", Check);
+
+        // 마직막 알림 게시글 번호 인텐트
+        notificationIntent.putExtra("Item_Number", User_Db_ArrayList.get(User_position).getAllim_db().get(User_Db_ArrayList.get(User_position).getAllim_db().size()-1).getItem_Number());
+
+        // ? setFlags ???
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK) ;
+
+        // 인텐트
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent,  PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // 알림창 설정
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+                .setLargeIcon(loadBitmap(User_Db_ArrayList.get(User_position).getAllim_db().get(User_Db_ArrayList.get(User_position).getAllim_db().size()-1).getAllim_Item_Img())) //BitMap 이미지 요구
+                .setContentTitle("작성한 게시글에 "+User_Db_ArrayList.get(User_position).getAllim_db().get(User_Db_ArrayList.get(User_position).getAllim_db().size()-1).getAllim_User_Name()+"님이")
+                .setContentText(User_Db_ArrayList.get(User_position).getAllim_db().get(User_Db_ArrayList.get(User_position).getAllim_db().size()-1).getAllim_Ments())
+                // 더 많은 내용이라서 일부만 보여줘야 하는 경우 아래 주석을 제거하면 setContentText에 있는 문자열 대신 아래 문자열을 보여줌
+                //.setStyle(new NotificationCompat.BigTextStyle().bigText("더 많은 내용을 보여줘야 하는 경우..."))
+
+                // 우선순위
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+
+                .setDefaults(Notification.DEFAULT_VIBRATE)
+
+                .setContentIntent(pendingIntent) // 사용자가 노티피케이션을 탭시 ResultActivity로 이동하도록 설정
+
+                .setAutoCancel(true);
+
+        //OREO API 26 이상에서는 채널 필요
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            builder.setSmallIcon(R.drawable.market); //mipmap 사용시 Oreo 이상에서 시스템 UI 에러남
+            CharSequence channelName  = "노티페케이션 채널";
+            String description = "오레오 이상을 위한 것임";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+
+            NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName , importance);
+            channel.setDescription(description);
+
+            // 노티피케이션 채널을 시스템에 등록
+            assert notificationManager != null;
+            notificationManager.createNotificationChannel(channel);
+
+        }else builder.setSmallIcon(R.mipmap.ic_launcher); // Oreo 이하에서 mipmap 사용하지 않으면 Couldn't create icon: StatusBarIcon 에러남
+
+        assert notificationManager != null;
+        notificationManager.notify(1234, builder.build()); // 고유숫자로 노티피케이션 동작시킴
+
+    }
+
+    //문자열 비트맵으로 변환
+    public Bitmap loadBitmap(String url)
+    {
+        Bitmap bm = null;
+        InputStream is = null;
+        BufferedInputStream bis = null;
+        try
+        {
+            URLConnection conn = new URL(url).openConnection();
+            conn.connect();
+            is = conn.getInputStream();
+            bis = new BufferedInputStream(is, 8192);
+            bm = BitmapFactory.decodeStream(bis);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally {
+            if (bis != null)
+            {
+                try
+                {
+                    bis.close();
+                }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+            if (is != null)
+            {
+                try
+                {
+                    is.close();
+                }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return bm;
     }
 
 

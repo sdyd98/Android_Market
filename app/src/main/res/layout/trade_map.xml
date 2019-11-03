@@ -3,9 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
+    android:id="@+id/layout_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#f5f5f5"
+    android:background="#ffffff"
     >
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -33,7 +34,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/Search_Result_Back"
             app:layout_constraintLeft_toRightOf="@+id/Search_Result_Back"
             app:layout_constraintTop_toTopOf="@+id/Search_Result_Back"
-            android:text="키워드 알림"
+            android:text="상품 거래위치"
             android:textSize="16dp"
             android:textColor="#1f1f1f"
             android:textStyle="bold"
@@ -46,56 +47,19 @@
         android:background="#dedede"
         />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
+        android:layout_weight="1"
+        android:id="@+id/boxMap"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         >
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginTop="20dp"
+        <fragment
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="#ffffff"
-            android:id="@+id/keywordconst"
-            >
+            android:layout_height="match_parent"
+            android:id="@+id/map"
+            tools:context=".Map_Activity"
+            android:name="com.google.android.gms.maps.SupportMapFragment" />
 
-
-
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/keywordtext2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                android:text="키워드"
-                android:textColor="#000000"
-                android:padding="15dp"
-                />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/close2"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/close2"
-                app:layout_constraintTop_toTopOf="@id/keywordtext2"
-                app:layout_constraintBottom_toBottomOf="@id/keywordtext2"
-                app:layout_constraintRight_toRightOf="parent"
-                android:layout_marginRight="20dp"
-                tools:layout_editor_absoluteX="126dp"
-                tools:layout_editor_absoluteY="5dp" />
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
-
-
-
-</LinearLayout>
+        </LinearLayout>
+    </LinearLayout>

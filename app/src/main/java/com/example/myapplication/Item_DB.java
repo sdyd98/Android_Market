@@ -40,7 +40,10 @@ class Item_DB {
     // 판매자 이미지
     String seller_img;
 
-    public Item_DB(int item_number, String item_writer, String item_price, String item_name, String item_create_time, int item_watch, int item_heart, String item_detail, int item_user_open, int item_user_follower, String item_img, String seller_img, String category_name, String item_id) {
+    double Latitude;
+    double Hardness;
+
+    public Item_DB(int item_number, String item_writer, String item_price, String item_name, String item_create_time, int item_watch, int item_heart, String item_detail, int item_user_open, int item_user_follower, String item_img, String seller_img, String category_name, String item_id, double Hardeness, double Latitude) {
         this.item_number = item_number;
         this.item_writer = item_writer;
         this.item_price = item_price;
@@ -55,6 +58,24 @@ class Item_DB {
         this.seller_img = seller_img;
         this.category_name = category_name;
         this.item_id = item_id;
+        this.Latitude = Latitude;
+        this.Hardness = Hardeness;
+    }
+
+    public double getLatitude() {
+        return Latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        Latitude = latitude;
+    }
+
+    public double getHardness() {
+        return Hardness;
+    }
+
+    public void setHardness(double hardness) {
+        Hardness = hardness;
     }
 
     public ArrayList<User_Select> getUser_selects() {
