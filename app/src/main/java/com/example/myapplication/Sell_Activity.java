@@ -414,7 +414,7 @@ public class Sell_Activity extends AppCompatActivity implements AdapterView.OnIt
         //기존 어레이에 추가후  -> 하나씩 꺼내어 객체 문자화 - > 예비 어레이에 담고 - > 예비 어레이 문자화 - > 쉐어드 저장
 
         // 아이템 객체 생성
-        Item_DB item_db = new Item_DB(count, User_Db_ArrayList.get(User_Position).getUser_name() , Sell_Item_Price.getText().toString(), Sell_Item_Name.getText().toString(), time(), 0, 0, Sell_Item_Detail.getText().toString(), 0, 0, Image_save, user_img, Categori_Name, user_id, Hardness, Latitude);
+        Item_DB item_db = new Item_DB(count, User_Db_ArrayList.get(User_Position).getUser_name() , Sell_Item_Price.getText().toString(), Sell_Item_Name.getText().toString(), time(), 0, 0, Sell_Item_Detail.getText().toString(), 0, 0, Image_save, user_img, Categori_Name, user_id, Hardness, Latitude, true);
         // 기존 아이템 정보 어레이에 데이터 추가
         item_db_array.add(item_db);
 

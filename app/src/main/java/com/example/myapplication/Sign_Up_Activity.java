@@ -180,7 +180,7 @@ public class Sign_Up_Activity extends AppCompatActivity {
             String curDateTime = dateFormat.format(curDate.getTime());
 
             // 유저 객체 생성
-            User_DB user_db = new User_DB(getImageUri(this, bitmap).toString(), Sign_Up_Id.getText().toString(), Sign_Up_Pw.getText().toString(),Sign_Up_Name.getText().toString(), curDateTime, false);
+            User_DB user_db = new User_DB(getImageUri(this, bitmap).toString(), Sign_Up_Id.getText().toString(), Sign_Up_Pw.getText().toString(),Sign_Up_Name.getText().toString(), curDateTime, false, 0);
 
             // 생성된 객체 어레이에 추가
             User_Db_ArrayList.add(user_db);

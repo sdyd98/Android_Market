@@ -24,6 +24,21 @@
             />
 
         <TextView
+            android:id="@+id/item_state_text"
+            app:layout_constraintTop_toTopOf="@id/ImageView_title"
+            app:layout_constraintRight_toRightOf="@id/ImageView_title"
+            app:layout_constraintLeft_toLeftOf="@id/ImageView_title"
+            app:layout_constraintBottom_toBottomOf="@id/ImageView_title"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:background="#70000000"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            android:text="판매완료"
+            />
+
+        <TextView
 
             android:layout_marginTop="12dp"
             android:layout_marginLeft="5dp"

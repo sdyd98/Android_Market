@@ -40,7 +40,7 @@ public class My_Menu_Detail_Activity extends AppCompatActivity {
 //    String My_Menu_User_Icon;
     CircleImageView My_Menu_Detail_User_Icon;
     ImageView My_Menu_Detail_Icon_Back;
-    TextView My_Menu_Detail_User_Name;
+    TextView My_Menu_Detail_User_Name, my_money;
     private int User_position;
 
 
@@ -52,6 +52,7 @@ public class My_Menu_Detail_Activity extends AppCompatActivity {
         My_Menu_Detail_User_Name = findViewById(R.id.My_Menu_Detail_User_Name);
         My_Menu_Detail_User_Icon = findViewById(R.id.My_Menu_Detail_User_Icon);
         My_Menu_Detail_Icon_Back = findViewById(R.id.My_Menu_Detail_Icon_Back);
+        my_money = findViewById(R.id.my_money);
 
 //        if(User_Name != null){
 //            My_Menu_Detail_User_Name.setText(User_Name);
@@ -70,6 +71,8 @@ public class My_Menu_Detail_Activity extends AppCompatActivity {
                 break;
             }
         }
+
+        my_money.setText("나의 지갑"+User_Db_ArrayList.get(User_position).getMymoney()+"원");
 
         My_Menu_Detail_User_Icon.setImageURI(Uri.parse(User_Db_ArrayList.get(User_position).getUser_icon_img()));
         My_Menu_Detail_User_Name.setText(User_Db_ArrayList.get(User_position).getUser_name());

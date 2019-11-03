@@ -449,7 +449,7 @@ public class Login_Activity extends AppCompatActivity {
                         Bitmap bitmap2 = ((BitmapDrawable)drawable).getBitmap();
 
                         // 유저 객체 생성
-                        User_DB user_db = new User_DB(getImageUri(getApplicationContext(), bitmap2).toString(), String.valueOf(result.getId()), "",result.getKakaoAccount().getProfile().getNickname(), curDateTime, false);
+                        User_DB user_db = new User_DB(getImageUri(getApplicationContext(), bitmap2).toString(), String.valueOf(result.getId()), "",result.getKakaoAccount().getProfile().getNickname(), curDateTime, false, 0);
 
                         // 생성된 객체 어레이에 추가
                         User_Db_ArrayList.add(user_db);

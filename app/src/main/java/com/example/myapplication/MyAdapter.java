@@ -33,12 +33,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         public TextView TextView_titile;
         public TextView TextView_content;
         public ImageView ImageView_title;
+        private TextView item_state_text;
         public View rootView;
         public MyViewHolder(View v) {
             super(v);
             TextView_titile = v.findViewById(R.id.TextView_title);
             TextView_content = v.findViewById(R.id.TextView_content);
             ImageView_title = v.findViewById(R.id.ImageView_title);
+            item_state_text = v.findViewById(R.id.item_state_text);
 
             rootView = v;
 
@@ -78,6 +80,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         holder.TextView_titile.setText(mDataset.get(position).getItem_name());
         holder.TextView_content.setText(mDataset.get(position).getItem_price()+"원");
         holder.ImageView_title.setImageURI(Uri.parse(mDataset.get(position).getitem_img()));
+        if(mDataset.get(position).isItem_state()){
+            holder.item_state_text.setVisibility(View.GONE);
+        }
+        else{
+            holder.item_state_text.setVisibility(View.VISIBLE);
+        }
+
         // position 값 획득
         holder.rootView.setTag(position);
     }

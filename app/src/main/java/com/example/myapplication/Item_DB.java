@@ -37,13 +37,16 @@ class Item_DB {
     // 카테고리 이름
     String category_name;
 
+    // 판매 유무 확인
+    boolean item_state;
+
     // 판매자 이미지
     String seller_img;
 
     double Latitude;
     double Hardness;
 
-    public Item_DB(int item_number, String item_writer, String item_price, String item_name, String item_create_time, int item_watch, int item_heart, String item_detail, int item_user_open, int item_user_follower, String item_img, String seller_img, String category_name, String item_id, double Hardeness, double Latitude) {
+    public Item_DB(int item_number, String item_writer, String item_price, String item_name, String item_create_time, int item_watch, int item_heart, String item_detail, int item_user_open, int item_user_follower, String item_img, String seller_img, String category_name, String item_id, double Hardeness, double Latitude, boolean item_state) {
         this.item_number = item_number;
         this.item_writer = item_writer;
         this.item_price = item_price;
@@ -60,6 +63,15 @@ class Item_DB {
         this.item_id = item_id;
         this.Latitude = Latitude;
         this.Hardness = Hardeness;
+        this.item_state = item_state;
+    }
+
+    public boolean isItem_state() {
+        return item_state;
+    }
+
+    public void setItem_state(boolean item_state) {
+        this.item_state = item_state;
     }
 
     public double getLatitude() {

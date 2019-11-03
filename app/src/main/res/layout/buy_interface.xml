@@ -99,6 +99,16 @@
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
+                    <TextView
+                        android:id="@+id/item_state"
+                        android:layout_marginLeft="10dp"
+                        app:layout_constraintBaseline_toBaselineOf="@id/price1"
+                        app:layout_constraintLeft_toRightOf="@id/price1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="(판매중)"
+                        />
+
                     <Button
                         android:id="@+id/del"
                         android:layout_width="wrap_content"
@@ -303,8 +313,11 @@
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/Buy_Call_Icon"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40dp"
+                        android:background="#4529e5"
+                        android:textColor="#fff"
                         android:text="상품 구매하기"
+                        android:onClick="photoDialogRadio"
                         />
 
 

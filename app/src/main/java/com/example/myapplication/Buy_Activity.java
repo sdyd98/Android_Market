@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -20,6 +21,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -36,6 +39,20 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import kr.co.bootpay.Bootpay;
+import kr.co.bootpay.BootpayAnalytics;
+import kr.co.bootpay.enums.Method;
+import kr.co.bootpay.enums.PG;
+import kr.co.bootpay.enums.UX;
+import kr.co.bootpay.listener.CancelListener;
+import kr.co.bootpay.listener.CloseListener;
+import kr.co.bootpay.listener.ConfirmListener;
+import kr.co.bootpay.listener.DoneListener;
+import kr.co.bootpay.listener.ErrorListener;
+import kr.co.bootpay.listener.ReadyListener;
+import kr.co.bootpay.model.BootExtra;
+import kr.co.bootpay.model.BootUser;
 
 public class Buy_Activity extends AppCompatActivity {
 
@@ -79,7 +96,7 @@ public class Buy_Activity extends AppCompatActivity {
     // 뷰 선언
     LinearLayout weight_fix, User_hide, Chat_Btn;
     ImageView Buy_Image, back, user, user_icon, User_heart;
-    TextView price1, itemname, Buy_Call_Icon, item_text, Buy_Location_Icon, user_name, categori_name, timetext, looktext, heart_count, open_days, User_Follower_Count;
+    TextView price1, itemname, Buy_Call_Icon, item_text, Buy_Location_Icon, user_name, categori_name, timetext, looktext, heart_count, open_days, User_Follower_Count, item_state;
     Button del, fix, Comments_Btn,Buy_Item;
     EditText Comments_Detail;
     CheckBox heart, heart2, Following_Check_Box;
@@ -104,6 +121,9 @@ public class Buy_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.buy_interface);
+
+        // 초기설정 - 해당 프로젝트(안드로이드)의 application id 값을 설정합니다. 결제와 통계를 위해 꼭 필요합니다.
+        BootpayAnalytics.init(this, "5dbe58be5ade160037569d2c");
 
         // 아이템 전체 정보 가져옴
         Item_getShared();
@@ -146,6 +166,7 @@ public class Buy_Activity extends AppCompatActivity {
         User_Follower_Count = findViewById(R.id.User_Follower_Count);
         Chat_Btn = findViewById(R.id.layout1);
         Buy_Item = findViewById(R.id.Buy_Item);
+        item_state = findViewById(R.id.item_state);
 
         // 리사이클러뷰 매칭
         My_Sell_Item_Recycle = findViewById(R.id.Buy_My_Item_List_Recycle);
@@ -219,6 +240,10 @@ public class Buy_Activity extends AppCompatActivity {
         user_name.setText(User_Db_ArrayList.get(User_Writer_Position).getUser_name());
         user_icon.setImageURI(Uri.parse(User_Db_ArrayList.get(User_Writer_Position).getUser_icon_img()));
         User_Follower_Count.setText(String.valueOf(User_Db_ArrayList.get(User_Writer_Position).getUser_Follower().size()));
+        if(!item_db_array.get(Item_position).isItem_state()){
+            item_state.setText("(판매 완료)");
+            Buy_Item.setVisibility(View.GONE);
+        }
         try {
             open_days.setText(user_open());
         } catch (ParseException e) {
@@ -595,6 +620,7 @@ public class Buy_Activity extends AppCompatActivity {
         // 전화하기 암시적 인텐트
         Buy_Call_Icon.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+
                 Intent intent = new Intent(Intent.ACTION_DIAL);
                 intent.setData(Uri.parse("tel:01047256772"));
 
@@ -1376,6 +1402,95 @@ public class Buy_Activity extends AppCompatActivity {
         User_Db_ArrayList.get(Login_User_Position).getAllim_db().remove(User_Db_ArrayList.get(Login_User_Position).getAllim_db().size()-1);
 
         User_Save_Shared();
+    }
+
+    public void onClick_request(PG setPg, Method setMethod) {
+        // 결제호출
+        BootUser bootUser = new BootUser().setPhone("010-1234-5678");
+        BootExtra bootExtra = new BootExtra().setQuotas(new int[] {0,2,3});
+
+        Bootpay.init(getFragmentManager())
+                .setApplicationId("5dbe58be5ade160037569d2c") // 해당 프로젝트(안드로이드)의 application id 값
+                .setPG(setPg) // 결제할 PG 사
+                .setMethod(setMethod) // 결제수단
+                .setContext(this)
+                .setBootUser(bootUser)
+                .setBootExtra(bootExtra)
+                .setUX(UX.PG_DIALOG)
+                .setName(item_db_array.get(Item_position).getItem_name()) // 결제할 상품명
+                .setOrderId("1234") // 결제 고유번호expire_month
+                .setPrice(Integer.valueOf(item_db_array.get(Item_position).getItem_price())) // 결제할 금액
+                .addItem("마우's 스", 1, "ITEM_CODE_MOUSE", 100) // 주문정보에 담길 상품정보, 통계를 위해 사용
+                .addItem("키보드", 1, "ITEM_CODE_KEYBOARD", 200, "패션", "여성상의", "블라우스") // 주문정보에 담길 상품정보, 통계를 위해 사용
+                .onConfirm(new ConfirmListener() { // 결제가 진행되기 바로 직전 호출되는 함수로, 주로 재고처리 등의 로직이 수행
+                    @Override
+                    public void onConfirm(@Nullable String message) {
+
+                        if (0 < stuck) Bootpay.confirm(message); // 재고가 있을 경우.
+                        else Bootpay.removePaymentWindow(); // 재고가 없어 중간에 결제창을 닫고 싶을 경우
+                        Log.d("confirm", message);
+                    }
+                })
+                .onDone(new DoneListener() { // 결제완료시 호출, 아이템 지급 등 데이터 동기화 로직을 수행합니다
+                    @Override
+                    public void onDone(@Nullable String message) {
+                        Toast.makeText(getApplicationContext(), "결제 완료!!!", Toast.LENGTH_SHORT).show();
+                        item_state.setText("(판매 완료)");
+                        Buy_Item.setVisibility(View.GONE);
+                        item_db_array.get(Item_position).setItem_state(false);
+                        User_Db_ArrayList.get(User_Writer_Position).setMymoney(User_Db_ArrayList.get(User_Writer_Position).getMymoney()+Integer.valueOf(item_db_array.get(Item_position).getItem_price()));
+                        User_Save_Shared();
+                        Log.d("done", message);
+                    }
+                })
+                .onReady(new ReadyListener() { // 가상계좌 입금 계좌번호가 발급되면 호출되는 함수입니다.
+                    @Override
+                    public void onReady(@Nullable String message) {
+                        Log.d("ready", message);
+                    }
+                })
+                .onCancel(new CancelListener() { // 결제 취소시 호출
+                    @Override
+                    public void onCancel(@Nullable String message) {
+                        Toast.makeText(getApplicationContext(), "결제가 최소 되었습니다.", Toast.LENGTH_SHORT).show();
+                        Log.d("cancel", message);
+                    }
+                })
+                .onClose(
+                        new CloseListener() { //결제창이 닫힐때 실행되는 부분
+                            @Override
+                            public void onClose(String message) {
+                                Log.d("close", "close");
+                            }
+                        })
+                .request();
+    }
+
+    // 사진 가져올 선택 다이얼로그
+    public void photoDialogRadio(View v){
+        // 항목 설정
+        final CharSequence[] PhotoModels = {"카카오 페이로 결제", "KCP로 결제"};
+        // 다이얼로그 선언
+        final AlertDialog.Builder alt_bld = new AlertDialog.Builder(this);
+
+        // 타이틀 설정
+        alt_bld.setTitle("결제 수단");
+        alt_bld.setSingleChoiceItems(PhotoModels, -1, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                Toast.makeText(getApplicationContext(), PhotoModels[item]+"가 선택되었습니다", Toast.LENGTH_SHORT).show();
+                if (item == 0){
+                    onClick_request(PG.KAKAO, Method.EASY);
+                }
+                else{
+                    onClick_request(PG.KCP, Method.CARD);
+                }
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alert = alt_bld.create();
+        alert.show();
     }
 
 

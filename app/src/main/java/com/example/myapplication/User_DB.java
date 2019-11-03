@@ -14,15 +14,25 @@ class User_DB {
     private ArrayList<String> User_Following = new ArrayList<>();
     private ArrayList<Allim_Db> allim_db = new ArrayList<>();
     private ArrayList<Keyword_DB> User_Keyword = new ArrayList<>();
+    private int Mymoney;
 
 
-    public User_DB(String user_icon_img, String user_id, String user_pw, String user_name, String user_open, boolean auto_login) {
+    public User_DB(String user_icon_img, String user_id, String user_pw, String user_name, String user_open, boolean auto_login, int Mymoney) {
         this.user_icon_img = user_icon_img;
         this.user_id = user_id;
         this.user_pw = user_pw;
         this.user_name = user_name;
         this.user_open = user_open;
         this.auto_login = auto_login;
+        this.Mymoney = Mymoney;
+    }
+
+    public int getMymoney() {
+        return Mymoney;
+    }
+
+    public void setMymoney(int mymoney) {
+        Mymoney = mymoney;
     }
 
     public ArrayList<Keyword_DB> getUser_Keyword() {
