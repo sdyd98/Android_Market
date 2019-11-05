@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">My Application</string>
     <string name="kakao_app_key">bb1ac9adad5db1844fcf22629c16d777</string>
+    <string name="kakao_scheme">kakaobb1ac9adad5db1844fcf22629c16d777</string>
+    <string name="kakaolink_host">kakaolink</string>
+    <string name="admob_app_id">ca-app-pub-5157110510509826~1109087838</string>
+    <string name="banner_ad_unit_id">ca-app-pub-5157110510509826/1499970073</string>
+    <string name="banner_ad_unit_id_for_test">ca-app-pub-3940256099942544/6300978111</string>
 </resources>

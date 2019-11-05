@@ -307,11 +307,21 @@
                         app:layout_constraintLeft_toRightOf="@id/Buy_Call_Icon"
                         app:layout_constraintTop_toTopOf="@id/Buy_Call_Icon" />
 
+                    <ImageView
+                        android:id="@+id/Kakao_Link"
+                        android:layout_marginTop="10dp"
+                        app:layout_constraintLeft_toLeftOf="@id/Buy_Call_Icon"
+                        app:layout_constraintTop_toBottomOf="@id/Buy_Call_Icon"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:src="@drawable/kakao"
+                        />
+
                     <Button
-                        android:layout_marginTop="20dp"
+                        android:layout_marginTop="15dp"
                         android:id="@+id/Buy_Item"
                         app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/Buy_Call_Icon"
+                        app:layout_constraintTop_toBottomOf="@id/Kakao_Link"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:background="#4529e5"
@@ -324,8 +334,8 @@
                     <View
                         android:id="@+id/bar"
                         android:layout_width="match_parent"
-                        android:layout_height="5dp"
-                        android:layout_marginTop="20dp"
+                        android:layout_height="3dp"
+                        android:layout_marginTop="30dp"
                         android:background="#dedede"
                         app:layout_constraintTop_toBottomOf="@id/Buy_Item" />
 

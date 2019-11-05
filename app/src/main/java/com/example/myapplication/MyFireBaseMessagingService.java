@@ -26,7 +26,7 @@ public class MyFireBaseMessagingService extends FirebaseMessagingService {
         if(remoteMessage.getNotification() != null){
             String messageBody = remoteMessage.getNotification().getBody();
             String messageTitle = remoteMessage.getNotification().getTitle();
-            Intent intent = new Intent(getApplicationContext(), Main_Activity.class);
+            Intent intent = new Intent(getApplicationContext(), Login_Activity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),0, intent, PendingIntent.FLAG_ONE_SHOT);
             String channelId = "Channel ID";

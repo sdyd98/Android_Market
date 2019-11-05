@@ -49,6 +49,8 @@ import java.util.Date;
 
 public class Login_Activity extends AppCompatActivity {
 
+    boolean Login_Check = false;
+
     // 세션 콜백 선언
     private SessionCallback sessionCallback;
 
@@ -63,6 +65,7 @@ public class Login_Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        //카카오
         sessionCallback = new SessionCallback();
         Session.getCurrentSession().addCallback(sessionCallback);
         Session.getCurrentSession().checkAndImplicitOpen();
@@ -97,8 +100,31 @@ public class Login_Activity extends AppCompatActivity {
         // 유저 정보 가져오기
         getUser_Shared();
 
-        // 자동 로그인
-        Auto_Login();
+        try {
+            System.out.println(getIntent().getAction());
+            if (getIntent().getAction().equals("android.intent.action.VIEW")) {
+                if(Auto_Login_Check().equals("")){
+
+                }
+                else{
+                    Intent intent = new Intent(getApplicationContext(), Main_Activity.class);
+                    intent.putExtra("Link_User_ID", Auto_Login_Check());
+                    // 게시물 고유 넘버 인텐트
+                    intent.putExtra("Link_Item_Number", Integer.valueOf(getIntent().getData().getQueryParameter("key1")));
+                    startActivity(intent);
+                    System.out.println("링크 타고 넘어간다~");
+                    Login_Check = true;
+                    finish();
+                }
+            }
+        }catch (Exception e){
+
+        }
+
+        if(Login_Check == false){
+            // 자동 로그인
+            Auto_Login();
+        }
 
         //회원가입 버튼
         btn_sign_up.setOnClickListener(new View.OnClickListener() {
@@ -108,8 +134,6 @@ public class Login_Activity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-
 
         // 로그인 버튼
 //        btn_login.setOnClickListener(new View.OnClickListener() {
@@ -326,6 +350,33 @@ public class Login_Activity extends AppCompatActivity {
         // 저장완료
         editor.commit();
 
+    }
+    public String Auto_Login_Check() {
+        // 쉐어드 선언
+        SharedPreferences sharedPreferences = getSharedPreferences("User", 0);
+
+        String auto_login = sharedPreferences.getString("auto", "");
+
+        String Return_auto_login = "";
+
+        // 쉐어드에 데이터가 있다면 실행
+        if (!auto_login.equals("")) {
+
+            // 유저 정보 어레이 사이즈만큼 반복
+            for (int i = 0; i < User_Db_ArrayList.size(); i++) {
+
+                // auto_login 변수로 일치하는 유저 어레이에서 찾기
+                if (User_Db_ArrayList.get(i).getUser_id().equals(auto_login)) {
+
+                    // 키값에 저장된 데이터가 자동로그인 여부가 true인지 판별하고 true면 true 반환
+                    if (User_Db_ArrayList.get(i).isAuto_login()) {
+                        Return_auto_login = auto_login;
+                        break;
+                    }
+                }
+            }
+        }
+        return Return_auto_login;
     }
 
     // 자동 로그인 메소드

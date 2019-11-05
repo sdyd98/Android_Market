@@ -11,6 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieDrawable;
+
 public class Loading_Display extends AppCompatActivity {
 
     ProgressBar progressBar;
@@ -21,45 +24,34 @@ public class Loading_Display extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loading_display);
 
+        LottieAnimationView Lottie_Loding = findViewById(R.id.Lottie_Loading);
 
-        progressBar = findViewById(R.id.progressBar);
-        Loading loading = new Loading();
+        Start_Lottie(Lottie_Loding, "loading.json");
 
-        loading.start();
+        Handler hd = new Handler();
+        hd.postDelayed(new Runnable() {
 
-    }
-
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(@NonNull Message msg) {
-            super.handleMessage(msg);
-
-            if (msg.arg1 == 100) {
+            @Override
+            public void run() {
                 Intent intent = new Intent(getApplicationContext(), Login_Activity.class);
                 startActivity(intent);
                 finish();
             }
-        }
-    };
+        }, 3500);
 
-    // 로딩 스레드
-    class Loading extends Thread {
-        @Override
-        public void run() {
-            super.run();
 
-            for(int i = 0; i <=100; i++){
-                progressBar.setProgress(i);
-                Message msg = handler.obtainMessage();
-                msg.arg1 = i;
-                handler.sendMessage(msg);
-                try{
-                    Thread.sleep(20);
-                }catch (InterruptedException e){
+    }
 
-                }
-            }
-        }
+    // 로티 시작 메소드
+    public void Start_Lottie(LottieAnimationView lottieAnimationView, String json){
 
+        // 파일 정하기
+        lottieAnimationView.setAnimation(json);
+
+        // 반복 횟수
+        lottieAnimationView.setRepeatCount(LottieDrawable.INFINITE);
+
+        // 시작
+        lottieAnimationView.playAnimation();
     }
 }

@@ -29,16 +29,30 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
+import com.kakao.kakaolink.v2.KakaoLinkResponse;
+import com.kakao.kakaolink.v2.KakaoLinkService;
+import com.kakao.message.template.ButtonObject;
+import com.kakao.message.template.ContentObject;
+import com.kakao.message.template.FeedTemplate;
+import com.kakao.message.template.LinkObject;
+import com.kakao.message.template.SocialObject;
+import com.kakao.network.ErrorResult;
+import com.kakao.network.callback.ResponseCallback;
+import com.kakao.network.storage.ImageUploadResponse;
+import com.kakao.util.helper.log.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import kr.co.bootpay.Bootpay;
 import kr.co.bootpay.BootpayAnalytics;
@@ -53,6 +67,7 @@ import kr.co.bootpay.listener.ErrorListener;
 import kr.co.bootpay.listener.ReadyListener;
 import kr.co.bootpay.model.BootExtra;
 import kr.co.bootpay.model.BootUser;
+import kr.co.bootpay.model.Item;
 
 public class Buy_Activity extends AppCompatActivity {
 
@@ -95,7 +110,7 @@ public class Buy_Activity extends AppCompatActivity {
 
     // 뷰 선언
     LinearLayout weight_fix, User_hide, Chat_Btn;
-    ImageView Buy_Image, back, user, user_icon, User_heart;
+    ImageView Buy_Image, back, user, user_icon, User_heart, Kakao_Link;
     TextView price1, itemname, Buy_Call_Icon, item_text, Buy_Location_Icon, user_name, categori_name, timetext, looktext, heart_count, open_days, User_Follower_Count, item_state;
     Button del, fix, Comments_Btn,Buy_Item;
     EditText Comments_Detail;
@@ -167,6 +182,7 @@ public class Buy_Activity extends AppCompatActivity {
         Chat_Btn = findViewById(R.id.layout1);
         Buy_Item = findViewById(R.id.Buy_Item);
         item_state = findViewById(R.id.item_state);
+        Kakao_Link = findViewById(R.id.Kakao_Link);
 
         // 리사이클러뷰 매칭
         My_Sell_Item_Recycle = findViewById(R.id.Buy_My_Item_List_Recycle);
@@ -583,6 +599,49 @@ public class Buy_Activity extends AppCompatActivity {
                 intent.putExtra("Profile_Id", User_Db_ArrayList.get(User_Writer_Position).getUser_id());
                 intent.putExtra("User_ID", Login_User_ID);
                 startActivity(intent);
+            }
+        });
+
+        // 카카오 링크
+        Kakao_Link.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String key = "key1="+item_db_array.get(Item_position).getItem_number();
+                System.out.println("Key"+key);
+
+                FeedTemplate params = FeedTemplate
+                        .newBuilder(ContentObject.newBuilder(item_db_array.get(Item_position).getItem_name(),
+                                "http://mud-kage.kakao.co.kr/dn/NTmhS/btqfEUdFAUf/FjKzkZsnoeE4o19klTOVI1/openlink_640x640s.jpg",
+                                LinkObject.newBuilder().setWebUrl("https://developers.kakao.com")
+                                        .setMobileWebUrl("https://developers.kakao.com").build())
+                                .setDescrption(item_db_array.get(Item_position).getItem_detail())
+                                .build())
+                        .setSocial(SocialObject.newBuilder().setLikeCount(10).setCommentCount(20)
+                                .setSharedCount(30).setViewCount(40).build())
+                        .addButton(new ButtonObject("앱으로 보기", LinkObject.newBuilder()
+                                .setWebUrl("https://developers.kakao.com")
+                                .setMobileWebUrl("https://developers.kakao.com")
+                                .setAndroidExecutionParams(key)
+                                .setIosExecutionParams("key1=value1")
+                                .build()))
+                        .build();
+
+                Map<String, String> serverCallbackArgs = new HashMap<String, String>();
+                serverCallbackArgs.put("user_id", "${current_user_id}");
+                serverCallbackArgs.put("product_id", "${shared_product_id}");
+
+                KakaoLinkService.getInstance().sendDefault(getApplicationContext(), params, serverCallbackArgs, new ResponseCallback<KakaoLinkResponse>() {
+                    @Override
+                    public void onFailure(ErrorResult errorResult) {
+                        Logger.e(errorResult.toString());
+                    }
+
+                    @Override
+                    public void onSuccess(KakaoLinkResponse result) {
+                        // 템플릿 밸리데이션과 쿼터 체크가 성공적으로 끝남. 톡에서 정상적으로 보내졌는지 보장은 할 수 없다. 전송 성공 유무는 서버콜백 기능을 이용하여야 한다.
+                    }
+                });
             }
         });
 
@@ -1120,6 +1179,10 @@ public class Buy_Activity extends AppCompatActivity {
                 // 만약 유저 조회 판단 어레이에 현재 접속 유저 아이디가 있다면
                 // 저장된 시간과 현재 시간을 대조해 24시간이 넘었는지 판단하고 넘었으면 조회수 추가 그리고 다시 현재시간 저장
                 // 안넘었으면 그냥 넘어감
+
+                System.out.println(Login_User_ID);
+                System.out.println(item_db_array.size());
+                System.out.println(item_db_array.get(Item_position).getUser_sees().get(i).getSee_user_id());
                 if (item_db_array.get(Item_position).getUser_sees().get(i).getSee_user_id().equals(Login_User_ID)) {
 
                     // 기존 조회 시간
@@ -1273,6 +1336,7 @@ public class Buy_Activity extends AppCompatActivity {
         editor.commit();
 
     }
+
 
     // 시간 출력
     public String time_check(){

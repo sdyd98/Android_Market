@@ -10,6 +10,7 @@ import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -18,6 +19,9 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -36,36 +40,88 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieDrawable;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardItem;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.Gson;
 import com.kakao.auth.Session;
+import com.kakao.kakaolink.v2.KakaoLinkResponse;
+import com.kakao.kakaolink.v2.KakaoLinkService;
+import com.kakao.message.template.ButtonObject;
+import com.kakao.message.template.ContentObject;
+import com.kakao.message.template.FeedTemplate;
+import com.kakao.message.template.LinkObject;
+import com.kakao.message.template.SocialObject;
+import com.kakao.network.ErrorResult;
+import com.kakao.network.callback.ResponseCallback;
+import com.kakao.util.helper.log.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
 
 import static android.R.*;
 
-public class Main_Activity extends AppCompatActivity {
+public class Main_Activity extends AppCompatActivity implements RewardedVideoAdListener {
+
+    private ResponseCallback<KakaoLinkResponse> callback;
+    private Map<String, String> serverCallbackArgs = getServerCallbackArgs();
+
+    private GpsTracker gpsTracker;
+
+    Thread Weather_Thread;
+
+    private static final int GPS_ENABLE_REQUEST_CODE = 2001;
+    private static final int PERMISSIONS_REQUEST_CODE = 100;
+    String[] REQUIRED_PERMISSIONS  = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+
+    // json 저장
+    String json;
+
+    //네이버 검색 api
+    BufferedReader br;
+
+    StringBuilder searchResult;
+
+    // 구글 에드몹
+    private AdView mAdView;
+
+    private RewardedVideoAd mRewardedVideoAd;
 
     // 상품 어레이 객체 생성
     ArrayList<Item_DB> item_db_array = new ArrayList<>();
@@ -106,6 +162,9 @@ public class Main_Activity extends AppCompatActivity {
     // 실시간 검색어 포지션 초기값
     int test = -1;
 
+    // 날씨 정보
+    String Weather_Img;
+
     // 뷰 플리퍼
     ViewFlipper viewFlipper;
 
@@ -137,9 +196,9 @@ public class Main_Activity extends AppCompatActivity {
     // 뷰 선언
     LinearLayout Main_Icon_Search_Btn;
     ConstraintLayout Main_User_Sell_List;
-    ImageView Icon_Cpu, Main_Icon_Sell,Main_Icon_Chat,Main_My_Menu, Main_My_Item;
+    ImageView Icon_Cpu, Main_Icon_Sell,Main_Icon_Chat,Main_My_Menu, Main_news;
     ImageView Main_Allim_btn, Main_ad, Main_app, Main_My_Select, Main_Real_Time_Menu, Main_Real_Time;
-    TextView Main_User_Name, Main_Real_Time_Number, Main_Real_Time_Text, Real_Time_Text_2, test_mp3;
+    TextView Main_User_Name, Main_Real_Time_Number, Main_Real_Time_Text, Real_Time_Text_2, test_mp3, temperture;
 
     // 액티비티 생성
     @Override
@@ -147,6 +206,43 @@ public class Main_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        // 로그인 아이디 받기
+        Login_User_Id = getIntent().getStringExtra("User_ID");
+
+        try{
+            if(getIntent().getStringExtra("Link_User_ID").equals("")){
+
+            }
+            else{
+                Login_User_Id = getIntent().getStringExtra("Link_User_ID");
+                Intent intent = new Intent(getApplicationContext(), Buy_Activity.class);
+                intent.putExtra("User_ID", getIntent().getStringExtra("Link_User_ID"));
+                intent.putExtra("Item_Number",getIntent().getIntExtra("Link_Item_Number",0));
+                startActivity(intent);
+            }
+        }catch (Exception e){
+
+        }
+
+
+        //GPS 권한 체크
+        if (!checkLocationServicesStatus()) {
+            showDialogForLocationServiceSetting();
+        }else {
+            checkRunTimePermission();
+        }
+
+        MobileAds.initialize(this, getString(R.string.admob_app_id));
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
+        MobileAds.initialize(this, "ca-app-pub-5157110510509826/1499970073");
+        // Use an activity context to get the rewarded video instance.
+        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
+        mRewardedVideoAd.setRewardedVideoAdListener(this);
+
+        // 파이어베이스 토큰
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                     @Override
@@ -155,7 +251,6 @@ public class Main_Activity extends AppCompatActivity {
                             return;
                         }
                         String token = task.getResult().getToken();
-                        Toast.makeText(getApplicationContext(), token, Toast.LENGTH_LONG).show();
                     }
 
                 });
@@ -198,6 +293,10 @@ public class Main_Activity extends AppCompatActivity {
         Real_Time_Text_2 = findViewById(R.id.Real_Time_Text_2);
         viewFlipper = findViewById(R.id.Main_My_Item);
         test_mp3 = findViewById(R.id.test_mp3);
+        temperture = findViewById(R.id.temperture);
+        LottieAnimationView Lottie_News = findViewById(R.id.Lottie_News);
+        LottieAnimationView Lottie_Search = findViewById(R.id.Search_Lottie);
+        LottieAnimationView Lottie_Weather = findViewById(R.id.Lottie_Weather);
 
         // 리사이클러뷰 매칭
         recyclerView =  findViewById(R.id.My_TestRe);
@@ -221,10 +320,10 @@ public class Main_Activity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         Rank_Recycle.setLayoutManager(Rank_Layout_Manager);
 
-        // 로그인 아이디 받기
-        Login_User_Id = getIntent().getStringExtra("User_ID");
-
         System.out.println("로그인 아이디"+Login_User_Id);
+
+        Start_Lottie(Lottie_News, "news.json");
+        Start_Lottie(Lottie_Search, "search.json");
 
         // 로그인한 유저 포지션 확인
         User_Position_Check();
@@ -250,6 +349,37 @@ public class Main_Activity extends AppCompatActivity {
 
         // 뷰플리퍼 이미지 셋팅
         setImage_ViewFlipper();
+
+        gpsTracker = new GpsTracker(getApplicationContext());
+
+        double lon = gpsTracker.getLongitude();//경도
+        double lat = gpsTracker.getLatitude();//위도
+
+        //날씨 api
+        WeatherAPI(lon,lat);
+
+        Weather_Thread.start();
+
+        try {
+            Weather_Thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(Weather_Img);
+
+        temperture.setSelected(true);
+
+        // 로티 시작
+        if(Weather_Img.equals("Rain")){
+            Start_Lottie(Lottie_Weather, "rain.json");
+        }
+        else if(Weather_Img.equals("Clouds")){
+            Start_Lottie(Lottie_Weather, "cloud.json");
+        }
+        else{
+            Start_Lottie(Lottie_Weather, "weather.json");
+        }
 
         // 알림창 띄우기
         if(User_Db_ArrayList.get(User_position).getAllim_db().size() > 0){
@@ -531,15 +661,26 @@ public class Main_Activity extends AppCompatActivity {
         test_mp3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                loadRewardedVideoAd();
+            }
+        });
 
-                Intent intent = new Intent(getApplicationContext(), MusicServiceActivity.class);
+        Lottie_News.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), it_news_Activity.class);
+                intent.putExtra("User_ID", Login_User_Id);
                 startActivity(intent);
 
             }
         });
 
 
+
+
     }
+
+
 
 //    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 //        super.onActivityResult(requestCode, resultCode, data);
@@ -1054,7 +1195,6 @@ public class Main_Activity extends AppCompatActivity {
         return bm;
     }
 
-
                 // 핸들러 선언
                 Handler handler = new Handler(){
                     @Override
@@ -1073,7 +1213,336 @@ public class Main_Activity extends AppCompatActivity {
                     }
                 };
 
-                class Count extends Thread{
+    private void loadRewardedVideoAd() {
+        mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",
+                new AdRequest.Builder().build());
+    }
+
+    @Override
+    public void onRewarded(RewardItem reward) {
+        Toast.makeText(this, "onRewarded! currency: " + reward.getType() + "  amount: " +
+                reward.getAmount(), Toast.LENGTH_SHORT).show();
+        // Reward the user.
+    }
+
+    @Override
+    public void onRewardedVideoAdLeftApplication() {
+        Toast.makeText(this, "onRewardedVideoAdLeftApplication",
+                Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoAdClosed() {
+        Toast.makeText(this, "onRewardedVideoAdClosed", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoAdFailedToLoad(int errorCode) {
+        Toast.makeText(this, "onRewardedVideoAdFailedToLoad", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoAdLoaded() {
+        if (mRewardedVideoAd.isLoaded()) {
+            mRewardedVideoAd.show();
+        }
+        Toast.makeText(this, "onRewardedVideoAdLoaded", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoAdOpened() {
+        Toast.makeText(this, "onRewardedVideoAdOpened", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoStarted() {
+        Toast.makeText(this, "onRewardedVideoStarted", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoCompleted() {
+        Toast.makeText(this, "onRewardedVideoCompleted", Toast.LENGTH_SHORT).show();
+    }
+
+    // 로티 시작 메소드
+    public void Start_Lottie(LottieAnimationView lottieAnimationView, String json){
+
+        // 파일 정하기
+        lottieAnimationView.setAnimation(json);
+
+        // 반복 횟수
+        lottieAnimationView.setRepeatCount(LottieDrawable.INFINITE);
+
+        // 시작
+        lottieAnimationView.playAnimation();
+    }
+
+    // 날씨 api
+    public void WeatherAPI(final double lon, final double lat) {
+        // 네트워크 연결은 Thread 생성 필요
+        Weather_Thread = new Thread() {
+            @Override
+            public void run() {
+                try {
+
+                    String urlstr = "http://api.openweathermap.org/data/2.5/weather?lat="+lat+"&lon="+lon+"&appid=e309d9d54ddcbfb84195fca7f949b064";
+                    URL url = new URL(urlstr);
+                    // 위에서 생성한 url을 토대로 연결
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    // ?
+                    con.setRequestMethod("GET");
+                    // 연결
+                    con.connect();
+                    // 응답 코드 저장
+                    int responseCode = con.getResponseCode();
+                    if(responseCode==200) { // 정상 호출
+                        br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    } else {  // 에러 발생
+                        br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+                    }
+                    // 스트링 빌더
+                    searchResult = new StringBuilder();
+                    String inputLine;
+                    while ((inputLine = br.readLine()) != null) {
+                        searchResult.append(inputLine + "\n");
+                    }
+                    // 버퍼 리더 닫기
+                    br.close();
+                    // http 연결 종료
+                    con.disconnect();
+                    // json 데이터
+                    json = searchResult.toString();
+                } catch (Exception e) {
+                    Log.e("test", "run: "+ e );
+                }
+
+
+                try {
+                    JSONObject jsonObject = new JSONObject(json);
+
+                    String temp = jsonObject.getJSONObject("main").getString("temp");
+
+                    double Temp_Change = Double.valueOf(temp);
+
+                    int Temp_Cheage2 = (int)Temp_Change - 270;
+
+                    String Real_Temp = String.valueOf(Temp_Cheage2);
+
+                    Weather_Img = jsonObject.getJSONArray("weather").getJSONObject(0).getString("main");
+
+                    if(Weather_Img.equals("Rain")){
+                        temperture.setText("현재 온도: "+Real_Temp+"°C"+"             현재 날씨: 비");
+                    }
+                    else if(Weather_Img.equals("Clouds")){
+                        temperture.setText("현재 온도: "+Real_Temp+"°C"+"             현재 날씨: 구름");
+                    }
+                    else{
+                        temperture.setText("현재 온도: "+Real_Temp+"°C"+"             현재 날씨: 맑음");
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        };
+    }
+
+    /*
+     * ActivityCompat.requestPermissions를 사용한 퍼미션 요청의 결과를 리턴받는 메소드입니다.
+     */
+    @Override
+    public void onRequestPermissionsResult(int permsRequestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grandResults) {
+
+        if ( permsRequestCode == PERMISSIONS_REQUEST_CODE && grandResults.length == REQUIRED_PERMISSIONS.length) {
+
+            // 요청 코드가 PERMISSIONS_REQUEST_CODE 이고, 요청한 퍼미션 개수만큼 수신되었다면
+
+            boolean check_result = true;
+
+
+            // 모든 퍼미션을 허용했는지 체크합니다.
+
+            for (int result : grandResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    check_result = false;
+                    break;
+                }
+            }
+
+
+            if ( check_result ) {
+
+                //위치 값을 가져올 수 있음
+                ;
+            }
+            else {
+                // 거부한 퍼미션이 있다면 앱을 사용할 수 없는 이유를 설명해주고 앱을 종료합니다.2 가지 경우가 있습니다.
+
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, REQUIRED_PERMISSIONS[0])
+                        || ActivityCompat.shouldShowRequestPermissionRationale(this, REQUIRED_PERMISSIONS[1])) {
+
+                    Toast.makeText(Main_Activity.this, "퍼미션이 거부되었습니다. 앱을 다시 실행하여 퍼미션을 허용해주세요.", Toast.LENGTH_LONG).show();
+                    finish();
+
+
+                }else {
+
+                    Toast.makeText(Main_Activity.this, "퍼미션이 거부되었습니다. 설정(앱 정보)에서 퍼미션을 허용해야 합니다. ", Toast.LENGTH_LONG).show();
+
+                }
+            }
+
+        }
+    }
+
+    void checkRunTimePermission(){
+
+        //런타임 퍼미션 처리
+        // 1. 위치 퍼미션을 가지고 있는지 체크합니다.
+        int hasFineLocationPermission = ContextCompat.checkSelfPermission(getApplicationContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION);
+        int hasCoarseLocationPermission = ContextCompat.checkSelfPermission(getApplicationContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION);
+
+
+        if (hasFineLocationPermission == PackageManager.PERMISSION_GRANTED &&
+                hasCoarseLocationPermission == PackageManager.PERMISSION_GRANTED) {
+
+            // 2. 이미 퍼미션을 가지고 있다면
+            // ( 안드로이드 6.0 이하 버전은 런타임 퍼미션이 필요없기 때문에 이미 허용된 걸로 인식합니다.)
+
+
+            // 3.  위치 값을 가져올 수 있음
+
+
+
+        } else {  //2. 퍼미션 요청을 허용한 적이 없다면 퍼미션 요청이 필요합니다. 2가지 경우(3-1, 4-1)가 있습니다.
+
+            // 3-1. 사용자가 퍼미션 거부를 한 적이 있는 경우에는
+            if (ActivityCompat.shouldShowRequestPermissionRationale(Main_Activity.this, REQUIRED_PERMISSIONS[0])) {
+
+                // 3-2. 요청을 진행하기 전에 사용자가에게 퍼미션이 필요한 이유를 설명해줄 필요가 있습니다.
+                Toast.makeText(Main_Activity.this, "이 앱을 실행하려면 위치 접근 권한이 필요합니다.", Toast.LENGTH_LONG).show();
+                // 3-3. 사용자게에 퍼미션 요청을 합니다. 요청 결과는 onRequestPermissionResult에서 수신됩니다.
+                ActivityCompat.requestPermissions(Main_Activity.this, REQUIRED_PERMISSIONS,
+                        PERMISSIONS_REQUEST_CODE);
+
+
+            } else {
+                // 4-1. 사용자가 퍼미션 거부를 한 적이 없는 경우에는 퍼미션 요청을 바로 합니다.
+                // 요청 결과는 onRequestPermissionResult에서 수신됩니다.
+                ActivityCompat.requestPermissions(Main_Activity.this, REQUIRED_PERMISSIONS,
+                        PERMISSIONS_REQUEST_CODE);
+            }
+
+        }
+
+    }
+
+
+    public String getCurrentAddress( double latitude, double longitude) {
+
+        //지오코더... GPS를 주소로 변환
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+
+        List<Address> addresses;
+
+        try {
+
+            addresses = geocoder.getFromLocation(
+                    latitude,
+                    longitude,
+                    7);
+        } catch (IOException ioException) {
+            //네트워크 문제
+            Toast.makeText(this, "지오코더 서비스 사용불가", Toast.LENGTH_LONG).show();
+            return "지오코더 서비스 사용불가";
+        } catch (IllegalArgumentException illegalArgumentException) {
+            Toast.makeText(this, "잘못된 GPS 좌표", Toast.LENGTH_LONG).show();
+            return "잘못된 GPS 좌표";
+
+        }
+
+
+
+        if (addresses == null || addresses.size() == 0) {
+            Toast.makeText(this, "주소 미발견", Toast.LENGTH_LONG).show();
+            return "주소 미발견";
+
+        }
+
+        Address address = addresses.get(0);
+        return address.getAddressLine(0).toString()+"\n";
+
+    }
+
+
+    //여기부터는 GPS 활성화를 위한 메소드들
+    private void showDialogForLocationServiceSetting() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+        builder.setTitle("위치 서비스 비활성화");
+        builder.setMessage("앱을 사용하기 위해서는 위치 서비스가 필요합니다.\n"
+                + "위치 설정을 수정하실래요?");
+        builder.setCancelable(true);
+        builder.setPositiveButton("설정", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                Intent callGPSSettingIntent
+                        = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivityForResult(callGPSSettingIntent, GPS_ENABLE_REQUEST_CODE);
+            }
+        });
+        builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+        builder.create().show();
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+
+            case GPS_ENABLE_REQUEST_CODE:
+
+                //사용자가 GPS 활성 시켰는지 검사
+                if (checkLocationServicesStatus()) {
+                    if (checkLocationServicesStatus()) {
+
+                        Log.d("@@@", "onActivityResult : GPS 활성화 되있음");
+                        checkRunTimePermission();
+                        return;
+                    }
+                }
+
+                break;
+        }
+    }
+
+    public boolean checkLocationServicesStatus() {
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
+    private Map<String, String> getServerCallbackArgs() {
+        Map<String, String> callbackParameters = new HashMap<>();
+        callbackParameters.put("user_id", "1234");
+        callbackParameters.put("title", "프로방스 자동차 여행 !@#$%");
+        return callbackParameters;
+    }
+
+    class Count extends Thread{
                     @Override
                     public void run() {
                         super.run();

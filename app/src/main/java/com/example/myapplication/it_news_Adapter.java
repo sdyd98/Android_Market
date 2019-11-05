@@ -12,10 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class Search_Result_Adapter extends RecyclerView.Adapter<Search_Result_Adapter.MyViewHolder> {
+public class it_news_Adapter extends RecyclerView.Adapter<it_news_Adapter.MyViewHolder> {
 
     // 아이템 정보 객체 어레이를 받는다
-    private ArrayList<Item_DB> mDataset;
+    private ArrayList<New_DB> mDataset;
     // 클릭 리스너 선언
     private static View.OnClickListener onClickListener;
 
@@ -29,15 +29,12 @@ public class Search_Result_Adapter extends RecyclerView.Adapter<Search_Result_Ad
         // each data item is just a string in this case
         public TextView TextView_titile;
         public TextView TextView_content;
-        public ImageView ImageView_title;
-        private TextView item_state_text;
+
         public View rootView;
         public MyViewHolder(View v) {
             super(v);
             TextView_titile = v.findViewById(R.id.TextView_title);
             TextView_content = v.findViewById(R.id.TextView_content);
-            ImageView_title = v.findViewById(R.id.ImageView_title);
-            item_state_text = v.findViewById(R.id.item_state_text);
 
             rootView = v;
 
@@ -49,7 +46,7 @@ public class Search_Result_Adapter extends RecyclerView.Adapter<Search_Result_Ad
 
     // Provide a suitable constructor (depends on the kind of dataset)
     // 어뎁터 생성 부분
-    public Search_Result_Adapter(ArrayList<Item_DB> myDataset, View.OnClickListener onClick) {
+    public it_news_Adapter(ArrayList<New_DB> myDataset, View.OnClickListener onClick) {
         // 들어온 데이터 저장
         mDataset = myDataset;
         onClickListener = onClick;
@@ -58,11 +55,11 @@ public class Search_Result_Adapter extends RecyclerView.Adapter<Search_Result_Ad
     // Create new views (invoked by the layout manager)
     // 레이아웃 매칭하는 부분 (레이아웃 전체를 찍어낸다)
     @Override
-    public Search_Result_Adapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
-                                                                 int viewType) {
+    public it_news_Adapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
+                                                           int viewType) {
         // create a new view
         LinearLayout v = (LinearLayout) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.main_item_view, parent, false);
+                .inflate(R.layout.news_view, parent, false);
         MyViewHolder vh = new MyViewHolder(v);
         return vh;
     }
@@ -74,16 +71,8 @@ public class Search_Result_Adapter extends RecyclerView.Adapter<Search_Result_Ad
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         // 데이터 추가
-        holder.TextView_titile.setText(mDataset.get(position).getItem_name());
-        holder.TextView_content.setText(mDataset.get(position).getItem_price()+"원");
-        holder.ImageView_title.setImageURI(Uri.parse(mDataset.get(position).getitem_img()));
-
-        if(mDataset.get(position).isItem_state()){
-            holder.item_state_text.setVisibility(View.GONE);
-        }
-        else{
-            holder.item_state_text.setVisibility(View.VISIBLE);
-        }
+        holder.TextView_titile.setText(mDataset.get(position).getTitle());
+        holder.TextView_content.setText(mDataset.get(position).getDescription());
 
         // position 값 획득
         holder.rootView.setTag(position);
@@ -96,7 +85,7 @@ public class Search_Result_Adapter extends RecyclerView.Adapter<Search_Result_Ad
     }
 
     // 포지션 값 반환
-    public Item_DB getData(int position){
+    public New_DB getData(int position){
         return mDataset.get(position) != null ? mDataset.get(position) : null;
     }
 }

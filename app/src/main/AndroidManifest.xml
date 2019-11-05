@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.myapplication">
 
     <uses-permission android:name="android.permission.CALL_PHONE"/>
@@ -24,7 +25,13 @@
         android:label="중부시장"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
+        >
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/admob_app_id"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -154,7 +161,14 @@
         </activity>
 
         <activity android:name=".Login_Activity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
+                <data android:scheme="@string/kakao_scheme"
+                    android:host="@string/kakaolink_host" />
+            </intent-filter>
         </activity>
 
         <activity android:name=".MusicServiceActivity">
@@ -166,6 +180,14 @@
         </activity>
 
         <activity android:name=".Trade_Map_Activity">
+
+        </activity>
+
+        <activity android:name=".it_news_Activity">
+
+        </activity>
+
+        <activity android:name=".web_view_Activity">
 
         </activity>
 
