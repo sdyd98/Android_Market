@@ -923,6 +923,7 @@ public class Main_Activity extends AppCompatActivity implements RewardedVideoAdL
             {
                 // 그아이템 객체 판매 어레이에 추가
                 User_Sell_Item_ArrayList.add(item_db_array.get(i));
+
             }
         }
     }
@@ -1056,7 +1057,6 @@ public class Main_Activity extends AppCompatActivity implements RewardedVideoAdL
 
             // 검색어 셋팅 2되면 반복 탈출
             if(Rank_Search_Text.size() > 4 || Rank_Check_Array.size() == 0){
-                Toast.makeText(getApplicationContext(), String.valueOf(Search_Text_Save_Array.size()), Toast.LENGTH_SHORT).show();
                 break;
             }
         }
@@ -1220,25 +1220,20 @@ public class Main_Activity extends AppCompatActivity implements RewardedVideoAdL
 
     @Override
     public void onRewarded(RewardItem reward) {
-        Toast.makeText(this, "onRewarded! currency: " + reward.getType() + "  amount: " +
-                reward.getAmount(), Toast.LENGTH_SHORT).show();
         // Reward the user.
     }
 
     @Override
     public void onRewardedVideoAdLeftApplication() {
-        Toast.makeText(this, "onRewardedVideoAdLeftApplication",
-                Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
     public void onRewardedVideoAdClosed() {
-        Toast.makeText(this, "onRewardedVideoAdClosed", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRewardedVideoAdFailedToLoad(int errorCode) {
-        Toast.makeText(this, "onRewardedVideoAdFailedToLoad", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -1246,22 +1241,19 @@ public class Main_Activity extends AppCompatActivity implements RewardedVideoAdL
         if (mRewardedVideoAd.isLoaded()) {
             mRewardedVideoAd.show();
         }
-        Toast.makeText(this, "onRewardedVideoAdLoaded", Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
     public void onRewardedVideoAdOpened() {
-        Toast.makeText(this, "onRewardedVideoAdOpened", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRewardedVideoStarted() {
-        Toast.makeText(this, "onRewardedVideoStarted", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRewardedVideoCompleted() {
-        Toast.makeText(this, "onRewardedVideoCompleted", Toast.LENGTH_SHORT).show();
     }
 
     // 로티 시작 메소드

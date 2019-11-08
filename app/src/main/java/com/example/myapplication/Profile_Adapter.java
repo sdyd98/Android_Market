@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.net.Uri;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,12 +31,14 @@ public class Profile_Adapter extends RecyclerView.Adapter<Profile_Adapter.MyView
         public TextView TextView_titile;
         public TextView TextView_content;
         public ImageView ImageView_title;
+        private TextView item_state_text;
         public View rootView;
         public MyViewHolder(View v) {
             super(v);
             TextView_titile = v.findViewById(R.id.TextView_title);
             TextView_content = v.findViewById(R.id.TextView_content);
             ImageView_title = v.findViewById(R.id.ImageView_title);
+            item_state_text = v.findViewById(R.id.item_state_text);
 
             rootView = v;
 
@@ -77,6 +80,13 @@ public class Profile_Adapter extends RecyclerView.Adapter<Profile_Adapter.MyView
         holder.ImageView_title.setImageURI(Uri.parse(mDataset.get(position).getitem_img()));
         // position 값 획득
         holder.rootView.setTag(position);
+
+        if(mDataset.get(position).isItem_state()){
+            holder.item_state_text.setVisibility(View.GONE);
+        }
+        else{
+            holder.item_state_text.setVisibility(View.VISIBLE);
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)

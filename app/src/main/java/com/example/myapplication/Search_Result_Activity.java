@@ -98,7 +98,6 @@ public class Search_Result_Activity extends AppCompatActivity {
                 // 검색어 카운트 + 1
                 Search_Text_Save_Array.get(Search_Text_Position).setSearch_Count(Search_Text_Save_Array.get(Search_Text_Position).getSearch_Count()+1);
 
-                Toast.makeText(getApplicationContext(), "검색된 횟수"+Search_Text_Save_Array.get(Search_Text_Position).getSearch_Count(), Toast.LENGTH_SHORT).show();
             }
 
             // 처음 검색한 검색어라면

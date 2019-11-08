@@ -8,8 +8,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -44,6 +47,7 @@ import com.kakao.util.helper.log.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -236,7 +240,6 @@ public class Buy_Activity extends AppCompatActivity {
 
         // 알림 창을 타고 들어왔을때만 동작
         if(getIntent().getBooleanExtra("Check_noti", false)) {
-            Toast.makeText(getApplicationContext(), "하이하이", Toast.LENGTH_SHORT).show();
             // 알림 창 타고 들어온거 제거
             notificationDel();
         }
@@ -256,6 +259,7 @@ public class Buy_Activity extends AppCompatActivity {
         user_name.setText(User_Db_ArrayList.get(User_Writer_Position).getUser_name());
         user_icon.setImageURI(Uri.parse(User_Db_ArrayList.get(User_Writer_Position).getUser_icon_img()));
         User_Follower_Count.setText(String.valueOf(User_Db_ArrayList.get(User_Writer_Position).getUser_Follower().size()));
+        UpLoad_Img();
         if(!item_db_array.get(Item_position).isItem_state()){
             item_state.setText("(판매 완료)");
             Buy_Item.setVisibility(View.GONE);
@@ -350,7 +354,6 @@ public class Buy_Activity extends AppCompatActivity {
                         }
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "test", Toast.LENGTH_SHORT).show();
 
                     // 채팅방 객체 생성 ( 로그인 유저 아이디, 상대방 유저 아이디, 채팅방 내용 어레이 리스트, 이미지)
                     Chat_List chat_list = new Chat_List(Login_User_ID, Another_User_ID, User_Db_ArrayList.get(Login_User_Position).getUser_icon_img(), User_Db_ArrayList.get(User_Writer_Position).getUser_icon_img(), User_Db_ArrayList.get(Login_User_Position).getUser_name(), User_Db_ArrayList.get(User_Writer_Position).getUser_name());
@@ -617,8 +620,6 @@ public class Buy_Activity extends AppCompatActivity {
                                         .setMobileWebUrl("https://developers.kakao.com").build())
                                 .setDescrption(item_db_array.get(Item_position).getItem_detail())
                                 .build())
-                        .setSocial(SocialObject.newBuilder().setLikeCount(10).setCommentCount(20)
-                                .setSharedCount(30).setViewCount(40).build())
                         .addButton(new ButtonObject("앱으로 보기", LinkObject.newBuilder()
                                 .setWebUrl("https://developers.kakao.com")
                                 .setMobileWebUrl("https://developers.kakao.com")
@@ -1017,12 +1018,10 @@ public class Buy_Activity extends AppCompatActivity {
         }
         else if(week < 5){
             realtime = String.valueOf(week);
-            Toast.makeText(getApplicationContext()," 날짜 차이 = "+(curDateTime - reqDateTime)+" 변환 = "+ (curDateTime - reqDateTime) / (7 * 24 * 60 * 60 * 1000), Toast.LENGTH_LONG).show();
             time = realtime+"주";
         }
         else if(month < 12){
             realtime = String.valueOf(month);
-            Toast.makeText(getApplicationContext()," 날짜 차이 = "+(curDateTime - reqDateTime)+" 변환 = "+ (curDateTime - reqDateTime) / (31 * 24 * 60 * 60 * 1000), Toast.LENGTH_LONG).show();
             time = realtime+"달";
         }
         else if (years < 100){
@@ -1133,8 +1132,11 @@ public class Buy_Activity extends AppCompatActivity {
             fix.setVisibility(View.VISIBLE);
             del.setVisibility(View.VISIBLE);
             User_hide.setVisibility(View.GONE);
+            // 좋아요 GONE
             heart.setVisibility(View.INVISIBLE);
+            // 팔로우 체크 박스 GONE
             Following_Check_Box.setVisibility(View.GONE);
+
         }
         
         else{
@@ -1555,6 +1557,36 @@ public class Buy_Activity extends AppCompatActivity {
         });
         AlertDialog alert = alt_bld.create();
         alert.show();
+    }
+
+    // bitmap 이미지 uri 변환
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    public void UpLoad_Img(){
+
+        // 기존 박혀있는 Drawable 이미지 가져오기
+        Bitmap bitmap = ((BitmapDrawable)Buy_Image.getDrawable()).getBitmap();
+
+        // 파일 경로 정해주기
+        File imageFile = new File(getImageUri(getApplicationContext(), bitmap).toString());
+
+        KakaoLinkService.getInstance().uploadImage(this, false, imageFile, new ResponseCallback<ImageUploadResponse>() {
+            @Override
+            public void onFailure(ErrorResult errorResult) {
+                System.out.println(errorResult.toString());
+            }
+
+            @Override
+            public void onSuccess(ImageUploadResponse result) {
+                // 올라간 url 가져오기
+                System.out.println("소스"+result.getOriginal().getUrl());
+            }
+        });
     }
 
 

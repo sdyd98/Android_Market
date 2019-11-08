@@ -267,6 +267,7 @@
         />
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/My_Menu_Icon_Keyword_Allim"
         android:padding="10dp"
         android:layout_width="match_parent"
